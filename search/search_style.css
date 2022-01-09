@@ -1,0 +1,11 @@
+
+
+#logo{
+    background-image: url(google_logo.svg);
+    width: 272px;
+    height: 92px;
+}
+
+form, #logo {
+    margin: auto;
+}
