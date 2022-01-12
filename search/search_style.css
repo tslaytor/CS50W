@@ -1,11 +1,59 @@
 
+#logo-wrap{
+	width: 272px;
+	height: 200px;
+	position: relative;
+    margin: 0px auto 38px;
+}
+
 
 #logo{
     background-image: url(google_logo.svg);
     width: 272px;
     height: 92px;
+    background-repeat: no-repeat;
+    position: absolute;
+    bottom: 0px;
 }
 
-form, #logo {
+#inputWrapper {
+    height: 100%;
+    position: relative;
+    width: 50%;
     margin: auto;
+    border: solid 0.25px black;
+    border-radius: 1.5em;
+    box-shadow: 2px 2px 2px gray;
+
+}
+
+#input {
+    background-color: var(--search-box-bg, white);
+    border: none;
+    color: gray;
+    font-family: Roboto, system-ui, sans-serif;
+    font-size: 81.25%;
+    height: 100%;
+    outline: none;
+    margin: 0.75em;
+    position: relative;
+    width: 50%;
+}
+
+#button-wrap{
+    display: inline-block; 
+    margin: auto;
+    text-align: center;
+    position: relative;
+}
+
+#button{
+    display: inline-block;
+    margin: 1em auto;
+}
+
+#centered{
+    display: block;
+    text-align: center;
+
 }

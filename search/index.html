@@ -5,10 +5,19 @@
         <link rel="stylesheet" href="search_style.css">
     </head>
     <body>
-        <div id="logo"></div>
+        <div id="logo-wrap">
+            <div id="logo"></div>
+        </div>
         <form action="https://google.com/search">
-            <input type="text" name="q" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="Search Google or type a URL">
-            <input type="submit" value="Google Search">
+            <div id="inputWrapper">
+                <input type="text" name="q" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="Search Google or type a URL">
+            </div>
+            <div id="centered">
+                <div id="button-wrap">
+                    <input id="button" type="submit" value="Google Search">
+                    <input id="button" type="submit" value="I'm feeling lucky">
+                </div>
+            </div>
         </form>
     </body>
 </html>
