@@ -35,16 +35,15 @@ def entry(request, entry):
 def search(request):
     input = NewSearchForm(request.GET)
     if input.is_valid():
-        input = input.cleaned_data["query"]
-        entry = util.get_entry(input)
-        if entry:
+        input = input.cleaned_data["query"].casefold()
+        if util.get_entry(input):
             return redirect(f"wiki/{input}")
         else:
             # look for substrings of {input} in all entries and return list of matching entries
             entries = util.list_entries()
             matches = []
             for title in entries:
-                if input in title:
+                if input in title.casefold():
                     matches.append(title)
             if matches:
                 return render(request, "encyclopedia/search.html", {
