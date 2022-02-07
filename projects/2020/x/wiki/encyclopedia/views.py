@@ -8,6 +8,9 @@ from . import util
 class NewSearchForm(forms.Form):
     query = forms.CharField(label="query")
 
+class titleForm(forms.Form):
+    title = forms.CharField(label="title")
+
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries(),
@@ -54,3 +57,10 @@ def search(request):
                 return HttpResponse("NO MATCHES")
     else:
         return HttpResponse("Invalid form!")
+
+def add(request):
+    return render(request, "encyclopedia/add.html", {
+        "form": NewSearchForm(),
+        "title": titleForm()
+
+    })
