@@ -1,3 +1,5 @@
+from cProfile import label
+from curses.ascii import HT
 from pickletools import read_uint1
 import re
 from django.shortcuts import redirect, render
@@ -5,11 +7,10 @@ from django.http import HttpResponse
 from django import forms
 from . import util
 
+# declare a form class for search
 class NewSearchForm(forms.Form):
     query = forms.CharField(label="query")
 
-class titleForm(forms.Form):
-    title = forms.CharField(label="title")
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -59,8 +60,41 @@ def search(request):
         return HttpResponse("Invalid form!")
 
 def add(request):
-    return render(request, "encyclopedia/add.html", {
-        "form": NewSearchForm(),
-        "title": titleForm()
+    # declare a form class for title of new page
+    class CreateEntryForm(forms.Form):
+        title = forms.CharField(label="title")
+        content = forms.CharField(widget=forms.Textarea, label="content")
 
-    })
+    if request.method == 'GET':
+        return render(request, "encyclopedia/add.html", {
+            "form": NewSearchForm(),
+            "entryForm": CreateEntryForm()
+        })
+    else:
+        # get the form data...
+        newEntry = CreateEntryForm(request.POST)
+        if newEntry.is_valid():
+            title = newEntry.cleaned_data["title"]
+            content = newEntry.cleaned_data["content"]
+            if util.get_entry(title):
+                return HttpResponse("This page already exists")
+            util.save_entry(title, content)
+            return redirect(f"wiki/{title}")
+        else:
+            return HttpResponse("form not valid")
+
+def edit(request, title):
+    # TODO get the content from title, pass to render, display content in text box
+    
+    content = util.get_entry(title)
+    print(content)
+    print(type(content))
+
+    class textArea(forms.Form):
+        area = forms.CharField(widget=forms.Textarea, label="Content")
+
+    return render(request, "encyclopedia/edit.html", {
+            "form": NewSearchForm(),
+            "textArea": textArea({"area":content}),
+            "title":title
+        })
