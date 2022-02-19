@@ -8,8 +8,10 @@
 
     {{ title }}
 
+    <p>{{ title }}</p>
+
  
-    <form action="/add" method="post">
+    <form action="../edit/{{ title }}" method="post">
         {% csrf_token %}
         {{ textArea }}
         <input type="submit" value="Submit">

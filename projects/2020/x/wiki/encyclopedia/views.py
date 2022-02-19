@@ -18,19 +18,19 @@ def index(request):
         "form": NewSearchForm()
     })
 
-def entry(request, entry):
+def entry(request, title):
     # return HttpResponse(f"Hello {entry}")
     if request.method == 'GET':
-        content = util.get_entry(entry)
+        content = util.get_entry(title)
         if content:
             return render(request, f"encyclopedia/entry.html", {
                 "content": content,
-                "title": entry.capitalize(),
+                "title": title.capitalize(),
                 "form": NewSearchForm()
             })
         else:
             return render(request, "encyclopedia/no-entry.html", {
-                "title": entry.capitalize(),
+                "title": title.capitalize(),
                 "form": NewSearchForm()
             })
     else:
@@ -84,17 +84,24 @@ def add(request):
             return HttpResponse("form not valid")
 
 def edit(request, title):
-    # TODO get the content from title, pass to render, display content in text box
-    
-    content = util.get_entry(title)
-    print(content)
-    print(type(content))
-
     class textArea(forms.Form):
-        area = forms.CharField(widget=forms.Textarea, label="Content")
+            area = forms.CharField(widget=forms.Textarea, label="Content")
+    
+    if request.method == "GET":
+        content = util.get_entry(title)
 
-    return render(request, "encyclopedia/edit.html", {
-            "form": NewSearchForm(),
-            "textArea": textArea({"area":content}),
-            "title":title
-        })
+        return render(request, "encyclopedia/edit.html", {
+                "form": NewSearchForm(),
+                "textArea": textArea({"area":content}),
+                "title":title
+            })
+    else:
+        # TODO change the body of the entry, but not the title
+        content = textArea(request.POST)
+        if content.is_valid():
+            content = content.cleaned_data["area"]
+            print(f"Title is : {title}, and content is {content}")
+            util.save_entry(title, content)
+            return redirect(f"../wiki/{title}")
+        else:
+            return HttpResponse("form input invalid")
