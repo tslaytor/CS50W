@@ -5,6 +5,7 @@ import re
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django import forms
+from random import randrange
 from . import util
 
 # declare a form class for search
@@ -105,3 +106,13 @@ def edit(request, title):
             return redirect(f"../wiki/{title}")
         else:
             return HttpResponse("form input invalid")
+    
+def random(request):
+    # get length of list
+    entries = util. list_entries()
+    print(f"THE ENTRIES ARE : {entries}")
+    i = len(entries)
+    x = randrange(i)
+    print (f"X IS : {x}")
+    rdmNtry = entries[x]
+    return redirect(f"../wiki/{rdmNtry}")

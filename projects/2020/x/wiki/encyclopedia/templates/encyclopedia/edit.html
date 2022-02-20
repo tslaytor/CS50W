@@ -7,16 +7,11 @@
 {% block body %}
 
     {{ title }}
-
-    <p>{{ title }}</p>
-
  
     <form action="../edit/{{ title }}" method="post">
         {% csrf_token %}
         {{ textArea }}
         <input type="submit" value="Submit">
     </form>
-    
-
 
 {% endblock %}
