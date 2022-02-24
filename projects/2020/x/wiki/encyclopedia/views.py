@@ -1,7 +1,7 @@
+import markdown2
 from cProfile import label
 from curses.ascii import HT
 from pickletools import read_uint1
-import re
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django import forms
@@ -24,6 +24,9 @@ def entry(request, title):
     if request.method == 'GET':
         content = util.get_entry(title)
         if content:
+            print(content)
+            content = markdown2.markdown(content)
+            print(content)
             return render(request, f"encyclopedia/entry.html", {
                 "content": content,
                 "title": title.capitalize(),

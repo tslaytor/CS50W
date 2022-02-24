@@ -9,7 +9,7 @@
     {{ title }}
 
  
-    <form action="/add" method="post">
+    <form action="/add/" method="post">
         {% csrf_token %}
         {{ entryForm }}
         <input type="submit" value="Sumit">
