@@ -5,16 +5,31 @@
         <link rel="stylesheet" href="search_style.css">
     </head>
     <body>
-        <div id="logo"></div>
+        <a href="./index.html">Home</a>
+        <div id="logo-wrap">
+            <div id="logo"></div>
+        </div>
         <form action="https://google.com/search">
-            <input type="text" name="as_q" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="All these words">
-        
-            <input type="text" name="as_epq" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="This exact word or phrase">
-     
-            <input type="text" name="as_oq" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="Any of these words">
+            <div id="inputWrapper">
+                <input type="text" name="as_q" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="All these words">
+            </div>
+            <div id="inputWrapper">
+                <input type="text" name="as_epq" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="This exact word or phrase">
+            </div>
+            <div id="inputWrapper">
+                <input type="text" name="as_oq" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="Any of these words">
+            </div>
+            <div id="inputWrapper">
+                <input type="text" name="as_eq" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="None of these words">
+            </div>
+            
+            <div id="centered">
 
-            <input type="text" name="as_eq" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="None of these words">
-            <input type="submit" value="Google Search">
+                <div id="button-wrap">
+                    <input id="button" type="submit" value="Advanced Search">
+                </div>
+            </div>
+            
         </form>
     </body>
 </html>

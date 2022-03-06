@@ -20,7 +20,7 @@
     height: 100%;
     position: relative;
     width: 50%;
-    margin: auto;
+    margin: 0.5em auto;
     border: solid 0.25px black;
     border-radius: 1.5em;
     box-shadow: 2px 2px 2px gray;
