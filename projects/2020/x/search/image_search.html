@@ -1,26 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Search</title>
+        <title>Image Search</title>
         <link rel="stylesheet" href="search_style.css">
     </head>
     <body>
-        <a href="./index.html">Home</a>
+        <header class="header">
+            <a href="./index.html">Home</a>
+        </header>
         <div id="logo-wrap">
-            <div id="logo"></div>
+            <div class="image-logo-wrap">
+                <img src="google_logo.svg" alt="Google">
+                <span class="image-text">images</span>
+            </div>
         </div>
         <form action="https://google.com/search">
-            <div id="inputWrapper">
-                <input type="text" name="q" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="Search Google or type a URL">
-                <input type="hidden" name="tbm" value="isch">
-            </div>
-            <div id="centered">
-                <div id="button-wrap">
-                    <input id="button" type="submit" value="Google Image Search">
+            <div id="input-wrapper">
+                <div class="search-icon-wrap">
+                    <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
                 </div>
+                <input type="text" name="q" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite">
+                <input type="hidden" name="tbm" value="isch">
+                <div class="image-search-icons">
+                    <div class="camera-image-wrap">
+                        <span class="camera-image"></span>
+                    </div>
+                    <button class="image-search-button" type="submit" value="Google Image Search">
+                        <div>
+                            <span class="search-svg-holder">
+                                <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-iml="1661756763369"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+                            </span>
+                        </div>
+                    </button>
+                </div>    
+                    
+                
             </div>
+            <!-- <div id="centered"> -->
+                <!-- <div id="button-wrap">
+                    <input class="button" type="submit" value="Google Image Search">
+                </div> -->
+            <!-- </div> -->
         </form>
     </body>
 </html>
-
-<!-- https://www.google.com/search?q=test&tbm=isch&sxsrf=AOaemvIyHiU_v3O2Y7DE0BfejPuGYIDsvw%3A1641757996735&source=hp&biw=1305&bih=680&ei=LD3bYaDUKuKxrgSb7KjoCg&iflsig=ALs-wAMAAAAAYdtLPNYIaM-QUA1KhKjfRlYsP4IRmaFh&ved=0ahUKEwigms2RuaX1AhXimIsKHRs2Cq0Q4dUDCAY&oq=test&gs_lcp=CgNpbWcQDFAAWABgAGgAcAB4AIABAIgBAJIBAJgBAKoBC2d3cy13aXotaW1n&sclient=img -->

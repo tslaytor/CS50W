@@ -1,71 +1,291 @@
+*{
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: arial, sans-serif;
+}
+
+.header {
+    height: 48px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 6px;
+}
+
+.adv-header {
+    justify-content: space-between;
+    height: 64px;
+}
+
+.adv-header a {
+    align-self: flex-start;
+}
+
+.lower-header {
+    height: 23px;
+    margin: 25px 35px;
+}
+
+.lower-header label {
+    margin-left: 10px;
+    color: rgb(217, 48, 37);
+    font-size: 20px;
+}
+
+.hoz-line {
+    border-bottom-color: rgb(235, 235, 235);
+border-bottom-style: solid;
+border-bottom-width: 1px;
+width: 100%;
+
+}
+
 a {
-    float: right;
-    margin: 0.5em;
+    /* float: right; */
+    margin: 0.5em 15px;
+    display: inline-block;
+    line-height: 24px;
+    vertical-align: middle;
+    color: rgba(0,0,0,.87);
+    text-decoration: none;
+    font-size: 13px;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 #logo-wrap{
-	width: 272px;
-	height: 200px;
-	position: relative;
-    margin: 0px auto 38px;
+	height: 272px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    /* position: relative; */
 }
 
-
-#logo{
-    background-image: url(google_logo.svg);
-    width: 272px;
-    height: 92px;
-    background-repeat: no-repeat;
-    position: absolute;
-    bottom: 0px;
+.adv-img {
+    height: 24px;
+    width: 74px;
+    margin-left: 20px;
 }
 
-#inputWrapper {
-    height: 100%;
+.image-logo-wrap {
     position: relative;
-    width: 50%;
-    margin: 0.5em auto;
-    border: solid 0.25px black;
-    border-radius: 1.5em;
-    box-shadow: 2px 2px 2px gray;
+    display: flex;
+    align-items: flex-end;
+}
+
+.image-text {
+    position: absolute;
+    bottom: -3px;
+    vertical-align: baseline;
+    right: 6px;
+    color: rgb(66, 133, 244);
+}
+
+form {
+    /* height: 160px; */
+    padding: 20px;
+    /* display: flex; */
 
 }
+
+.adv-form-wrap {
+    margin: 40px 20px 0 45px;
+}
+
+.adv-form {
+    padding: 0;
+    display: grid;
+    gap: 2px;
+    grid-template-columns: 167px 50vw auto;
+    grid-template-rows: repeat(5, 42px) 50px;
+    grid-template-areas: "prompt . ."
+                        "label1 input1 ."
+                        "label2 input2 ."
+                        "label3 input3 ."
+                        "label4 input4 ."
+                        ". button .";
+}
+
+
+.label1, .label2, .label3, .label4 {
+    font-size: 13px;
+    padding: 7.5px 0;
+    color: rgb(34, 34, 34);;
+}
+
+.label1 {
+    grid-area: label1;
+}
+.input1 {
+    grid-area: input1;
+}
+
+.label2 {
+    grid-area: label2;
+}
+.input2 {
+    grid-area: input2;
+}
+
+.label3 {
+    grid-area: label3;
+}
+.input3 {
+    grid-area: input3;
+}
+
+.label4 {
+    grid-area: label4;
+}
+.input4 {
+    grid-area: input4;
+}
+
+.adv-input {
+    width: 100%;
+    height: 29px;
+    padding: 1px 8px;
+    border: 1px rgb(217, 217, 217) solid;
+}
+
+.adv-button {
+    grid-area: button;
+    margin: 0 10;
+    background-color: #2f5bb7;
+    color: white;
+    width: 123px;
+    height: 30px;
+    align-self: center;
+    justify-self: flex-end;
+    background-color: rgb(53, 122, 232);
+    border: 1px solid rgb(47, 91, 183);
+    border-radius: 2px;
+
+}
+
+#input-wrapper {
+    height: 44px;
+    width: 92%;
+    max-width: 560px;
+    margin: 0.5em auto;
+    border: solid 1px rgb(223, 225, 229);
+    border-radius: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 8px 0 14px;
+    position: relative;
+    /* box-shadow: 2px 2px 2px gray; */
+
+}
+
+.x-icon-wrap {
+    width: 48px;
+    padding: 0 12px;
+}
+
+.x-icon-wrap > svg {
+    fill: rgb(112, 117, 122);
+}
+
+#input-wrapper svg {
+    width: 24px;
+    /* height: 44px; */
+}
+
 
 #input {
-    background-color: var(--search-box-bg, white);
+    background-color: rgba(0,0,0,0);
     border: none;
-    color: gray;
-    font-family: Roboto, system-ui, sans-serif;
-    font-size: 81.25%;
-    height: 100%;
+    color: rgba(0, 0, 0, 0.87);;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    height: 34px;
     outline: none;
-    margin: 0.75em;
-    position: relative;
-    width: 50%;
+    /* margin: 0.75em; */
+    /* position: relative; */
+    flex-grow: 1;
+    align-self: flex-start;
+}
+
+.search-icon-wrap {
+    width: 44px;
+    padding: 0 13px 0 0 ;
+}
+
+.search-icon-wrap > svg {
+    width: 20px;
+    height: 20px;
+    fill: rgb(154, 160, 166);;
 }
 
 #button-wrap{
-    display: inline-block; 
-    margin: auto;
-    text-align: center;
-    position: relative;
+    /* display: inline-block;  */
+    /* width: 100%; */
+    /* text-align: center; */
+    /* position: relative; */
+    display: flex;
+    justify-content: center;
+    height: 88px;
+    padding-top: 18px;
 }
 
-#button{
+.button{
+    /* display: inline-block; */
+    width: 142px;
+    height: 36px;
+    margin: 11px 6px;
+    padding: 0 16px;
+    border: 1px solid rgb(248, 249, 250);
+    /* border: none; */
+    background-color: rgb(248, 249, 250);
+    border-radius: 4px;
+    font-size: 14px;
+    color: rgb(32, 33, 36);
+}
+
+
+
+.image-search-icons {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+}
+
+.camera-image-wrap {
+    width: 40px;
+    height: 44px;
+    padding: 0 10px 0 8px;
+    display: flex;
+    align-items: center;
+    
+}
+
+.camera-image {
+    background-image: url("https://www.gstatic.com/images/icons/material/system/2x/photo_camera_grey600_24dp.png");
     display: inline-block;
-    margin: 1em auto;
+    width: 24px;
+    height: 24px;
+    background-size: 24px;
 }
 
-#adv-button{
-    display: inline-block;
-    margin: 1em auto;
-    background-color: #2f5bb7;
-    color: white;
+.image-search-button {
+    width: 44px;
+    height: 44px;
+    padding-right: 13px;
+    background: none;
+    border: none;
+    fill: rgb(66, 133, 244);
+    cursor: pointer;
 }
 
-
-#centered{
-    display: block;
-    text-align: center;
-
+.search-svg-holder{
+    display: flex;
+    align-items: center;
 }

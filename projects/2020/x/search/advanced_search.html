@@ -1,35 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Search</title>
+        <title>Advanced Search</title>
         <link rel="stylesheet" href="search_style.css">
     </head>
     <body>
-        <a href="./index.html">Home</a>
-        <div id="logo-wrap">
-            <div id="logo"></div>
+        <header class="header adv-header">
+            <!-- <div class="logo-wrap"> -->
+                <img class="adv-img" src="google_logo.svg" alt="Google">
+            <!-- </div> -->
+            <a href="./index.html">Home</a>
+            <!-- <div id="logo-wrap"> -->
+        </header>
+        <!-- <div id="advanced-logo-wrap">
+            
+            
+        </div> -->
+        <!-- </div> -->
+        <div class="lower-header">
+            <label>
+                Advanced Search
+            </label>
         </div>
-        <form action="https://google.com/search">
-            <div id="inputWrapper">
-                <input type="text" name="as_q" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="All these words">
-            </div>
-            <div id="inputWrapper">
-                <input type="text" name="as_epq" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="This exact word or phrase">
-            </div>
-            <div id="inputWrapper">
-                <input type="text" name="as_oq" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="Any of these words">
-            </div>
-            <div id="inputWrapper">
-                <input type="text" name="as_eq" id="input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite" placeholder="None of these words">
-            </div>
-            
-            <div id="centered">
 
-                <div id="button-wrap">
-                    <input id="adv-button" type="submit" value="Advanced Search">
+        <div class="hoz-line"></div>
+
+        <div class="adv-form-wrap">
+            <form class="adv-form" action="https://google.com/search">
+                <span>Find pages with...</span>
+
+                <span class="label1">all these words:</span>
+                <div class="input1">
+                    <input type="text" name="as_q" class="adv-input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite">
                 </div>
-            </div>
-            
-        </form>
+                
+                <span class="label2">this exact word or phrase:</span>
+                <div class="input2">
+                    <input type="text" name="as_epq" class="adv-input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite">
+                </div>
+                
+                <span class="label3">any of these words:</span>
+                <div class="input3">
+                    <input type="text" name="as_oq" class="adv-input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite">
+                </div>
+                
+                <span class="label4">none of these words:</span>
+                <div class="input4">
+                    <input type="text" name="as_eq" class="adv-input" autocomplete="off" spellcheck="false" role="combobox" aria-live="polite">
+                </div>
+                
+                
+                <!-- <div class="adv-button"> -->
+    
+                    <!-- <div id=""> -->
+                        <input class="adv-button" type="submit" value="Advanced Search">
+                    <!-- </div> -->
+                <!-- </div> -->
+            </form>
+        </div>
+        
     </body>
 </html>
