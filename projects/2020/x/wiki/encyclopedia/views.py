@@ -1,121 +1,63 @@
-import markdown2
 from cProfile import label
-from curses.ascii import HT
-from pickletools import read_uint1
-from django.shortcuts import redirect, render
+from turtle import title
+from webbrowser import get
 from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from django import forms
-from random import randrange
-from . import util
 
-# declare a form class for search
-class NewSearchForm(forms.Form):
-    query = forms.CharField(label="query")
+
+from . import util
 
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries(),
-        "form": NewSearchForm()
+        "entries": util.list_entries()
     })
 
-def entry(request, title):
-    # return HttpResponse(f"Hello {entry}")
-    if request.method == 'GET':
-        content = util.get_entry(title)
-        if content:
-            print(content)
-            content = markdown2.markdown(content)
-            print(content)
-            return render(request, f"encyclopedia/entry.html", {
-                "content": content,
-                "title": title.capitalize(),
-                "form": NewSearchForm()
-            })
-        else:
-            return render(request, "encyclopedia/no-entry.html", {
-                "title": title.capitalize(),
-                "form": NewSearchForm()
-            })
-    else:
-        return HttpResponse("hello mate - this is an http response")
+def entry(request, entry):
+    return render(request, "encyclopedia/entry.html", {
+        "entry": util.get_entry(entry),
+        "title": entry
+    })
 
 def search(request):
-    input = NewSearchForm(request.GET)
-    if input.is_valid():
-        input = input.cleaned_data["query"].casefold()
-        if util.get_entry(input):
-            return redirect(f"wiki/{input}")
-        else:
-            # look for substrings of {input} in all entries and return list of matching entries
-            entries = util.list_entries()
-            matches = []
-            for title in entries:
-                if input in title.casefold():
-                    matches.append(title)
-            if matches:
-                return render(request, "encyclopedia/search.html", {
-                    "entries": matches,
-                    "form": NewSearchForm()
-                    })
-            else:
-                return HttpResponse("NO MATCHES")
-    else:
-        return HttpResponse("Invalid form!")
-
-def add(request):
-    # declare a form class for title of new page
-    class CreateEntryForm(forms.Form):
-        title = forms.CharField(label="title")
-        content = forms.CharField(widget=forms.Textarea, label="content")
-
-    if request.method == 'GET':
-        return render(request, "encyclopedia/add.html", {
-            "form": NewSearchForm(),
-            "entryForm": CreateEntryForm()
+    search = request.GET.get('q')
+    matches = []
+    # exact match
+    if util.get_entry(search):
+        return redirect(f"/{search}")
+    # checking substring
+    for entry in util.list_entries():
+        if search.upper() in entry.upper():
+            matches.append(entry)
+    if len(matches) > 0:
+        return render(request, "encyclopedia/search_res.html", {
+            "entries": matches
         })
     else:
-        # get the form data...
-        newEntry = CreateEntryForm(request.POST)
-        if newEntry.is_valid():
-            title = newEntry.cleaned_data["title"]
-            content = newEntry.cleaned_data["content"]
-            if util.get_entry(title):
-                return HttpResponse("This page already exists")
-            util.save_entry(title, content)
-            return redirect(f"wiki/{title}")
-        else:
-            return HttpResponse("form not valid")
+        return render(request, "encyclopedia/search_res.html", {
+            "fail": "No matches found"
+        })
 
-def edit(request, title):
-    class textArea(forms.Form):
-            area = forms.CharField(widget=forms.Textarea, label="Content")
-    
+def create(request):
+    print(f"fuuuuuuck {request.method}")
     if request.method == "GET":
-        content = util.get_entry(title)
-
-        return render(request, "encyclopedia/edit.html", {
-                "form": NewSearchForm(),
-                "textArea": textArea({"area":content}),
-                "title":title
-            })
-    else:
-        # TODO change the body of the entry, but not the title
-        content = textArea(request.POST)
-        if content.is_valid():
-            content = content.cleaned_data["area"]
-            print(f"Title is : {title}, and content is {content}")
-            util.save_entry(title, content)
-            return redirect(f"../wiki/{title}")
+        return render(request, "encyclopedia/create.html", {
+            "form":newEntry()
+        })
+    elif request.method == "POST":
+        form = newEntry(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            description = form.cleaned_data["description"]
+            print(f"here's your form title '{title}' and description '{description}'")
         else:
-            return HttpResponse("form input invalid")
-    
-def random(request):
-    # get length of list
-    entries = util. list_entries()
-    print(f"THE ENTRIES ARE : {entries}")
-    i = len(entries)
-    x = randrange(i)
-    print (f"X IS : {x}")
-    rdmNtry = entries[x]
-    return redirect(f"../wiki/{rdmNtry}")
+            return HttpResponse(f"Your statement about the form being valid is {form.is_valid()}")
+    return HttpResponse("YOU SUCK!")
+
+
+class newEntry(forms.Form):
+    title = forms.CharField(label="title")
+    description = forms.CharField(label="description", widget=forms.Textarea())
+
+
