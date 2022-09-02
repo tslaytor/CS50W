@@ -55,7 +55,7 @@ def create(request):
             content = form.cleaned_data["content"]
             # if title already in entries, return an error message
             if util.get_entry(title):
-                return HttpResponse("This entry alrady exists, error error error")
+                return HttpResponse("ERROR: This entry alrady exists")
             #  save the entry and redirect to the new entry's page
             util.save_entry(title, content)
             return redirect(f"../wiki/{title}")
