@@ -65,7 +65,6 @@ def create(request):
 
 def edit(request, title):
     entry = util.get_entry(title)
-    print(f"PRINTING!!! {entry}")
     if request.method == "GET":
         return render(request, "encyclopedia/edit.html", {
             "form":editForm({'content': entry}),
@@ -74,7 +73,6 @@ def edit(request, title):
     elif request.method == "POST":
         util.save_entry(title, request.POST.get('content'))
         return redirect(f"../wiki/{title}")
-    # return HttpResponse(f"edit path for {title}")
 
 def rand (request):
     list = util.list_entries()
