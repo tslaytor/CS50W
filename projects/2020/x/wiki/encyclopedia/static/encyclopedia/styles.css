@@ -12,9 +12,24 @@ h1 {
     padding-top: 20px;
 }
 
+form {
+    margin-top: 1.5rem;
+}
+
 textarea {
-    height: 90vh;
+    height: 50vh;
     width: 80%;
+}
+
+label {
+    /* vertical-align: top; */
+    display: block;
+}
+
+button {
+    display: block;
+    width: 100px;
+    height: 30px;
 }
 
 .main {
