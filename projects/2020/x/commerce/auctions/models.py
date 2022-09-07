@@ -8,15 +8,18 @@ from django.db import models
 class User(AbstractUser):
     pass
 
-class Auc_catagories(models.Model):
-    catagory = models.CharField(max_length=64)
+class Category(models.Model):
+    category = models.CharField(max_length=64, unique=True)
 
-class Auc_list(models.Model):
+    def __str__(self):
+        return f"{self.category}"
+
+class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField()
     starting_bid = models.DecimalField(max_digits=11, decimal_places=2)
     image = models.URLField(blank=True)
-    catagory = models.ForeignKey(Auc_catagories, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
@@ -25,13 +28,13 @@ class Auc_list(models.Model):
 
 class Watch_list(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    auc_list = models.ForeignKey(Auc_list, on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
 
-class Comments(models.Model):
+class Comment(models.Model):
     comment = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    auc_list = models.ForeignKey(Auc_list, on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
 
-class Bids(models.Model):
+class Bid(models.Model):
     value = models.DecimalField(max_digits=11, decimal_places=2)
-    auc_list = models.ForeignKey(Auc_list, on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)

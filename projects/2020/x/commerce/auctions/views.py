@@ -1,10 +1,13 @@
+from gettext import Catalog
+from tracemalloc import start
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django import forms
 
-from .models import User
+from .models import Listing, User, Category
 
 
 def index(request):
@@ -64,6 +67,29 @@ def register(request):
 
 def create(request):
     if request.method == "POST":
-        pass
+        form = CreateListing(request.POST)
+        if form.is_valid:
+            # get the category, if it is not in the table, add
+            # category = request.POST['category']
+            # new_category = Auc_categories(category="test catagory")
+            # new_category.save()
+            # print(Auc_categories.objects.all())
+            # title = request.POST['title']
+            # description = request.POST['description']
+            # starting_bid = request.POST['starting_bid']
+            # new_model_instance = Auc_list(title=title, description=description, starting_bid=starting_bid)
+            # new_model_instance.save()
+            pass
+        return HttpResponse("Ok whatever man")
     else: 
-        return render(request, "auctions/create.html")
+        return render(request, "auctions/create.html", {
+            'form': CreateListing()
+        })
+
+
+class CreateListing(forms.Form):
+    title = forms.CharField(label='title', max_length=64)
+    description = forms.CharField(label="description", widget=forms.Textarea())
+    starting_bid = forms.DecimalField(label='starting bid', max_digits=11, decimal_places=2)
+    image_url = forms.URLField(required=False)
+    category = forms.ChoiceField(choices=Category.objects.all())
