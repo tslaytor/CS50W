@@ -22,11 +22,9 @@ class Listing(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    
-    # I think we don't need current bid, we store all bid info on another table
-    # current_bid = models.DecimalField(blank=True, max_digits=11, decimal_places=2)
 
-class Watch_list(models.Model):
+class Bid(models.Model):
+    value = models.DecimalField(max_digits=11, decimal_places=2)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
 
@@ -35,6 +33,6 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
 
-class Bid(models.Model):
-    value = models.DecimalField(max_digits=11, decimal_places=2)
+class Watch_list(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
