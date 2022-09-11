@@ -14,19 +14,24 @@ class Category(models.Model):
     def __str__(self):
         return f"{self.category}"
 
+class Bid(models.Model):
+    value = models.DecimalField(max_digits=11, decimal_places=2)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    # listing = models.ForeignKey(Listing, related_name="current_bid", default=None, on_delete=models.CASCADE)
+
+
 class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField()
     starting_bid = models.DecimalField(max_digits=11, decimal_places=2)
+    bid = models.ForeignKey(Bid, null=True, blank=True, default=None, on_delete=models.CASCADE)
     image = models.URLField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-class Bid(models.Model):
-    value = models.DecimalField(max_digits=11, decimal_places=2)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.title}, {self.description}"
 
 class Comment(models.Model):
     comment = models.TextField()

@@ -13,7 +13,17 @@ from .models import Listing, User, Category, Bid
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    # x = Listing.objects.all()
+    # for i in x:
+    #     print(f"This is the id: {i.id}, this is the title: {i.title}")
+    
+    
+    # ok = Listing.bid
+    # print(ok)
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.all(),
+        # "bids": Bid.objects.all()
+    })
 
 
 def login_view(request):

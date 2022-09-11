@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import Category, Listing, Watch_list, Comment, Bid
 
 # Register your models here.

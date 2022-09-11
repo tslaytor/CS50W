@@ -1,3 +1,21 @@
 body {
     padding: 10px;
 }
+
+.success-text {
+    color: seagreen;
+}
+
+.fail-text {
+    color: red
+}
+.listing-image {
+    width: 70%;
+    height: 8rem;
+    background-color: salmon;
+    border: black solid 2px;
+}
+
+.listing-image__image {
+    height: 100%;
+}
