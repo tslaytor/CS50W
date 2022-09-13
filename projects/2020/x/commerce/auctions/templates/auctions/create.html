@@ -3,9 +3,9 @@
 {% block body %}
 <h1>Create your listing below</h1>
 
-<form action="{% url 'create' %}" method="post">
+<form class='create-form' action="{% url 'create' %}" method="post">
     {% csrf_token %}
     {{ form }}
-    <input type="submit" value="Create">
+    <input type="submit" value="Create" class="btn btn-primary">
 </form>
 {% endblock %}
