@@ -23,35 +23,43 @@
     {% endif %}
 
     {% if listing.user == request.user %}
-        <p>You posted this! - Add a close listing button</p>
+
+        <p>This is your listing</p>
+        <form action="{% url 'close' %}" method="post"> 
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Close Listing">
+    
+        </form>
+
     {% else %}
+    
     <form action="{% url 'bid' %}" method="post"> 
         {% csrf_token %}
         <p><strong>Your bid: $</strong>{{ bid_form }}</p>
         <input type="submit" value="Bid">
 
     </form>
-    {% endif %}
-        
-    {% if in_list %}
-        <form method="post" action="{% url 'remove_from_watchlist' %}">
+
+        {% if in_list %}
+            <form method="post" action="{% url 'remove_from_watchlist' %}">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" value="Remove from watchlist">
+            </form>
+
+
+        {% else %}
+
+        <form action="{% url 'watchlist' %}" method="post">
             {% csrf_token %}
             {{ form }}
-            <input type="submit" value="Remove from watchlist">
+            <input type="submit" value="Add to watchlist">
         </form>
+        {% endif %}
 
-
-    {% else %}
-
-    <form action="{% url 'watchlist' %}" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <!-- <input type="number" value="{{ listing.id }}"> -->
-        <input type="submit" value="Add to watchlist">
-    </form>
     {% endif %}
-    
-    
+        
 
     <h3>Description</h3>
     <p>{{ listing.description }}</p>

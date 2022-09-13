@@ -13,6 +13,7 @@ from flask_login import login_required
 from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef
 from django.core.exceptions import ObjectDoesNotExist
+from numpy import save
 from urllib3 import HTTPResponse
 
 from .models import Listing, User, Category, Bid, Watchlist
@@ -124,12 +125,12 @@ def listing(request, listing_id):
   
     return render(request, 'auctions/listing.html', {
         'listing': listing,
-        'form': WatchForm(initial={'listing_id': listing_id}),
+        'form': idInput(initial={'listing_id': listing_id}),
         "in_list": in_list,
         'bid_form': BidForm(initial={'listing_id': listing_id}),
     })
 
-class WatchForm(forms.Form):
+class idInput(forms.Form):
     listing_id = forms.IntegerField(widget=forms.HiddenInput())
 
 class BidForm(forms.Form):
@@ -140,7 +141,7 @@ class BidForm(forms.Form):
 @login_required(login_url = '/login')
 def watchlist(request):
     if request.method == 'POST':
-        watch_form = WatchForm(request.POST)
+        watch_form = idInput(request.POST)
         if watch_form.is_valid():
             x = watch_form.cleaned_data
             listing = Listing.objects.get(id=x['listing_id'])
@@ -170,7 +171,7 @@ def watchlist(request):
 def remove_from_watchlist(request):
     if request.method == 'POST':
         # listing_id = request.POST('value')
-        watch_form = WatchForm(request.POST)
+        watch_form = idInput(request.POST)
         if watch_form.is_valid():
             x = watch_form.cleaned_data
             print(f" FFFFFFFFFFFF {x}")
@@ -226,27 +227,16 @@ def bid(request):
             return HttpResponse("NOT A VALID BID")
     else:
         return HttpResponse("you ended here")
-            # y = listing.values()
-            # print(f"YYYYYYYYYYYYYYY {listing}")
-            # listing_instance = listing.first()
-            # print(f"Listing INSTANCE:  {listing.starting_bid}")
-            # print(f"YAAAAAA: {clean_bid} ")
-    
 
-            # print(f"check this!!!!!!!!!!!! ====== {listing['id']}")
-            # print(f"check this!!!!!!!!!!!! ====== {clean_bid['bid']}")
-            # return HttpResponse("read the prints")
-
-
-            # if y['starting_bid'] < x['bid']:
-
-            #     return HttpResponse("Bid too low")
-            # if x['bid'] < int(listing['starting_bid']):
-            #     return HttpResponse("The bid was too low")
-                # check no other bids
-                    # iadd the bid and return
-                #  else
-                    # check if this bid is bigger than existing bid
-                        # if it is, delete exisiting bid and add this bid (replace?)
-                    #  if not, reject the bid
-            # else reject, bid too low
+def close_listing(request):
+    if request.method == 'POST':
+        raw = idInput(request.POST)
+        if raw.is_valid():
+            cleaned = raw.cleaned_data
+            listing_id = cleaned["listing_id"]
+            
+            # get the model instance of listing and change active
+            i = Listing.objects.get(id=listing_id)
+            i.active = False
+            i.save()
+    return HttpResponse("YOU MADE IT TO THE BOTTOM")
