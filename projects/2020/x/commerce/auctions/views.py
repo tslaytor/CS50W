@@ -1,8 +1,10 @@
 from calendar import c, prmonth
+from distutils.command.clean import clean
 from email.mime import image
 from gettext import Catalog
 from tracemalloc import start
 from unicodedata import category
+from xml.etree.ElementTree import Comment
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -16,19 +18,16 @@ from django.core.exceptions import ObjectDoesNotExist
 from numpy import save
 from urllib3 import HTTPResponse
 
-from .models import Listing, User, Category, Bid, Watchlist
+from .models import Listing, User, Category, Bid, Watchlist, User_Comment
 
 def index(request):
-    # x = Listing.objects.all()
-    # for i in x:
-    #     print(f"This is the id: {i.id}, this is the title: {i.title}")
-    
-    
-    # ok = Listing.bid
-    # print(ok)
     return render(request, "auctions/index.html", {
         "listings": Listing.objects.all().order_by("-id"),
-        # "bids": Bid.objects.all()
+    })
+
+def deactivated(request):
+    return render(request, "auctions/deactivated.html", {
+        "listings": Listing.objects.all().order_by("-id"),
     })
 
 
@@ -118,6 +117,7 @@ class CreateListing(forms.Form):
 def listing(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
     watchlist = Watchlist.objects.filter(user=request.user, listing=listing)
+    comments = User_Comment.objects.filter(listing=listing)
     if watchlist:
         in_list = True
     else:
@@ -128,14 +128,9 @@ def listing(request, listing_id):
         'form': idInput(initial={'listing_id': listing_id}),
         "in_list": in_list,
         'bid_form': BidForm(initial={'listing_id': listing_id}),
+        'comments': comments,
+        'comment_form': CommentForm(initial={'listing_id': listing_id})
     })
-
-class idInput(forms.Form):
-    listing_id = forms.IntegerField(widget=forms.HiddenInput())
-
-class BidForm(forms.Form):
-    bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'short-input'}), label='', max_digits=11, decimal_places=2)
-    listing_id = forms.IntegerField(widget=forms.HiddenInput())
 
 
 @login_required(login_url = '/login')
@@ -237,6 +232,35 @@ def close_listing(request):
             
             # get the model instance of listing and change active
             i = Listing.objects.get(id=listing_id)
+            print(f"IS IT ACTIVE?: {i.active}")
             i.active = False
             i.save()
+            print(f"AND WHAT ABOUT NOW?: {i.active}")
     return HttpResponse("YOU MADE IT TO THE BOTTOM")
+
+def comment(request):
+    if request.method == 'POST':
+        raw = CommentForm(request.POST)
+        if raw.is_valid():
+            clean = raw.cleaned_data
+            listing_id = clean['listing_id']
+            listing = Listing.objects.get(id=listing_id)
+            comment = clean['comment']
+            i = User_Comment(listing=listing, user=request.user, comment=comment)
+            i.save()
+            return HttpResponseRedirect(reverse('listing', args=(listing_id,)))
+        else:
+            return HttpResponse("your comment isn't valid")
+    else:
+        return HttpResponseRedirect(reverse('index'))
+
+class idInput(forms.Form):
+    listing_id = forms.IntegerField(widget=forms.HiddenInput())
+
+class BidForm(forms.Form):
+    bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'short-input'}), label='', max_digits=11, decimal_places=2)
+    listing_id = forms.IntegerField(widget=forms.HiddenInput())
+
+class CommentForm(forms.Form):
+    comment = forms.CharField(widget=forms.Textarea())
+    listing_id = forms.IntegerField(widget=forms.HiddenInput())

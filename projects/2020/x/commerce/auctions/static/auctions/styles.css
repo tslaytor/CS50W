@@ -49,3 +49,8 @@ body {
     position: relative;
     /* background-color: brown; */
 }
+
+.deactivated {
+    color: gray;
+    border-color: rgb(196, 68, 68);
+}
