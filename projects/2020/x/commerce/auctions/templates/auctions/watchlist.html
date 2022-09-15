@@ -17,7 +17,7 @@
                     {% if item.listing.bid == None %}
                         <p>Current Bid: <span class="fail-text">No bids made</span></p>
                     {% else %}
-                        <p>Current Bid: <span class="success-text">$ {{ item.listing.bid }}</span></p>
+                        <p>Current Bid: <span class="success-text">$ {{ item.listing.bid.value }}</span></p>
                     {% endif %}
                     <h4>Description</h4>
                     <p>{{ item.listing.description }}</p>

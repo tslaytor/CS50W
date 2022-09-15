@@ -19,7 +19,7 @@ class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     
     def __str__(self):
-        return f"User: {self.user}, Value: {self.value}, Item: {self.id}"
+        return f"{Listing.objects.get(bid=self)}: {self.value}: {self.user}"
 
 
 class Listing(models.Model):
@@ -27,7 +27,7 @@ class Listing(models.Model):
     description = models.TextField()
     starting_bid = models.DecimalField(max_digits=11, decimal_places=2)
     bid = models.ForeignKey(Bid, null=True, blank=True, default=None, on_delete=models.SET_DEFAULT, related_name="item")
-    image = models.URLField(blank=True)
+    image = models.URLField(max_length=300, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -40,6 +40,12 @@ class User_Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.user}: {self.listing}: {self.comment}"
+
 class Watchlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user}: {self.listing}"

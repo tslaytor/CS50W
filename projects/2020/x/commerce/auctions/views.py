@@ -25,6 +25,25 @@ def index(request):
         "listings": Listing.objects.all().order_by("-id"),
     })
 
+def categories(request):
+    return render(request, 'auctions/categories.html', {
+        'categories': Category.objects.all()
+    })
+
+def category_filter(request, cat_id):
+    category = Category.objects.get(id=cat_id)
+    print(f"CATEGORY IS : -- : {category}")
+    # print(category[0])
+    test = Listing.objects.filter(category=category)
+    # print(test)
+    return render(request, 'auctions/index.html', {
+        'listings': test,
+        'show_closed': True,
+        'category': category
+        # Listing.objects.filter(category=category)
+    })
+
+
 def deactivated(request):
     return render(request, "auctions/deactivated.html", {
         "listings": Listing.objects.all().order_by("-id"),
@@ -207,14 +226,12 @@ def bid(request):
                 elif bid_amount <= current_bid.value:
                     return HttpResponse("Your bid is Lower than the current bid - too low")
                 else:
-                    # replace the value in the listing.bid
-                    #  make a new bid model instance
-                    new_bid = Bid.objects.create(value=bid_amount, user=request.user)
-                    new_bid.save()
-                    # update the bid model instance listing refers to
-                    listing_instance.bid = new_bid
+                    # create a new bid item from the new hight bid and update the bid in the lisiting model
+                    listing_instance.bid = Bid.objects.create(value=bid_amount, user=request.user)
                     listing_instance.save()
-                    # assign new model instance to the listing object
+
+                    # delete the old highest bid, to make scalable when we have billions of bids per day
+                    current_bid.delete()
                     
                     return HttpResponseRedirect(reverse('listing', args=(listing_id,)))
 
@@ -236,7 +253,7 @@ def close_listing(request):
             i.active = False
             i.save()
             print(f"AND WHAT ABOUT NOW?: {i.active}")
-    return HttpResponse("YOU MADE IT TO THE BOTTOM")
+    return HttpResponseRedirect(reverse('listing', args=(listing_id,)))
 
 def comment(request):
     if request.method == 'POST':
