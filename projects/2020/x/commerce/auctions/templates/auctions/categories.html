@@ -1,12 +1,14 @@
 {% extends 'auctions/layout.html'%}
 
 {% block body %}
-
-    <h2>Categories</h2>
+<div class="content-wrap">
+    <h2 class="page-title">Categories</h2>
+    <div class="item-wrap">
         <ul>    
         {% for category in categories %}
             <a href="{% url 'category_filter' category.id %}"><li>{{ category.category }}</li></a>
         {% endfor %}
-    </ul>
-
+        </ul>
+    </div>
+</div>
 {% endblock%}

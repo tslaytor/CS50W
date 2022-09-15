@@ -1,6 +1,7 @@
 {% extends 'auctions/layout.html' %}
 
 {% block body %}
+<div class="content-wrap">
     {% if listing.active == False %}
         <article class="listing deactivated">
             <h2> {{ listing.title }}</h2>
@@ -155,4 +156,5 @@
             <p>{{ comment.comment }}</p>
         {% endfor %}
     </div>
+</div>
 {% endblock %}

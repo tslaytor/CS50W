@@ -1,5 +1,54 @@
 body {
     padding: 10px;
+    display: grid;
+    
+    background-image: url('potato-background.webp');
+    background-color: rgba(0, 0, 0, 0.7);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.header {
+    position: fixed;
+    width: 100vw;
+    background-color: white;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    background-color: rgb(245, 201, 143);
+}
+
+.content-wrap {
+    margin-top: 130px;
+} 
+
+.item-wrap {
+    margin-top: 80px;
+}
+
+@media(max-width: 739px){
+    .content-wrap {
+        margin-top: 193px;
+    } 
+}
+
+.page-title {
+    background-color: blanchedalmond;
+    width: 100vw;
+    padding: 10px;
+    position: fixed;
+    left: 0;
+    z-index: 1;
+}
+
+.listing {
+    border: solid black 3px;
+    margin: 1.2rem;
+    padding: 0.8rem;
+    position: relative;
+    background-color: white;
 }
 
 .success-text {
@@ -41,13 +90,6 @@ body {
 
 .short-input {
     width: 40%;
-}
-.listing {
-    border: solid black 3px;
-    margin: 1.2rem;
-    padding: 0.8rem;
-    position: relative;
-    /* background-color: brown; */
 }
 
 .deactivated {

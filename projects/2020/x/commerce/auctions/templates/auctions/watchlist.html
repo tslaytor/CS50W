@@ -1,35 +1,39 @@
 {% extends 'auctions/layout.html' %}
 
 {% block body %}
+<div class="content-wrap">
     {% if watchlist %}
-        <h1>Your Watchlist</h1>
-        {% for item in watchlist %}
+        <h2 class="page-title">Your Watchlist</h2>
+        <div class="item-wrap">
+            {% for item in watchlist %}
 
-            <a style="display: block; color: inherit; text-decoration: none;" href="{% url 'listing' item.listing.id %}">    
-                <article class="listing">
-                    <h2>{{ item.listing.title }}</h2>
-        
-                    <div class="listing-image__container">
-                        <img class="listing-image__image" src="{{ item.listing.image }}">
-                    </div>
-        
-                    <p>Starting Bid: <span class="success-text">$ {{ item.listing.starting_bid }}</span></p>
-                    {% if item.listing.bid == None %}
-                        <p>Current Bid: <span class="fail-text">No bids made</span></p>
-                    {% else %}
-                        <p>Current Bid: <span class="success-text">$ {{ item.listing.bid.value }}</span></p>
-                    {% endif %}
-                    <h4>Description</h4>
-                    <p>{{ item.listing.description }}</p>
-        
-                </article>
-            </a>
+                <a style="display: block; color: inherit; text-decoration: none;" href="{% url 'listing' item.listing.id %}">    
+                    <article class="listing">
+                        <h2>{{ item.listing.title }}</h2>
+            
+                        <div class="listing-image__container">
+                            <img class="listing-image__image" src="{{ item.listing.image }}">
+                        </div>
+            
+                        <p>Starting Bid: <span class="success-text">$ {{ item.listing.starting_bid }}</span></p>
+                        {% if item.listing.bid == None %}
+                            <p>Current Bid: <span class="fail-text">No bids made</span></p>
+                        {% else %}
+                            <p>Current Bid: <span class="success-text">$ {{ item.listing.bid.value }}</span></p>
+                        {% endif %}
+                        <h4>Description</h4>
+                        <p>{{ item.listing.description }}</p>
+            
+                    </article>
+                </a>
 
-        {% endfor %}
+            {% endfor %}
+        </div>
     {% elif empty == Ture %}
         <h1>Your watchlist is empty</h1>
     {% else %}
         <h1>You already have this item in your watchlist</h1>
         <a href="{% url 'watchlist' %}">go to watchlist</a>
     {% endif %}
+</div>
 {% endblock %}
