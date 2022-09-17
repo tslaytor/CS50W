@@ -215,3 +215,16 @@ body {
     min-width: 741.6px;
     /* box-sizing: border-box; */
 }
+
+.error-wrap {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-message {
+    color: rgb(202, 6, 6);
+    background-color: blanchedalmond;
+    padding: 5rem;
+}

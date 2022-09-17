@@ -167,8 +167,10 @@ def watchlist(request):
                 return render(request, 'auctions/watchlist.html', {
                 'watchlist': Watchlist.objects.all().filter(user = request.user)
                 })
-
-        return HttpResponse("the form is not valid")
+        return render(request, 'auctions/error.html', {
+            'error': "The form is not valid"
+        })
+        
     else:
         return render(request, 'auctions/watchlist.html', {
         'watchlist': Watchlist.objects.all().filter(user = request.user)
@@ -181,11 +183,12 @@ def remove_from_watchlist(request):
         watch_form = idInput(request.POST)
         if watch_form.is_valid():
             x = watch_form.cleaned_data
-            print(f" FFFFFFFFFFFF {x}")
             listing = Listing.objects.get(id=x['listing_id'])
             Watchlist.objects.filter(user=request.user, listing=listing).delete()
         else:
-            return HttpResponse("The form isn't valid")
+            return render(request, 'auctions/error.html', {
+            'error': "The form is not valid"
+        })
     return HttpResponseRedirect(reverse('listing', args=(x['listing_id'],)))
 
 @login_required(login_url = '/login')
@@ -204,7 +207,9 @@ def bid(request):
             
 
             if bid_amount < starting_bid:
-                return HttpResponse("Your bid is too low")
+                return render(request, 'auctions/error.html', {
+                'error': "Your bid is too low"
+        })
             else:
                 #  else check if there are other bids
                 current_bid = listing_instance.bid
@@ -217,7 +222,9 @@ def bid(request):
                     return HttpResponseRedirect(reverse('listing', args=(listing_id,)))
 
                 elif bid_amount <= current_bid.value:
-                    return HttpResponse("Your bid is Lower than the current bid - too low")
+                    return render(request, 'auctions/error.html', {
+                    'error': "Your bid is too low"
+                })
                 else:
                     # create a new bid item from the new hight bid and update the bid in the lisiting model
                     listing_instance.bid = Bid.objects.create(value=bid_amount, user=request.user)
@@ -229,9 +236,13 @@ def bid(request):
                     return HttpResponseRedirect(reverse('listing', args=(listing_id,)))
 
         else:
-            return HttpResponse("NOT A VALID BID")
+            return render(request, 'auctions/error.html', {
+                    'error': "Invalid bid"
+                })
     else:
-        return HttpResponse("you ended here")
+        return render(request, 'auctions/error.html', {
+                    'error': "Page doesn't exist"
+                })
 
 def close_listing(request):
     if request.method == 'POST':
