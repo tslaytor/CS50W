@@ -125,13 +125,6 @@ def create(request):
             'form': CreateListing()
         })
 
-class CreateListing(forms.Form):
-    title = forms.CharField(label='Title', max_length=64)
-    description = forms.CharField(label="Description", widget=forms.Textarea())
-    image_url = forms.URLField(label='Image URL', required=False)
-    starting_bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'short-input'}), label='Starting bid', max_digits=11, decimal_places=2)
-    category = forms.ChoiceField(widget=forms.Select(attrs={'class': 'short-input'}), label='Category', choices=[(x.id, x.category) for x in Category.objects.all()])
-
 @login_required(login_url = '/login')
 def listing(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
@@ -166,7 +159,7 @@ def watchlist(request):
                 it_exists = False
             if it_exists:
                  return render(request, 'auctions/watchlist.html', {
-                 'empty': True
+                 'already': True
                  })
             
             else:
@@ -271,6 +264,14 @@ def comment(request):
     else:
         return HttpResponseRedirect(reverse('index'))
 
+
+class CreateListing(forms.Form):
+    title = forms.CharField(label='Title', max_length=64)
+    description = forms.CharField(label="Description", widget=forms.Textarea())
+    image_url = forms.URLField(label='Image URL', required=False)
+    starting_bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'short-input'}), label='Starting bid', max_digits=11, decimal_places=2)
+    category = forms.ChoiceField(widget=forms.Select(attrs={'class': 'short-input'}), label='Category', choices=[(x.id, x.category) for x in Category.objects.all()])
+
 class idInput(forms.Form):
     listing_id = forms.IntegerField(widget=forms.HiddenInput())
 
@@ -279,5 +280,5 @@ class BidForm(forms.Form):
     listing_id = forms.IntegerField(widget=forms.HiddenInput())
 
 class CommentForm(forms.Form):
-    comment = forms.CharField(widget=forms.Textarea())
+    comment = forms.CharField(widget=forms.Textarea(attrs={'class': 'comment-text'}), label='')
     listing_id = forms.IntegerField(widget=forms.HiddenInput())

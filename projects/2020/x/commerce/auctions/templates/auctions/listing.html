@@ -2,11 +2,16 @@
 
 {% block body %}
 <div class="content-wrap">
+    
     {% if listing.active == False %}
         <article class="listing deactivated">
             <h2> {{ listing.title }}</h2>
 
-            <div style="color: black; text-align: center;">
+            <div class="listing-image__container">
+                <img class="listing-image__image" src="{{ listing.image }}">
+            </div>
+
+            <div class="winner-notification">
                 {% if listing.bid.user == request.user %}
                 <h3>You won this item!</h3>
             {% elif listing.bid == None %}
@@ -16,8 +21,8 @@
             {% endif %}
             </div>
             
-
-            <p>Listing posted by: {{listing.user}}</p>
+            <div class="other">
+                <p>Listing posted by: {{listing.user}}</p>
             <p>Category: <a>{{ listing.category }}</a></p>
 
             {% if listing.active == True %}
@@ -25,9 +30,8 @@
             {% else %}
                 <p>Status: <span class="fail-text">Closed</span></p>
             {% endif %}
-            <div class="listing-image__container">
-                <img class="listing-image__image" src="{{ listing.image }}">
-            </div>
+
+          
             
             <p>Starting Bid: <span class="success-text">$ {{ listing.starting_bid }}</span></p>
             {% if listing.bid == None %}
@@ -50,8 +54,12 @@
             
             <form action="{% url 'bid' %}" method="post"> 
                 {% csrf_token %}
-                <p><strong>Your bid: $</strong>{{ bid_form }}</p>
-                <input type="submit" value="Bid">
+                <strong>Your bid: $</strong>
+                
+                {{ bid_form }} 
+                
+                <input class="bid-button" type="submit" value="Bid">
+                
 
             </form>
 
@@ -59,7 +67,7 @@
                     <form method="post" action="{% url 'remove_from_watchlist' %}">
                         {% csrf_token %}
                         {{ form }}
-                        <input type="submit" value="Remove from watchlist">
+                        <input class="watch-button" type="submit" value="Remove from watchlist">
                     </form>
 
 
@@ -68,92 +76,109 @@
                 <form action="{% url 'watchlist' %}" method="post">
                     {% csrf_token %}
                     {{ form }}
-                    <input type="submit" value="Add to watchlist">
+                    <input class="watch-button" type="submit" value="Add to watchlist">
                 </form>
                 {% endif %}
 
             {% endif %}
-                
-
-            <h3>Description</h3>
-            <p>{{ listing.description }}</p>
+            </div>
+            
+            <div class="description">
+                <h3>Description</h3>
+                <p>{{ listing.description }}</p>
+            </div>
+            
         </article>
+    
     {% else %}
         <article class="listing">
             <h2> {{ listing.title }}</h2>
-            <p>Listing posted by: {{listing.user}}</p>
-            <p>Category: <a>{{ listing.category }}</a></p>
 
-            {% if listing.active == True %}
-                <p>Status: <span class="success-text">Active</span></p>
-            {% else %}
-                <p>Status: <span class="fail-text">Closed</span></p>
-            {% endif %}
             <div class="listing-image__container">
                 <img class="listing-image__image" src="{{ listing.image }}">
             </div>
             
-            <p>Starting Bid: <span class="success-text">$ {{ listing.starting_bid }}</span></p>
-            {% if listing.bid == None %}
-                <p>Current Bid: <span class="fail-text">No Bids</span></p>
-            {% else %}
-                <p>Current Bid: <span class="success-text">$ {{ listing.bid.value }}</span></p>
-            {% endif %}
+            <div class="other">
+                <p>Listing posted by: {{listing.user}}</p>
+                <p>Category: <a>{{ listing.category }}</a></p>
 
-            {% if listing.user == request.user %}
-
-                <p>This is your listing</p>
-                <form action="{% url 'close' %}" method="post"> 
-                    {% csrf_token %}
-                    {{ form }}
-                    <input type="submit" value="Close Listing">
-            
-                </form>
-
-            {% else %}
-            
-            <form action="{% url 'bid' %}" method="post"> 
-                {% csrf_token %}
-                <p><strong>Your bid: $</strong>{{ bid_form }}</p>
-                <input type="submit" value="Bid">
-
-            </form>
-
-                {% if in_list %}
-                    <form method="post" action="{% url 'remove_from_watchlist' %}">
-                        {% csrf_token %}
-                        {{ form }}
-                        <input type="submit" value="Remove from watchlist">
-                    </form>
-
-
+                {% if listing.active == True %}
+                    <p>Status: <span class="success-text">Active</span></p>
                 {% else %}
+                    <p>Status: <span class="fail-text">Closed</span></p>
+                {% endif %}
+               
+                <p>Starting Bid: <span class="success-text">$ {{ listing.starting_bid }}</span></p>
 
-                <form action="{% url 'watchlist' %}" method="post">
-                    {% csrf_token %}
-                    {{ form }}
-                    <input type="submit" value="Add to watchlist">
-                </form>
+                {% if listing.bid == None %}
+                    <p>Current Bid: <span class="fail-text">No Bids</span></p>
+                {% else %}
+                    <p>Current Bid: <span class="success-text">$ {{ listing.bid.value }}</span></p>
                 {% endif %}
 
-            {% endif %}
-                
+                {% if listing.user == request.user %}
 
-            <h3>Description</h3>
-            <p>{{ listing.description }}</p>
+                    <p>This is your listing</p>
+                    <form action="{% url 'close' %}" method="post"> 
+                        {% csrf_token %}
+                        {{ form }}
+                        <input class="watch-button" type="submit" value="Close Listing">
+                
+                    </form>
+
+                {% else %}
+                
+                <form action="{% url 'bid' %}" method="post"> 
+                    {% csrf_token %}
+                    <strong>Your bid: $</strong>
+                    {{ bid_form }}
+                    <input class="bid-button" type="submit" value="Bid">
+
+                </form>
+
+                    {% if in_list %}
+                        <form method="post" action="{% url 'remove_from_watchlist' %}">
+                            {% csrf_token %}
+                            {{ form }}
+                            <input class="watch-button" type="submit" value="Remove from watchlist">
+                        </form>
+
+
+                    {% else %}
+
+                    <form action="{% url 'watchlist' %}" method="post">
+                        {% csrf_token %}
+                        {{ form }}
+                        <input class="watch-button" type="submit" value="Add to watchlist">
+                    </form>
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+                
+                    
+            <div class="description">
+                <h3>Description</h3>
+                <p>{{ listing.description }}</p>
+            </div>
+                
         </article>
     {% endif %}
 
-    <div>
-        <p>Leave a comment on this item</p>
-        <form action="{% url 'comment' %}" method="post">
+    <div class="comment-section">
+        <p class="comment-section__title">Leave a comment on this item</p>
+        <form action="{% url 'comment' %}" method="post" style="display: grid;">
             {% csrf_token %}
             {{ comment_form }}
-            <input type="submit" value="Comment">
+            <input class="comment-button" type="submit" value="Comment" style="justify-self: flex-end;">
         </form>
         {% for comment in comments %}
-            <h6>{{ comment.user }}</h6>
-            <p>{{ comment.comment }}</p>
+            <div class="comment-item">
+                <h6 class="comment-item__user">{{ comment.user }}</h6>
+                <p class="comment-item__content">{{ comment.comment }}</p>
+            </div>
+            
         {% endfor %}
     </div>
 </div>

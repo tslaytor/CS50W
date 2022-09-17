@@ -14,26 +14,33 @@
                         <div class="listing-image__container">
                             <img class="listing-image__image" src="{{ item.listing.image }}">
                         </div>
-            
-                        <p>Starting Bid: <span class="success-text">$ {{ item.listing.starting_bid }}</span></p>
+                        
+                        <div class="other">
+                            <p>Starting Bid: <span class="success-text">$ {{ item.listing.starting_bid }}</span></p>
                         {% if item.listing.bid == None %}
                             <p>Current Bid: <span class="fail-text">No bids made</span></p>
                         {% else %}
                             <p>Current Bid: <span class="success-text">$ {{ item.listing.bid.value }}</span></p>
                         {% endif %}
-                        <h4>Description</h4>
-                        <p>{{ item.listing.description }}</p>
+                        </div>
+                        
+
+                        <div class="description">
+                            <h4>Description</h4>
+                            <p>{{ item.listing.description }}</p>
+                        </div>
+                        
             
                     </article>
                 </a>
 
             {% endfor %}
         </div>
-    {% elif empty == Ture %}
-        <h1>Your watchlist is empty</h1>
+    {% elif already == True %}
+        <h2 class="page-title"> You already have this item in your watchlist</h2>
     {% else %}
-        <h1>You already have this item in your watchlist</h1>
-        <a href="{% url 'watchlist' %}">go to watchlist</a>
+        <h2 class="page-title">Your watchlist is empty</h2>
+        
     {% endif %}
 </div>
 {% endblock %}
