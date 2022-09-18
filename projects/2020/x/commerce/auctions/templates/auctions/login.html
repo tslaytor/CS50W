@@ -3,8 +3,8 @@
 {% block body %}
 <div class="content-wrap">
 
-    <h2 class="page-title">Login</h2>
-    <div class="item-wrap"></div>
+    <h2 class="page-title" style="margin-top: -2rem;">Login</h2>
+    <div class="item-wrap">
         {% if message %}
             <div>{{ message }}</div>
         {% endif %}
@@ -20,7 +20,13 @@
             <input class="btn btn-primary" type="submit" value="Login">
         </form>
 
-        Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+        <div style="text-align: center;">
+            <div style="display: inline-block; background-color: blanchedalmond; padding: 0.8rem; border-radius: 5px">
+                Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+            </div>
+        </div>
+            
+        
     </div>
 </div>
 {% endblock %}

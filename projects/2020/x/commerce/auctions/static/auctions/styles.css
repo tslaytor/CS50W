@@ -73,6 +73,21 @@ body {
     z-index: 1;
 }
 
+.form-group {
+    margin: 1rem 2rem;
+}
+
+.btn {
+    margin-left: 2rem;
+    margin-top: 2rem;
+    align-self: flex-start;
+}
+
+.btn-primary {
+    margin-top: 0;
+}
+
+
 .listing {
     border: solid black 3px;
     margin: 1.2rem;
@@ -126,10 +141,6 @@ body {
     padding: 20px;
 }
 
-.btn {
-    margin-top: 2rem;
-    align-self: flex-start;
-}
 
 .short-input {
     width: 10rem;
