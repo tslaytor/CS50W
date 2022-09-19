@@ -32,15 +32,10 @@ def categories(request):
 
 def category_filter(request, cat_id):
     category = Category.objects.get(id=cat_id)
-    print(f"CATEGORY IS : -- : {category}")
-    # print(category[0])
-    test = Listing.objects.filter(category=category)
-    # print(test)
     return render(request, 'auctions/index.html', {
-        'listings': test,
+        'listings': Listing.objects.filter(category=category),
         'show_closed': True,
         'category': category
-        # Listing.objects.filter(category=category)
     })
 
 

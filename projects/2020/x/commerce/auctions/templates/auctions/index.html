@@ -55,15 +55,18 @@
                         <img class="listing-image__image" src="{{ listing.image }}">
                     </div>
 
-                    <p>Starting Bid: <span class="success-text">$ {{ listing.starting_bid }}</span></p>
+                    <div class="other">
+                        <p>Starting Bid: <span class="success-text">$ {{ listing.starting_bid }}</span></p>
                     {% if listing.bid == None %}
                         <p>Current Bid: <span class="fail-text">No bids made</span></p>
                     {% else %}
                         <p>Current Bid: <span class="success-text">$ {{ listing.bid.value }}</span></p>
                     {% endif %}
-                    <h4>Description</h4>
-                    <p>{{ listing.description }}</p>
-
+                    </div>
+                    <div class="description">
+                        <h4>Description</h4>
+                        <p>{{ listing.description }}</p>
+                    </div>
                 </article>
             {% endif %}
         </a>
