@@ -180,7 +180,8 @@ body {
 
 .comment-section {
     display: grid;
-    justify-content: center;
+    /* justify-content: center; */
+    grid-template-columns: 1fr;
     width: 70vw;
     margin: auto;
     min-width: 741.6px;

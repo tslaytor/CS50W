@@ -167,8 +167,9 @@
     {% endif %}
 
     <div class="comment-section">
-        <p class="comment-section__title">Leave a comment on this item</p>
-        <form action="{% url 'comment' %}" method="post" style="display: grid;">
+        
+        <div class="comment-section__title">Leave a comment on this item</div>
+        <form action="{% url 'comment' %}" method="post" style="display: grid; width: 100%;">
             {% csrf_token %}
             {{ comment_form }}
             <input class="comment-button" type="submit" value="Comment" style="justify-self: flex-end;">
