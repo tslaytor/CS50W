@@ -14,6 +14,7 @@ function compose_email() {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
@@ -21,10 +22,8 @@ function compose_email() {
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
 
-  // add event listener to send button
+  // add event listener to send button to run the send_email function when the form is submitted
   document.querySelector('form').onsubmit = send_mail;
-  
-
 
   // when you click send, send the recepients, subject and body in a post request to the /emails route
   function send_mail() {
@@ -59,31 +58,65 @@ function compose_email() {
 }
 
 function load_mailbox(mailbox) {
-
    // make a request to get sent emails
-   fetch(`emails/${mailbox}`)
-   .then(response => response.json())
-   .then(function(data) {
-     for(let i = 0; i < data.length; i++){
-       console.log('yo')
-       let email = document.createElement('div');
-       email.className = 'email'
-       email.innerHTML = `<h6>Sender: ${data[i].sender}</h6>
-                           <h6>Subject: ${data[i].subject}</h6>
-                           <h6>Time: ${data[i].timestamp}</h6>`
-       document.querySelector('#emails-view').append(email)
-       
-     }
-   })
-  
-  // Show the mailbox and hide other views
-  document.querySelector('#emails-view').style.display = 'block';
-  document.querySelector('#compose-view').style.display = 'none';
+  fetch(`emails/${mailbox}`)
+  .then(response => response.json())
+  .then(data => data.forEach(function(data){
+      let email = document.createElement('div');
+      email.className = 'email'
+      if (data.read) {
+        email.classList.add('read');
+      }
+      email.addEventListener('click', function(){
+        return showEmail(data.id)
+      });
 
-  // Show the mailbox name
+     email.innerHTML = `<h6>Sender: ${data.sender}</h6>
+                         <h6>Subject: ${data.subject}</h6>
+                         <h6>Time: ${data.timestamp}</h6>`
+      if (mailbox === 'inbox' || mailbox === 'archive') {
+        let button = document.createElement('button');
+        email.append(button);
+      }
+     document.querySelector('#emails-view').append(email)
+     
+   }))
+
+   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
- 
+  // Show the mailbox and hide other views
+  document.querySelector('#emails-view').style.display = 'block';
+  document.querySelector('#email-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+}
+
+
+function showEmail(id){
+  fetch('emails/' + id)
+  .then(response => response.json())
+  .then(function(data){
+    // clear the div of any previous content
+    document.querySelector('#email-view').innerHTML = '';
+    // create a new div and fill it with the email data
+    let email = document.createElement('div');
+    email.innerHTML = `<h6>Sender: ${data.sender}</h6>
+                        <h6>Recipient: ${data.recipient}</h6>
+                        <h6>Subject: ${data.subject}</h6>
+                        <h6>Time: ${data.timestamp}</h6>
+                        <p> ${data.body}</p>`
+    // mark the email as read
+    fetch('emails/' + id, {
+      method: 'PUT',
+      body: JSON.stringify({
+        read: true
+      })
+    })
+    document.querySelector('#email-view').append(email)
+    document.querySelector('#email-view').style.display = 'block';
+    document.querySelector('#emails-view').style.display = 'none';
+    document.querySelector('#compose-view').style.display = 'none';
+  })
 }
   
 
