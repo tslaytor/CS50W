@@ -74,11 +74,13 @@ function load_mailbox(mailbox) {
      email.innerHTML = `<h6>Sender: ${data.sender}</h6>
                          <h6>Subject: ${data.subject}</h6>
                          <h6>Time: ${data.timestamp}</h6>`
+      // create a button for emails in either inbox or archived
       if (mailbox === 'inbox' || mailbox === 'archive') {
         let button = document.createElement('button');
+        mailbox === 'inbox' ? button.textContent = 'Archive' : button.textContent = 'Unarchive';
         email.append(button);
       }
-     document.querySelector('#emails-view').append(email)
+     document.querySelector('#emails-view').append(email);
      
    }))
 
