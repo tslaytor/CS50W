@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function() {
 
   // Use buttons to toggle between views
@@ -110,8 +111,7 @@ function archive(id) {
           archived: false
         })
       })
-      time.sleep(5)
-      .then(load_mailbox('inbox'));
+      .then(response => load_mailbox('inbox'))
     }
 
     else {
@@ -122,8 +122,7 @@ function archive(id) {
           archived: true
         })
       })
-      time.sleep(5)
-      .then(load_mailbox('inbox'));
+      .then(response => load_mailbox('inbox'))
     }
     
   })
