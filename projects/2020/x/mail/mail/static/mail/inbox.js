@@ -111,7 +111,7 @@ function archive(id) {
           archived: false
         })
       })
-      .then(response => load_mailbox('inbox'))
+      .then(function() {load_mailbox('inbox')})
     }
 
     else {
@@ -122,7 +122,7 @@ function archive(id) {
           archived: true
         })
       })
-      .then(response => load_mailbox('inbox'))
+      .then(function() {load_mailbox('inbox')})
     }
     
   })
