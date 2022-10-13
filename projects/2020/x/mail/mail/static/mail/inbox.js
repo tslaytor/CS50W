@@ -25,37 +25,36 @@ function compose_email() {
 
   // add event listener to send button to run the send_email function when the form is submitted
   document.querySelector('form').onsubmit = send_mail;
+}
 
-  // when you click send, send the recepients, subject and body in a post request to the /emails route
-  function send_mail() {
-    var recipients = document.querySelector('#compose-recipients').value;
-    var subject = document.querySelector('#compose-subject').value;
-    var body = document.querySelector('#compose-body').value;
+function send_mail() {
+  var recipients = document.querySelector('#compose-recipients').value;
+  var subject = document.querySelector('#compose-subject').value;
+  var body = document.querySelector('#compose-body').value;
 
-    var data = {
-      'recipients': recipients,
-      'subject': subject,
-      'body': body
-    }
-
-    fetch('emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.log('error', error);
-    })
-    load_mailbox('sent');
-
-    return false;
+  var data = {
+    'recipients': recipients,
+    'subject': subject,
+    'body': body
   }
+
+  fetch('emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  })
+  .catch((error) => {
+    console.log('error', error);
+  })
+  load_mailbox('sent');
+
+  return false;
 }
 
 function load_mailbox(mailbox) {
@@ -70,7 +69,7 @@ function load_mailbox(mailbox) {
       if (data.read) {
         email.classList.add('read');
       }
-      email.onclick = function(){return showEmail(data.id)};
+      email.onclick = function(){showEmail(data.id)};
 
       email.innerHTML = `<h6>Sender: ${data.sender}</h6>
                           <h6>Subject: ${data.subject}</h6>
@@ -82,7 +81,7 @@ function load_mailbox(mailbox) {
           button.onclick = function(e){
             console.log(e);
             e.stopPropagation(); 
-            return archive(data.id)
+            archive(data.id)
           };
           email.append(button);
         }
@@ -141,7 +140,12 @@ function showEmail(id){
                         <h6>Recipient: ${data.recipient}</h6>
                         <h6>Subject: ${data.subject}</h6>
                         <h6>Time: ${data.timestamp}</h6>
-                        <p> ${data.body}</p>`
+                        <p> ${data.body}</p>`;
+    var reply_button = document.createElement('button');
+    reply_button.textContent = 'Reply';
+    console.log(data.id);
+    reply_button.onclick = () => reply(data.id);
+    email.append(reply_button);
     // mark the email as read
     fetch('emails/' + id, {
       method: 'PUT',
@@ -149,11 +153,40 @@ function showEmail(id){
         read: true
       })
     })
-    document.querySelector('#email-view').append(email)
-    document.querySelector('#email-view').style.display = 'block';
-    document.querySelector('#emails-view').style.display = 'none';
-    document.querySelector('#compose-view').style.display = 'none';
+    .then(function(){
+      document.querySelector('#email-view').append(email)
+      document.querySelector('#email-view').style.display = 'block';
+      document.querySelector('#emails-view').style.display = 'none';
+      document.querySelector('#compose-view').style.display = 'none';
+    })
+    
   })
 }
   
+function reply(id){
+  console.log("hello hello hello " + id);
+  fetch('emails/' + id)
+  .then(response => response.json())
+  .then(function(data){
+    console.log(data.sender);
+    if (data.subject.slice(0, 3) !== 'Re:'){
+      data.subject = 'Re: '+ data.subject;
+    }
+  
+    document.querySelector('#emails-view').style.display = 'none';
+    document.querySelector('#email-view').style.display = 'none';
+    document.querySelector('#compose-view').style.display = 'block';
+  
+    // Clear out composition fields
+    document.querySelector('#compose-recipients').value = data.sender;
+    document.querySelector('#compose-subject').value = data.subject;
+    document.querySelector('#compose-body').value = `On ${data.timestamp} ${data.sender} wrote:\n` + data.body;
+  
+    // add event listener to send button to run the send_email function when the form is submitted
+    document.querySelector('form').onsubmit = send_mail;
+  
+  })
 
+
+  
+}
