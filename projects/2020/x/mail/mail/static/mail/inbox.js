@@ -23,21 +23,22 @@ function compose_email() {
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
 
-  // add event listener to send button to run the send_email function when the form is submitted
+  // Add event listener to send button to run the send_email function when the form is submitted
   document.querySelector('form').onsubmit = send_mail;
 }
 
 function send_mail() {
+  // Get the info from the compose form
   var recipients = document.querySelector('#compose-recipients').value;
   var subject = document.querySelector('#compose-subject').value;
   var body = document.querySelector('#compose-body').value;
-
+// Make into an object
   var data = {
     'recipients': recipients,
     'subject': subject,
     'body': body
   }
-
+// Send to emails API
   fetch('emails', {
     method: 'POST',
     headers: {
@@ -46,45 +47,44 @@ function send_mail() {
     body: JSON.stringify(data)
   })
   .then(response => response.json())
-  .then(data => {
-    console.log(data);
-  })
   .catch((error) => {
     console.log('error', error);
   })
   load_mailbox('sent');
-
+// Stops the form from sending automatically
   return false;
 }
 
 function load_mailbox(mailbox) {
-   // make a request to get sent emails
+   // Make a request to get sent emails
   fetch(`emails/${mailbox}`)
   .then(response => response.json())
   .then(data => data.forEach(function(data){
-    console.log('you are here' + data);
-    console.log(data);
+    // Create a div for each email
       let email = document.createElement('div')
       email.className = 'email';
+      // If read make background gray
       if (data.read) {
         email.classList.add('read');
       }
-      email.onclick = function(){showEmail(data.id)};
-
+      // Fill email div with data
       email.innerHTML = `<h6>Sender: ${data.sender}</h6>
                           <h6>Subject: ${data.subject}</h6>
                           <h6>Time: ${data.timestamp}</h6>`
-        // create a button for emails in either inbox or archived
+        // Create an archive button for emails in either inbox or archived mailbox
         if (mailbox === 'inbox' || mailbox === 'archive') {
           let button = document.createElement('button');
+          button.className = 'button';
           mailbox === 'inbox' ? button.textContent = 'Archive' : button.textContent = 'Unarchive';
           button.onclick = function(e){
-            console.log(e);
             e.stopPropagation(); 
             archive(data.id)
           };
           email.append(button);
         }
+      // If an email is clicked, show email
+      email.onclick = function(){showEmail(data.id)};
+      // Add email to the list
       document.querySelector('#emails-view').append(email);
      
    }))
@@ -98,12 +98,14 @@ function load_mailbox(mailbox) {
   document.querySelector('#compose-view').style.display = 'none';
 }
 
+// The function called when the user clicks the archive buttons
 function archive(id) {
+  // Get the email to be archived
   fetch(`emails/${id}`)
   .then(data => data.json())
   .then(function (response) {
+    // If archived, unarchive
     if (response.archived === true) {
-      console.log('setting to false')
       fetch('emails/' + id, {
         method: 'PUT',
         body: JSON.stringify({
@@ -112,9 +114,8 @@ function archive(id) {
       })
       .then(function() {load_mailbox('inbox')})
     }
-
+    // If not archived, archive
     else {
-      console.log('setting to true')
       fetch('emails/' + id, {
         method: 'PUT',
         body: JSON.stringify({
@@ -125,34 +126,42 @@ function archive(id) {
     }
     
   })
-  console.log('are we here yet?');
 }
 
+// The function called when the user clicks an email
 function showEmail(id){
+  // Get the email
   fetch('emails/' + id)
   .then(response => response.json())
   .then(function(data){
-    // clear the div of any previous content
+    // Clear the div of any previous content
     document.querySelector('#email-view').innerHTML = '';
-    // create a new div and fill it with the email data
+    // Create a new div and fill it with the email data
     let email = document.createElement('div');
-    email.innerHTML = `<h6>Sender: ${data.sender}</h6>
-                        <h6>Recipient: ${data.recipient}</h6>
+    email.className = 'email';
+    email.innerHTML = `<div class='email_header'>
+                        <h6>Sender: ${data.sender}</h6>
+                        <h6>Recipient: ${data.recipients}</h6>
                         <h6>Subject: ${data.subject}</h6>
                         <h6>Time: ${data.timestamp}</h6>
-                        <p> ${data.body}</p>`;
+                      </div>
+                      <div class='email_body'>
+                        <p> ${data.body}</p>
+                      </div>`;
+    // Add the reply button
     var reply_button = document.createElement('button');
+    reply_button.className = 'button';
     reply_button.textContent = 'Reply';
-    console.log(data.id);
     reply_button.onclick = () => reply(data.id);
     email.append(reply_button);
-    // mark the email as read
+    // Mark the email as read
     fetch('emails/' + id, {
       method: 'PUT',
       body: JSON.stringify({
         read: true
       })
     })
+    // Append the email, show the email view and hide other views
     .then(function(){
       document.querySelector('#email-view').append(email)
       document.querySelector('#email-view').style.display = 'block';
@@ -161,32 +170,29 @@ function showEmail(id){
     })
     
   })
-}
-  
+};
+
+// The function called  when the user clicks reply button
 function reply(id){
-  console.log("hello hello hello " + id);
+  // Get the email
   fetch('emails/' + id)
   .then(response => response.json())
   .then(function(data){
-    console.log(data.sender);
+    // Check if you need to add Re: to the beginning of the subject
     if (data.subject.slice(0, 3) !== 'Re:'){
       data.subject = 'Re: '+ data.subject;
     }
-  
+    // Set composition fields for recipients and subject
+    document.querySelector('#compose-recipients').value = data.sender;
+    document.querySelector('#compose-subject').value = data.subject;
+    document.querySelector('#compose-body').value = `\nOn ${data.timestamp} ${data.sender} wrote:\n` + data.body;
+    
+    // Add event listener to send button to run the send_email function when the form is submitted
+    document.querySelector('form').onsubmit = send_mail;
+
+    // Show the compose view
     document.querySelector('#emails-view').style.display = 'none';
     document.querySelector('#email-view').style.display = 'none';
     document.querySelector('#compose-view').style.display = 'block';
-  
-    // Clear out composition fields
-    document.querySelector('#compose-recipients').value = data.sender;
-    document.querySelector('#compose-subject').value = data.subject;
-    document.querySelector('#compose-body').value = `On ${data.timestamp} ${data.sender} wrote:\n` + data.body;
-  
-    // add event listener to send button to run the send_email function when the form is submitted
-    document.querySelector('form').onsubmit = send_mail;
-  
   })
-
-
-  
-}
+};
