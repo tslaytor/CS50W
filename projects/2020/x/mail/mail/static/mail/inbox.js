@@ -46,11 +46,13 @@ function send_mail() {
     },
     body: JSON.stringify(data)
   })
-  .then(response => response.json())
+  .then(function(response) {
+    response.json();
+    load_mailbox('sent');
+  })
   .catch((error) => {
     console.log('error', error);
   })
-  load_mailbox('sent');
 // Stops the form from sending automatically
   return false;
 }
