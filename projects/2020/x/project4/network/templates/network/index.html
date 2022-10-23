@@ -4,10 +4,11 @@
 <div id="all-posts">
     <h1>All Posts</h1>
     <form id="new-post">
-        <div class="form-group">
+        {% csrf_token %}
+        <div>
             <label for="newpost-textarea">New Post</label>
-            <input type='text' class="form-control" id="newpost-textarea">
-            <input class="btn btn-primary" type='submit' value='Post'>
+            <input type='text' class="form-control new-post-input" id="newpost-textarea" autocomplete="off">
+            <input id='submit-new-post' class="btn btn-primary" type='submit' value='Post'>
         </div>
     </form>
 </div>
