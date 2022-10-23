@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.core import serializers
 
 from .models import User, Post, Follower
 
@@ -65,7 +66,7 @@ def register(request):
         return render(request, "network/register.html")
 
 @csrf_exempt
-def post(request):
+def create_post(request):
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
 
@@ -80,3 +81,10 @@ def post(request):
     print('here now')
     print(content)
     return JsonResponse({"message": "Post saved successfully."}, status=201)
+
+def list_posts(request):
+    # posts = Post.objects.all()
+    posts = serializers.serialize('json', Post.objects.all())
+    # posts = list(posts)
+    print(posts)
+    return JsonResponse(posts, safe=False)
