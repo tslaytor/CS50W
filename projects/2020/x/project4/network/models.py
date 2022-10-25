@@ -26,3 +26,6 @@ class Post(models.Model):
 class Follower(models.Model):
     user = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
     follower = models.ForeignKey(User, related_query_name='follower', on_delete=models.CASCADE)
+
+    def is_valid_follower(self):
+        return self.user.username != self.follower.username

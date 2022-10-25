@@ -84,5 +84,5 @@ def create_post(request):
     return JsonResponse({"message": "Post saved successfully."}, status=201)
 
 def list_posts(request):
-    posts = Post.objects.all()
+    posts = Post.objects.all().order_by('-created')
     return JsonResponse([post.myserializer() for post in posts], safe=False)

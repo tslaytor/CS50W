@@ -6,3 +6,38 @@
     border: rgba(0, 0, 0, 0.233) 1px solid;
     padding: 1rem;
 }
+
+.post {
+    border: rgb(59, 59, 59) 1px solid;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.post-username {
+    font: 700 1rem 'montserrat', sans-serif;
+    color: rgb(198, 73, 73);
+    margin: 0 0.5rem 0.5rem 0.5rem;
+}
+
+.post-content {
+    min-height: 6rem;
+    border: rgb(54, 54, 54) 1px solid;
+    border-radius: 8px;
+    background-color: rgb(49, 49, 49);
+    color: white;
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.post-created {
+    font: 400 0.75rem 'montserrat', sans-serif;
+    color: rgb(95, 0, 0);
+}
+
+.post-likes {
+    align-self: flex-end;
+    margin: 0 1rem;
+}

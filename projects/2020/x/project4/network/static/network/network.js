@@ -1,7 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('#new-post').onsubmit = createNewPost;
     listAllPosts();
-     
+    document.querySelector('#new-post').onsubmit = createNewPost;
+    username = document.querySelectorAll('.post')
+    username.forEach(function(username){
+        username.addEventListener('click', function(){
+            showProfile()
+        })
+        // n.onclick = showProfile
+    } 
+        
+    )
 });
 
 function createNewPost(){
@@ -32,13 +40,18 @@ function listAllPosts(){
     .then(response => response.json())
     .then (posts => posts.forEach(function(n){
         newpost = document.createElement('div')
-        newpost.innerHTML = `<h3>${n.user}</h3>
-                            <p>${n.content}</p>
-                            <p>${n.created}</p>
-                            <p>Likes: ${n.likes}</p>`
+        newpost.classList.add('post')
+        newpost.innerHTML = `<div class="post-username">${n.user}</div>
+                            <div class="post-content">${n.content}</div>
+                            <div class="post-created">${n.created}</div>
+                            <div class="post-likes">Likes: ${n.likes}</div>`
         document.querySelector('#all-posts').append(newpost)
     }))
 
 
 };
+
+function showProfile() {
+    console.log('hello')
+}
     // for each post, create a new post and append it to the containing div
