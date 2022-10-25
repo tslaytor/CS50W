@@ -1,15 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     listAllPosts();
     document.querySelector('#new-post').onsubmit = createNewPost;
-    username = document.querySelectorAll('.post')
-    username.forEach(function(username){
-        username.addEventListener('click', function(){
-            showProfile()
-        })
-        // n.onclick = showProfile
-    } 
-        
-    )
+    
 });
 
 function createNewPost(){
@@ -44,9 +36,21 @@ function listAllPosts(){
         newpost.innerHTML = `<div class="post-username">${n.user}</div>
                             <div class="post-content">${n.content}</div>
                             <div class="post-created">${n.created}</div>
-                            <div class="post-likes">Likes: ${n.likes}</div>`
-        document.querySelector('#all-posts').append(newpost)
+                            <div class="post-likes">Likes: ${n.likes}</div>`;
+        document.querySelector('#all-posts').append(newpost);
     }))
+    // then add the event listeners to the post
+    .then(function() {
+        usernames = document.querySelectorAll('.post-username')
+        console.log(usernames)
+        usernames.forEach(function(n){
+            console.log(n)
+            n.addEventListener('click', function(){
+                showProfile()
+            })
+            // n.onclick = showProfile
+        });
+    });
 
 
 };

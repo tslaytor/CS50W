@@ -1,0 +1,48 @@
+$font-stack: 'montserrat', sans-serif;
+$standard-padding: 1rem;
+$standard-margin : 0.5rem;
+$red: rgb(198, 73, 73);
+
+#all-posts {
+    padding: 1rem;
+}
+
+.new-post-input {
+    border: rgba(0, 0, 0, 0.233) 1px solid;
+    padding: $standard-padding;
+}
+
+.post {
+    border: rgb(59, 59, 59) 1px solid;
+    padding: $standard-padding;
+    margin-bottom: $standard-margin;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.post-username {
+    font: 700 1rem $font-stack;
+    color: $red;
+    margin: $standard-margin;
+}
+
+.post-content {
+    min-height: 6rem;
+    border: rgb(54, 54, 54) 1px solid;
+    border-radius: 8px;
+    background-color: rgb(49, 49, 49);
+    color: white;
+    padding: $standard-padding;
+    margin: $standard-margin;
+}
+
+.post-created {
+    font: 400 0.75rem $font-stack;
+    color: $red;
+}
+
+.post-likes {
+    align-self: flex-end;
+    margin: 0 1rem;
+}
