@@ -1,3 +1,4 @@
+from typing import List
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -83,8 +84,5 @@ def create_post(request):
     return JsonResponse({"message": "Post saved successfully."}, status=201)
 
 def list_posts(request):
-    # posts = Post.objects.all()
-    posts = serializers.serialize('json', Post.objects.all())
-    # posts = list(posts)
-    print(posts)
-    return JsonResponse(posts, safe=False)
+    posts = Post.objects.all()
+    return JsonResponse([post.myserializer() for post in posts], safe=False)

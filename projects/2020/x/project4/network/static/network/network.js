@@ -6,8 +6,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function createNewPost(){
     console.log('you clicked');
-    // get the form input field
-    content = document.querySelector('#newpost-textarea').value;
+    // get the form input field then clear the field
+    inputField = document.querySelector('#newpost-textarea')
+    content = inputField.value;
+    inputField.value = '';
+
     fetch('createpost', {
         method: 'POST',
         headers: {
@@ -16,25 +19,26 @@ function createNewPost(){
         credentials: 'same-origin',
         body: JSON.stringify(content)
       })
-   return false;
-    
+    .then(function () {
+        listAllPosts()
+    })
+    return false;
 }
 
 function listAllPosts(){
     //  get all posts
+    document.querySelector('#all-posts'). innerHTML = '';
     fetch('listposts')
     .then(response => response.json())
-    .then(function(data) {
-        console.log("data: " + data)
-        data = JSON.parse(data); 
-        console.log("data after parsing: " + data)
-        data.forEach(function(n){
-            console.log(n.fields.content)
-            newpost = document.createElement('div')
-            newpost.innerHTML = `<h3>${n.fields.user}</h3>
-                                <p>${n.fields.content}`
-            document.querySelector('#all-posts').append(newpost)
-        })
-    });
+    .then (posts => posts.forEach(function(n){
+        newpost = document.createElement('div')
+        newpost.innerHTML = `<h3>${n.user}</h3>
+                            <p>${n.content}</p>
+                            <p>${n.created}</p>
+                            <p>Likes: ${n.likes}</p>`
+        document.querySelector('#all-posts').append(newpost)
+    }))
+
+
 };
     // for each post, create a new post and append it to the containing div
