@@ -83,6 +83,20 @@ def create_post(request):
     print(content)
     return JsonResponse({"message": "Post saved successfully."}, status=201)
 
-def list_posts(request):
-    posts = Post.objects.all().order_by('-created')
+def list_posts(request, username):
+    if username == 'all':
+        posts = Post.objects.all().order_by('-created')
+    else:
+        user = User.objects.get(username=username)
+        posts = Post.objects.filter(user=user).order_by('-created')
+    
     return JsonResponse([post.myserializer() for post in posts], safe=False)
+
+def get_followers(request, username):
+    user = User.objects.get(username=username)
+    # get posts
+    # posts = Post.objects.filter(user=user)
+    followers = Follower.objects.filter(user=user).count()
+    print(followers)
+    # count followers and following
+    return JsonResponse({"followers": followers})

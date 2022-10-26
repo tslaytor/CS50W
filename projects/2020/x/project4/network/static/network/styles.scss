@@ -25,6 +25,8 @@ $red: rgb(198, 73, 73);
     font: 700 1rem $font-stack;
     color: $red;
     margin: $standard-margin;
+    display: inline-block;
+    cursor: pointer;
 }
 
 .post-content {

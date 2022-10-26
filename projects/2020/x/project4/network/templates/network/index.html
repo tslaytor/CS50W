@@ -1,7 +1,7 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-<div>
+<div id='home'>
     <form id="new-post">
         {% csrf_token %}
         <div>
@@ -11,7 +11,13 @@
         </div>
     </form>
     <h1>All Posts</h1>
-    <div id="all-posts"></div>
+    <div id="all-posts">
+
+    </div>
+</div>
+
+<div id="profile">
+    
 </div>
     
 {% endblock %}

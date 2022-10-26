@@ -16,7 +16,9 @@
 .post-username {
   font: 700 1rem "montserrat", sans-serif;
   color: #c64949;
-  margin: 0.5rem; }
+  margin: 0.5rem;
+  display: inline-block;
+  cursor: pointer; }
 
 .post-content {
   min-height: 6rem;

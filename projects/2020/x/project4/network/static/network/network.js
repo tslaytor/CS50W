@@ -1,7 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
-    listAllPosts();
+    // hide the other pages and show the home page
+    document.querySelector('#profile').style.display = "none";
+    document.querySelector('#home').style.display = "block";
+    // make the new post form active
     document.querySelector('#new-post').onsubmit = createNewPost;
-    
+    // list all the posts
+    listAllPosts('all');
 });
 
 function createNewPost(){
@@ -20,42 +24,59 @@ function createNewPost(){
         body: JSON.stringify(content)
       })
     .then(function () {
-        listAllPosts()
+        listAllPosts('all')
     })
     return false;
 }
 
-function listAllPosts(){
-    //  get all posts
+function listAllPosts(username){
+
+    //  clear old posts to allow refresh
     document.querySelector('#all-posts'). innerHTML = '';
-    fetch('listposts')
+    fetch(`listposts/${username}`)
     .then(response => response.json())
     .then (posts => posts.forEach(function(n){
         newpost = document.createElement('div')
         newpost.classList.add('post')
-        newpost.innerHTML = `<div class="post-username">${n.user}</div>
+        newpost.innerHTML = `<div><span class="post-username">${n.user}</span></div>
                             <div class="post-content">${n.content}</div>
                             <div class="post-created">${n.created}</div>
                             <div class="post-likes">Likes: ${n.likes}</div>`;
-        document.querySelector('#all-posts').append(newpost);
+        if (username === 'all') {
+            document.querySelector('#all-posts').append(newpost);
+        }
+        else {
+            document.querySelector('#profile').append(newpost);
+        }
     }))
-    // then add the event listeners to the post
-    .then(function() {
-        usernames = document.querySelectorAll('.post-username')
-        console.log(usernames)
-        usernames.forEach(function(n){
-            console.log(n)
-            n.addEventListener('click', function(){
-                showProfile()
-            })
-            // n.onclick = showProfile
-        });
+    // then add the event listeners to the post username 
+    .then(function(username) {
+        document.querySelectorAll('.post-username').forEach((n) => n.onclick = showProfile);
     });
 
 
 };
 
-function showProfile() {
-    console.log('hello')
+function showProfile(e) {
+    // show the profile div and hide all others
+    document.querySelector('#home').style.display = 'none';
+    document.querySelector('#profile').style.display = 'block';
+    // get the username clicked
+    username = e.target.innerHTML;
+    fetch(`get_followers/${username}`)
+    .then(response => response.json())
+    .then(function(data){
+        console.log(data.followers + username)
+        nameHeader = document.createElement('h2');
+        nameHeader.innerHTML = username;
+        followers = document.createElement('div');
+        followers.innerHTML = data.followers;
+        document.querySelector('#profile').append(nameHeader)
+        document.querySelector('#profile').append(followers)
+        listAllPosts(username);
+    })
+    
+    
+
 }
     // for each post, create a new post and append it to the containing div
