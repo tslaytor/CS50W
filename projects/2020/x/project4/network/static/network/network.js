@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // make the new post form active
     document.querySelector('#new-post').onsubmit = createNewPost;
     // list all the posts
-    listAllPosts('all');
+    listPosts('all');
 });
 
 function createNewPost(){
@@ -24,12 +24,12 @@ function createNewPost(){
         body: JSON.stringify(content)
       })
     .then(function () {
-        listAllPosts('all')
+        listPosts('all')
     })
     return false;
 }
 
-function listAllPosts(username){
+function listPosts(username){
 
     //  clear old posts to allow refresh
     document.querySelector('#all-posts'). innerHTML = '';
@@ -67,13 +67,12 @@ function showProfile(e) {
     .then(response => response.json())
     .then(function(data){
         console.log(data.followers + username)
-        nameHeader = document.createElement('h2');
-        nameHeader.innerHTML = username;
-        followers = document.createElement('div');
-        followers.innerHTML = data.followers;
-        document.querySelector('#profile').append(nameHeader)
-        document.querySelector('#profile').append(followers)
-        listAllPosts(username);
+        profileHeader = document.createElement('div');
+        profileHeader.innerHTML = `<h2>${username}</h2>
+                                    <div>followers: ${data.followers}</div>
+                                    <div>following: ${data.following}</div>`;
+        document.querySelector('#profile').append(profileHeader)
+        listPosts(username);
     })
     
     

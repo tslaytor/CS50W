@@ -94,9 +94,9 @@ def list_posts(request, username):
 
 def get_followers(request, username):
     user = User.objects.get(username=username)
-    # get posts
-    # posts = Post.objects.filter(user=user)
-    followers = Follower.objects.filter(user=user).count()
-    print(followers)
-    # count followers and following
-    return JsonResponse({"followers": followers})
+    return JsonResponse(
+        {
+            "followers": Follower.objects.filter(user=user).count(), 
+            "following": Follower.objects.filter(follower=user).count()
+        }
+    )
