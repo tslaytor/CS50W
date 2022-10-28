@@ -7,12 +7,24 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.core import serializers
+from django.views.generic import ListView
+from django.core.paginator import Paginator
 
 from .models import User, Post, Follower
 
+class PostListView(ListView):
+    paginate_by = 2
+    model = Post
+    context_object_name = "posts"
+    template_name = "network/index.html"
 
 def index(request):
-    return render(request, "network/index.html")
+    # posts = Post.objects.all()
+    # pages = Paginator(posts, 2)
+    # print(posts)
+    return render(request, "network/index.html", {
+        
+    })
 
 
 def login_view(request):
@@ -100,3 +112,4 @@ def get_followers(request, username):
             "following": Follower.objects.filter(follower=user).count()
         }
     )
+

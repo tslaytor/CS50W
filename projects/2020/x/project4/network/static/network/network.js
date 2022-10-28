@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // make the new post form active
     document.querySelector('#new-post').onsubmit = createNewPost;
     // list all the posts
-    listPosts('all');
+    // listPosts('all');
 });
 
 function createNewPost(){

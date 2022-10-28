@@ -15,13 +15,13 @@ class Post(models.Model):
     def __str__(self):
         return f"User: {self.user}, Created: {self.created}, Content: {self.content}, Likes: {self.likes}"
 
-    def myserializer(self):
-        return {
-            'user': self.user.username,
-            'created': self.created.strftime('%b %-d %Y, %-I:%M %p'),
-            'content': self.content,
-            'likes': self.likes
-        }
+    # def myserializer(self):
+    #     return {
+    #         'user': self.user.username,
+    #         'created': self.created.strftime('%b %-d %Y, %-I:%M %p'),
+    #         'content': self.content,
+    #         'likes': self.likes
+    #     }
 
 class Follower(models.Model):
     user = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
