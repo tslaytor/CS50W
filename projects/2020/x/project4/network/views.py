@@ -13,7 +13,7 @@ from django.core.paginator import Paginator
 from .models import User, Post, Follower
 
 class PostListView(ListView):
-    paginate_by = 2
+    paginate_by = 3
     model = Post
     context_object_name = "posts"
     template_name = "network/index.html"

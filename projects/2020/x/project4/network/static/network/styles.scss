@@ -48,3 +48,18 @@ $red: rgb(198, 73, 73);
     align-self: flex-end;
     margin: 0 1rem;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+}
+
+.deactivated {
+    color: rgb(167, 167, 167) !important;
+    background-color: rgba(207, 207, 207, 0.349) !important;
+}
+
+.selected-page {
+    color: white;
+    background-color: #0056b3;
+}

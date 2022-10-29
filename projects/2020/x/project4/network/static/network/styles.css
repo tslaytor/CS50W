@@ -37,4 +37,16 @@
   align-self: flex-end;
   margin: 0 1rem; }
 
+.pagination {
+  display: flex;
+  justify-content: center; }
+
+.deactivated {
+  color: #a7a7a7 !important;
+  background-color: rgba(207, 207, 207, 0.349) !important; }
+
+.selected-page {
+  color: white;
+  background-color: #0056b3; }
+
 /*# sourceMappingURL=styles.css.map */
