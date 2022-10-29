@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // hide the other pages and show the home page
-    document.querySelector('#profile').style.display = "none";
-    document.querySelector('#home').style.display = "block";
+    // document.querySelector('#profile').style.display = "none";
+    // document.querySelector('#home').style.display = "block";
     // make the new post form active
     document.querySelector('#new-post').onsubmit = createNewPost;
     document.querySelectorAll('.post-username').forEach((n) => n.onclick = showProfile)
@@ -25,7 +25,7 @@ function createNewPost(){
         body: JSON.stringify(content)
       })
     .then(function () {
-        listPosts('all')
+        window.location.href = ''
     })
     return false;
 }
@@ -61,8 +61,8 @@ function listPosts(username){
 function showProfile(e) {
     console.log('show profile running')
     // show the profile div and hide all others
-    // document.querySelector('#home').style.display = 'none';
-    // document.querySelector('#profile').style.display = 'block';
+    document.querySelector('#home').style.display = 'none';
+    document.querySelector('#profile').style.display = 'block';
     // get the username clicked
     username = e.target.innerHTML;
     window.location.href = `profile/${username}`

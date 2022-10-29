@@ -15,13 +15,23 @@ from .models import User, Post, Follower
 class PostListView(ListView):
     paginate_by = 3
     model = Post
-    context_object_name = "posts"
+    ordering = ['-created']
+    context_object_name = "allposts"
     template_name = "network/index.html"
 
 class PostListByUserView(ListView):
     paginate_by = 3
-    context_object_name = "posts"
+    context_object_name = "profileposts"
     template_name = "network/index.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super(PostListByUserView, self).get_context_data(**kwargs)
+        context.update({
+            'profile': User.objects.get(username=self.kwargs['profile']),
+            'followers': Follower.objects.filter(user=User.objects.get(username=self.kwargs['profile'])).count(),
+            'following': Follower.objects.filter(follower=User.objects.get(username=self.kwargs['profile'])).count()
+        })
+        return context
 
     def get_queryset(self):
         print('js url working')
