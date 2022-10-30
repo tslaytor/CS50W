@@ -9,6 +9,13 @@
             <h2>{{profile}}</h2>
             <div>followers: {{ followers }}</div>
             <div>following: {{ following }}</div>
+            {% if profile != user %}
+                {% if following%}
+                    <button>Unfollow</button>
+                {% else %}
+                    <button>Follow</button>
+                {% endif %}
+            {% endif %}
         </div>
         <h1>{{profile}}'s Posts</h1>
     {% else %}
@@ -59,39 +66,5 @@
 
     </div>
 </div>
-
-
-<!-- {% if profileposts %}
-    <div id="profile">
-        
-        <div>
-            <h2>{{profile}}</h2>
-            <div>followers: {{ followers }}</div>
-            <div>following: {{ following }}</div>
-        </div>
-            {% for post in profileposts %}
-                <div class="post">
-                    <div><span class="post-username">{{post.user}}</span></div>
-                                <div class="post-content">{{post.content}}</div>
-                                <div class="post-created">{{post.created}}</div>
-                                <div class="post-likes">Likes: {{post.likes}}</div>
-                </div>
-            
-            {% endfor %}
-
-            <nav aria-label="Page navigation">
-                <ul class="pagination">   
-                    <li class="page-item"><a class="page-link {% if not page_obj.has_previous %} deactivated {% endif %}" href="?page=1">&laquo;</a></li>
-                    <li class="page-item"><a class="page-link {% if not page_obj.has_previous %} deactivated {% endif %}" href="{% if page_obj.has_previous %} ?page={{ page_obj.previous_page_number }} {% endif %}">&lt;</a></li>
-                    {% for p in paginator.page_range %}
-                    <li class="page-item"><a class="page-link {% if page_obj.number == p %} selected-page {% endif %}" href="?page={{p}}" >{{p}}</a></li>
-                    {% endfor %}
-                    <a class="page-link {% if not page_obj.has_next %} deactivated {% endif %}" href="{% if page_obj.has_next %} ?page={{ page_obj.next_page_number }} {% endif %}">&gt;</a>
-                    <a class="page-link {% if not page_obj.has_next %} deactivated {% endif %}" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a>   
-                </ul>
-            </nav>
-        
-    </div>
-{% endif %} -->
     
 {% endblock %}

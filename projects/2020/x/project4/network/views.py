@@ -19,13 +19,6 @@ class PostListAllView(ListView):
     context_object_name = "posts"
     template_name = "network/index.html"
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(PostListAllView, self).get_context_data(**kwargs)
-    #     context.update({
-    #         'all-posts': True
-    #     })
-    #     return context
-
 class PostListByUserView(ListView):
     paginate_by = 3
     context_object_name = "posts"
@@ -36,7 +29,8 @@ class PostListByUserView(ListView):
         context.update({
             'profile': User.objects.get(username=self.kwargs['profile']),
             'followers': Follower.objects.filter(user=User.objects.get(username=self.kwargs['profile'])).count(),
-            'following': Follower.objects.filter(follower=User.objects.get(username=self.kwargs['profile'])).count()
+            'following': Follower.objects.filter(follower=User.objects.get(username=self.kwargs['profile'])).count(), 
+            'user': self.request.user
         })
         return context
 
@@ -44,15 +38,6 @@ class PostListByUserView(ListView):
         print('js url working')
         self.profile = get_object_or_404(User, username=self.kwargs['profile'])
         return Post.objects.filter(user=self.profile)
-
-
-def index(request):
-    # posts = Post.objects.all()
-    # pages = Paginator(posts, 2)
-    # print(posts)
-    return render(request, "network/index.html", {
-        
-    })
 
 
 def login_view(request):
@@ -110,34 +95,11 @@ def register(request):
 def create_post(request):
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
-
-    # get the content of the post
+    # get the content of the post and create an instance of the post model
     content = json.loads(request.body)
-    # create an instance of the post model
     post = Post(
         user = request.user,
         content = content 
     )
     post.save()
-    print('here now')
-    print(content)
     return JsonResponse({"message": "Post saved successfully."}, status=201)
-
-def list_posts(request, username):
-    if username == 'all':
-        posts = Post.objects.all().order_by('-created')
-    else:
-        user = User.objects.get(username=username)
-        posts = Post.objects.filter(user=user).order_by('-created')
-    
-    return JsonResponse([post.myserializer() for post in posts], safe=False)
-
-def get_followers(request, username):
-    user = User.objects.get(username=username)
-    return JsonResponse(
-        {
-            "followers": Follower.objects.filter(user=user).count(), 
-            "following": Follower.objects.filter(follower=user).count()
-        }
-    )
-
