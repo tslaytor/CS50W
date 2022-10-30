@@ -12,16 +12,23 @@ from django.core.paginator import Paginator
 
 from .models import User, Post, Follower
 
-class PostListView(ListView):
+class PostListAllView(ListView):
     paginate_by = 3
     model = Post
     ordering = ['-created']
-    context_object_name = "allposts"
+    context_object_name = "posts"
     template_name = "network/index.html"
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(PostListAllView, self).get_context_data(**kwargs)
+    #     context.update({
+    #         'all-posts': True
+    #     })
+    #     return context
 
 class PostListByUserView(ListView):
     paginate_by = 3
-    context_object_name = "profileposts"
+    context_object_name = "posts"
     template_name = "network/index.html"
     
     def get_context_data(self, **kwargs):

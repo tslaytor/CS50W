@@ -61,10 +61,11 @@ function listPosts(username){
 function showProfile(e) {
     console.log('show profile running')
     // show the profile div and hide all others
-    document.querySelector('#home').style.display = 'none';
-    document.querySelector('#profile').style.display = 'block';
+    // document.querySelector('#home').style.display = 'none';
+    // document.querySelector('#profile').style.display = 'block';
     // get the username clicked
     username = e.target.innerHTML;
+    console.log(username)
     window.location.href = `profile/${username}`
     // fetch(`get_followers/${username}`)
     // .then(response => response.json())

@@ -4,7 +4,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.PostListView.as_view(), name="index"),
+    path("", views.PostListAllView.as_view(), name="index"),
     path("profile/<profile>", views.PostListByUserView.as_view(), name="profile"),
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
