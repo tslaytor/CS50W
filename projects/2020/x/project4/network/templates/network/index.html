@@ -1,20 +1,19 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-
+{{csrf_token}}
 <div id='home'>
-    
     {% if profile %}
         <div>
             <h2>{{profile}}</h2>
             <div>followers: {{ followers }}</div>
             <div>following: {{ following }}</div>
             {% if profile != user %}
-                {% if following%}
-                    <button>Unfollow</button>
-                {% else %}
-                    <button>Follow</button>
-                {% endif %}
+                <input class="follow-button" type="button" 
+                    onclick = " (e) =>
+                        follow(e, '{{ request.user }}', '{{ profile }}', '{{ following }}');">
+                    {% if following%} Unfollow {% else %} Follow {% endif %}
+                </input>
             {% endif %}
         </div>
         <h1>{{profile}}'s Posts</h1>
@@ -31,6 +30,7 @@
     {% endif %}
 
     <div id="posts">
+        
         {% for post in posts %}
             <div class="post">
                 <div>

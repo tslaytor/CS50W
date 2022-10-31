@@ -9,6 +9,7 @@ import json
 from django.core import serializers
 from django.views.generic import ListView
 from django.core.paginator import Paginator
+from django.template import RequestContext
 
 from .models import User, Post, Follower
 
@@ -35,7 +36,6 @@ class PostListByUserView(ListView):
         return context
 
     def get_queryset(self):
-        print('js url working')
         self.profile = get_object_or_404(User, username=self.kwargs['profile'])
         return Post.objects.filter(user=self.profile)
 
@@ -93,6 +93,7 @@ def register(request):
 
 @csrf_exempt
 def create_post(request):
+    c = RequestContext(request)
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
     # get the content of the post and create an instance of the post model
@@ -103,3 +104,12 @@ def create_post(request):
     )
     post.save()
     return JsonResponse({"message": "Post saved successfully."}, status=201)
+
+def follow(request):
+    c = RequestContext(request)
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+    # get the content of the post and create an instance of the post model
+    content = json.loads(request.body)
+    print ('hello' + content)
+    # return JsonResponse({"message": "follow function in dev"})
