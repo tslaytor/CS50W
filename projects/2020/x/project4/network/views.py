@@ -1,6 +1,7 @@
 import profile
 import re
 from typing import List
+from urllib import request
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -22,9 +23,17 @@ class PostListAllView(ListView):
     context_object_name = "posts"
     template_name = "network/index.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(PostListAllView, self).get_context_data(**kwargs)
+        context.update({
+            'home': True
+        })
+        return context
+
 class PostListByUserView(ListView):
     paginate_by = 3
     context_object_name = "posts"
+    ordering = ['-created']
     template_name = "network/index.html"
     
     def get_context_data(self, **kwargs):
@@ -42,6 +51,28 @@ class PostListByUserView(ListView):
     def get_queryset(self):
         self.profile = get_object_or_404(User, username=self.kwargs['profile'])
         return Post.objects.filter(user=self.profile)
+
+class FollowingPage(ListView):
+    paginate_by = 3
+    context_object_name = "posts"
+    ordering = ['-created']
+    template_name = "network/index.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super(FollowingPage, self).get_context_data(**kwargs)
+        context.update({
+            'following_page': True
+            
+        })
+        return context
+
+    def get_queryset(self):
+        following = Follower.objects.filter(follower=self.request.user)
+        print(following)
+        profiles = User.objects.filter(user__in=following)
+        print(profiles)
+        print(Post.objects.filter(user__in=profiles))
+        return Post.objects.filter(user__in=profiles)
 
 
 def login_view(request):

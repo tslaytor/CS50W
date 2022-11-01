@@ -12,7 +12,8 @@
             {% endif %}
         </div>
         <h1>{{profile}}'s Posts</h1>
-    {% else %}
+    {% endif %}
+    {% if home %}
         <form id="new-post">
             {% csrf_token %}
             <div>
@@ -22,6 +23,10 @@
             </div>
         </form>
         <h1>All Posts</h1>
+    {% endif %}
+
+    {% if following_page %}
+        <h1>Posts by the people you follow</h1>
     {% endif %}
 
     <div id="posts">
