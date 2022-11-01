@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("it loaded")
     document.querySelector('#new-post').onsubmit = createNewPost;
     document.querySelectorAll('.post-username').forEach((n) => 
         n.onclick = (e) => 
@@ -41,31 +40,22 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function follow(user, profile, following){
-    console.log('hi')
-    // e.preventDefault();
-    // const csrftoken = getCookie('csrftoken');
-    console.log('bye ' + csrftoken)
-    // if (following) {
-        // unfollow the profile
-        data = {'user': user, 'profile': profile, 'following': following}
-        fetch('../follow', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'HTTP_X_CSRFTOKEN': csrftoken
-            },
-            credentials: 'same-origin',
-            body: JSON.stringify(data)
-        })
-        .then(function () {
-            console.log('you are here')
-            window.location.href = ''
-            
-        })
-    // }
-    // else {
-    //     // follow the profile
-    // }
+function follow(profile){
+    // data = {'profile': profile}
+    fetch('../follow', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({'profile': profile})
+    })
+    .then(data => data.json())
+    
+    .then(function(response) {
+        document.querySelector('#followers').innerHTML = response.total_followers
+        document.querySelector('.follow-button').innerHTML = response.set_button_to_unfollow ? "Unfollow" : "Follow";
+    })
 }
 

@@ -1,3 +1,5 @@
+import profile
+import re
 from typing import List
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
@@ -26,11 +28,13 @@ class PostListByUserView(ListView):
     template_name = "network/index.html"
     
     def get_context_data(self, **kwargs):
+        profile = User.objects.get(username=self.kwargs['profile'])
         context = super(PostListByUserView, self).get_context_data(**kwargs)
         context.update({
-            'profile': User.objects.get(username=self.kwargs['profile']),
+            'profile': profile,
             'followers': Follower.objects.filter(user=User.objects.get(username=self.kwargs['profile'])).count(),
-            'following': Follower.objects.filter(follower=User.objects.get(username=self.kwargs['profile'])).count(), 
+            'following': Follower.objects.filter(follower=User.objects.get(username=self.kwargs['profile'])).count(),
+            'user_is_following': Follower.objects.filter(user=profile, follower=User.objects.get(username=self.request.user)).exists(),
             'user': self.request.user
         })
         return context
@@ -105,11 +109,26 @@ def create_post(request):
     post.save()
     return JsonResponse({"message": "Post saved successfully."}, status=201)
 
-def follow(request):
+def follow_view(request):
     c = RequestContext(request)
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
-    # get the content of the post and create an instance of the post model
-    content = json.loads(request.body)
-    print ('hello' + content)
-    # return JsonResponse({"message": "follow function in dev"})
+    # get the content of body and check if user is following profile already
+    data = json.loads(request.body)
+
+    profile = User.objects.get(username=data['profile'])
+    following = Follower.objects.filter(user=User.objects.get(username=profile), follower=request.user).exists()
+
+
+    if following:
+        # unfollow
+        Follower.objects.filter(user=profile, follower=request.user).delete()
+    else:
+        # follow
+        f = Follower(user=profile, follower=request.user)
+        f.save()
+    # return JsonResponse({"total_followers": 5})
+    return JsonResponse({
+        "total_followers": Follower.objects.filter(user=profile).count(),
+        "set_button_to_unfollow": Follower.objects.filter(user=profile, follower=request.user).exists()
+    })
