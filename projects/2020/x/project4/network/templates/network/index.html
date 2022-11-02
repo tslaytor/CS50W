@@ -5,10 +5,12 @@
     {% if profile %}
         <div>
             <h2>{{profile}}</h2>
-            <div><span>followers:</span><span id="followers">{{ followers }}</span></div>
-            <div><span>following:</span><span id="following">{{ following }}</span></div>
-            {% if profile != user %}
-                <button type="button" class="follow-button" onclick = "follow('{{ profile }}')">{% if user_is_following%} Unfollow {% else %} Follow {% endif %}</button>
+            {% if logged_in %}
+                <div><span>followers:</span><span id="followers">{{ followers }}</span></div>
+                <div><span>following:</span><span id="following">{{ following }}</span></div>
+                {% if profile != user %}
+                    <button type="button" class="follow-button" onclick = "follow('{{ profile }}')">{% if user_is_following%} Unfollow {% else %} Follow {% endif %}</button>
+                {% endif %}
             {% endif %}
         </div>
         <h1>{{profile}}'s Posts</h1>

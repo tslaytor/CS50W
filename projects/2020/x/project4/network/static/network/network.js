@@ -1,8 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#new-post').onsubmit = createNewPost;
     document.querySelectorAll('.post-username').forEach((n) => 
-        n.onclick = (e) => 
-        window.location.href = `profile/${e.target.innerHTML}`)
+        n.onclick = function(e) { 
+            console.log("clicked the username")
+            window.location.href = `profile/${e.target.innerHTML}`
+        }
+    )
 });
 
 function createNewPost(){

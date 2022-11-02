@@ -1,5 +1,7 @@
 import profile
+from queue import Empty
 import re
+from tkinter import E
 from typing import List
 from urllib import request
 from django.contrib.auth import authenticate, login, logout
@@ -11,13 +13,16 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.core import serializers
 from django.views.generic import ListView
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
 
 from .models import User, Post, Follower
 
+NUM_POSTS_PER_PAGE = 2
+
 class PostListAllView(ListView):
-    paginate_by = 3
+    paginate_by = NUM_POSTS_PER_PAGE
     model = Post
     ordering = ['-created']
     context_object_name = "posts"
@@ -30,30 +35,39 @@ class PostListAllView(ListView):
         })
         return context
 
-class PostListByUserView(ListView):
-    paginate_by = 3
-    context_object_name = "posts"
-    ordering = ['-created']
-    template_name = "network/index.html"
-    
-    def get_context_data(self, **kwargs):
-        profile = User.objects.get(username=self.kwargs['profile'])
-        context = super(PostListByUserView, self).get_context_data(**kwargs)
-        context.update({
-            'profile': profile,
-            'followers': Follower.objects.filter(user=User.objects.get(username=self.kwargs['profile'])).count(),
-            'following': Follower.objects.filter(follower=User.objects.get(username=self.kwargs['profile'])).count(),
-            'user_is_following': Follower.objects.filter(user=profile, follower=User.objects.get(username=self.request.user)).exists(),
-            'user': self.request.user
-        })
-        return context
+def ProfileView(request, profile):
+    posts_list = Post.objects.filter(user=User.objects.get(username=profile)).order_by('-created')
+    page = request.GET.get('page', 1)
+    paginator = Paginator(posts_list, NUM_POSTS_PER_PAGE)
 
-    def get_queryset(self):
-        self.profile = get_object_or_404(User, username=self.kwargs['profile'])
-        return Post.objects.filter(user=self.profile)
+    try: 
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
+    profile = User.objects.get(username=profile)
+    if request.user.is_authenticated:
+        context ={
+            'profile': profile,
+            'logged_in': True,
+            'followers': Follower.objects.filter(user=User.objects.get(username=profile)).count(),
+            'following': Follower.objects.filter(follower=User.objects.get(username=profile)).count(),
+            'user_is_following': Follower.objects.filter(user=profile, follower=User.objects.get(username=request.user)).exists(),
+            'posts': posts
+        }
+        
+    else:
+        context ={
+            'profile': profile,
+            'posts': posts
+        }
+    return render(request, 'network/index.html', context)
+
 
 class FollowingPage(ListView):
-    paginate_by = 3
+    paginate_by = NUM_POSTS_PER_PAGE
     context_object_name = "posts"
     ordering = ['-created']
     template_name = "network/index.html"
@@ -140,6 +154,7 @@ def create_post(request):
     post.save()
     return JsonResponse({"message": "Post saved successfully."}, status=201)
 
+@login_required
 def follow_view(request):
     c = RequestContext(request)
     if request.method != "POST":
