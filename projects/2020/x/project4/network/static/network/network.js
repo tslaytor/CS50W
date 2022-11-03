@@ -1,5 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('#new-post').onsubmit = createNewPost;
+
+    const ele_exists = document.getElementsByClassName('new-post').length > 0
+    if (ele_exists == null){
+        document.querySelector('.new-post').onsubmit = createNewPost;
+    }
+    
     document.querySelectorAll('.post-username').forEach((n) => 
         n.onclick = function(e) { 
             console.log("clicked the username")

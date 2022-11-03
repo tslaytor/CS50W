@@ -86,7 +86,7 @@ class FollowingPage(ListView):
         profiles = User.objects.filter(user__in=following)
         print(profiles)
         print(Post.objects.filter(user__in=profiles))
-        return Post.objects.filter(user__in=profiles)
+        return Post.objects.filter(user__in=profiles).order_by('-created')
 
 
 def login_view(request):

@@ -16,7 +16,7 @@
         <h1>{{profile}}'s Posts</h1>
     {% endif %}
     {% if home %}
-        <form id="new-post">
+        <form class="new-post">
             {% csrf_token %}
             <div>
                 <label for="newpost-textarea">New Post</label>
