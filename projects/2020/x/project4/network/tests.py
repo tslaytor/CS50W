@@ -7,8 +7,8 @@ class FollowerTestCase(TestCase):
         user1 = User.objects.create(username='user1')
         user2 = User.objects.create(username='user2')
 
-        Follower.objects.create(user=user1, follower=user2)
-        Follower.objects.create(user=user1, follower=user1)
+        valid_follower = Follower.objects.create(user=user1, follower=user2)
+        invalid_follower = Follower.objects.create(user=user1, follower=user1)
 
     def test_valid_follower(self):
         testuser1 = User.objects.get(username='user1')

@@ -1,3 +1,4 @@
+from cgi import print_environ_usage
 import profile
 from queue import Empty
 import re
@@ -147,6 +148,8 @@ def create_post(request):
         return JsonResponse({"error": "POST request required."}, status=400)
     # get the content of the post and create an instance of the post model
     content = json.loads(request.body)
+    # check if the post already exists
+
     post = Post(
         user = request.user,
         content = content 

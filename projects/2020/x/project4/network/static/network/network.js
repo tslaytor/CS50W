@@ -4,6 +4,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (ele_exists == null){
         document.querySelector('.new-post').onsubmit = createNewPost;
     }
+
+    const edit_button = document.getElementsByClassName('edit')
+    if (edit_button.length > 0) {
+        
+        Array.from(edit_button).forEach(item => item.onclick = edit)
+    }
     
     document.querySelectorAll('.post-username').forEach((n) => 
         n.onclick = function(e) { 
@@ -67,3 +73,51 @@ function follow(profile){
     })
 }
 
+function edit(){
+    // console.log('you are in the edit function')
+    // const parent = this.parentElement
+    var contentarea = this.parentElement.querySelector('.post-content')
+    var textarea = document.createElement('textarea')
+    textarea.value = contentarea.innerHTML.trim();
+
+    this.parentElement.replaceChild(textarea, contentarea)
+
+    textarea.classList.add('post-content')
+    // this.parentElement.classList.add('being_edited')
+    
+    // set the autofocus
+    const l = textarea.value.length
+    textarea.focus()
+    textarea.setSelectionRange(l,l);
+
+    const save_edit = document.createElement('div');
+    save_edit.innerHTML = 'save'
+    save_edit.classList.add('save_edit');
+    const edit = this.parentElement.querySelector('.edit')
+    this.parentElement.replaceChild(save_edit, edit)
+
+    save_edit.onclick = function(){
+        // get the post id
+        const post_id = this.parentElement.querySelector('.post-id').innerHTML
+        console.log(post_id)
+        textarea.value = this.parentElement.querySelector('.post-content').value.trim();
+        fetch('createpost', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrftoken
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({
+                'content': textarea.value,
+                'post_id': post_id
+            })
+          })
+        .then(function () {
+            // window.location.href = ''
+            
+        })
+        return false;
+    }
+
+}

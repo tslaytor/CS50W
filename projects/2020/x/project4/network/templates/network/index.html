@@ -34,7 +34,9 @@
     <div id="posts">
         
         {% for post in posts %}
+        
             <div class="post">
+                <div hidden="true" class="post-id">{{ post.id}}</div>
                 <div>
                     <span class="post-username">{{post.user}}</span>
                 </div>
@@ -47,6 +49,10 @@
                 <div class="post-likes">
                     Likes: {{post.likes}}
                 </div>
+                {% if post.user == request.user%}
+                    <div class="edit">Edit Post</div>
+                {% endif %}
+              
             </div>
         {% endfor %}
 
