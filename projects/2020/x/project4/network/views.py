@@ -150,12 +150,23 @@ def create_post(request):
     content = json.loads(request.body)
     # check if the post already exists
 
-    post = Post(
-        user = request.user,
-        content = content 
-    )
-    post.save()
-    return JsonResponse({"message": "Post saved successfully."}, status=201)
+    if content['post_id']:
+        print('yo')
+        # get the post
+        post = Post.objects.get(id=content['post_id'])
+        # update the post
+        post.content = content['content']
+        post.save()
+        return JsonResponse({"message": "Post updated successfully."}, status=201)
+        
+    else:
+        print(request.user)
+        post = Post(
+            user = request.user,
+            content = content['content']
+        )
+        post.save()
+        return JsonResponse({"message": "Post saved successfully."}, status=201)
 
 @login_required
 def follow_view(request):

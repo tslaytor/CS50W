@@ -27,7 +27,8 @@
   background-color: #313131;
   color: white;
   padding: 1rem;
-  margin: 0.5rem; }
+  margin: 0.5rem;
+  white-space: pre; }
 
 .post-created {
   font: 400 0.75rem "montserrat", sans-serif;

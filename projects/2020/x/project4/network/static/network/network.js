@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     const ele_exists = document.getElementsByClassName('new-post').length > 0
-    if (ele_exists == null){
+    if (ele_exists){
         document.querySelector('.new-post').onsubmit = createNewPost;
     }
 
@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.querySelectorAll('.post-username').forEach((n) => 
         n.onclick = function(e) { 
-            console.log("clicked the username")
             window.location.href = `profile/${e.target.innerHTML}`
         }
     )
@@ -21,7 +20,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function createNewPost(){
     inputField = document.querySelector('#newpost-textarea')
-    content = inputField.value;
+    content = {
+        'content': inputField.value,
+        'post_id': false
+    };
     inputField.value = '';
 
     fetch('createpost', {
@@ -74,33 +76,33 @@ function follow(profile){
 }
 
 function edit(){
-    // console.log('you are in the edit function')
-    // const parent = this.parentElement
+    // get the content area of post, and make a new textarea for editing
     var contentarea = this.parentElement.querySelector('.post-content')
     var textarea = document.createElement('textarea')
+    // set the content of textarea to the same as the post
     textarea.value = contentarea.innerHTML.trim();
-
+    // replace the content area with textarea 
     this.parentElement.replaceChild(textarea, contentarea)
-
-    textarea.classList.add('post-content')
-    // this.parentElement.classList.add('being_edited')
-    
+    // add class to textarea
+    textarea.classList.add('post-content')    
     // set the autofocus
     const l = textarea.value.length
     textarea.focus()
     textarea.setSelectionRange(l,l);
 
+    // make a save button and replace the edit button with it
     const save_edit = document.createElement('div');
     save_edit.innerHTML = 'save'
     save_edit.classList.add('save_edit');
     const edit = this.parentElement.querySelector('.edit')
     this.parentElement.replaceChild(save_edit, edit)
 
+    // when you click the save button, save the edited post
     save_edit.onclick = function(){
         // get the post id
         const post_id = this.parentElement.querySelector('.post-id').innerHTML
         console.log(post_id)
-        textarea.value = this.parentElement.querySelector('.post-content').value.trim();
+        updated_post_content = this.parentElement.querySelector('.post-content').value;
         fetch('createpost', {
             method: 'POST',
             headers: {
@@ -109,12 +111,14 @@ function edit(){
             },
             credentials: 'same-origin',
             body: JSON.stringify({
-                'content': textarea.value,
+                'content': updated_post_content,
                 'post_id': post_id
             })
           })
         .then(function () {
-            // window.location.href = ''
+            console.log(post_id)
+            console.log("yeah")
+            window.location.href = ''
             
         })
         return false;
