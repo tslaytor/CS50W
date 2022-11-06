@@ -83,10 +83,7 @@ class FollowingPage(ListView):
 
     def get_queryset(self):
         following = Follower.objects.filter(follower=self.request.user)
-        print(following)
         profiles = User.objects.filter(user__in=following)
-        print(profiles)
-        print(Post.objects.filter(user__in=profiles))
         return Post.objects.filter(user__in=profiles).order_by('-created')
 
 
@@ -141,26 +138,25 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
-@csrf_exempt
+@login_required
 def create_post(request):
-    c = RequestContext(request)
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
     # get the content of the post and create an instance of the post model
     content = json.loads(request.body)
-    # check if the post already exists
-
+    # if we are editing an existing post
     if content['post_id']:
-        print('yo')
         # get the post
         post = Post.objects.get(id=content['post_id'])
-        # update the post
+        # check if the post belongs to user
+        if post.user != request.user:
+            return JsonResponse({"error": "This is not your post, so you can't edit it"}, status=400)
+        # update the post with new content
         post.content = content['content']
         post.save()
         return JsonResponse({"message": "Post updated successfully."}, status=201)
         
     else:
-        print(request.user)
         post = Post(
             user = request.user,
             content = content['content']

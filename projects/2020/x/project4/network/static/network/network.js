@@ -29,7 +29,8 @@ function createNewPost(){
     fetch('createpost', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
         },
         credentials: 'same-origin',
         body: JSON.stringify(content)
@@ -103,7 +104,7 @@ function edit(){
         const post_id = this.parentElement.querySelector('.post-id').innerHTML
         console.log(post_id)
         updated_post_content = this.parentElement.querySelector('.post-content').value;
-        fetch('createpost', {
+        fetch('/createpost', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
