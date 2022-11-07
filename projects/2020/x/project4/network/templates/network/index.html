@@ -1,4 +1,5 @@
 {% extends "network/layout.html" %}
+{% load network_extras %}
 
 {% block body %}
 <div id='home'>
@@ -32,10 +33,10 @@
     {% endif %}
 
     <div id="posts">
-        
         {% for post in posts %}
-        
+       
             <div class="post">
+                
                 <div hidden="true" class="post-id">{{ post.id}}</div>
                 <div>
                     <span class="post-username">{{post.user}}</span>
@@ -43,12 +44,34 @@
                 <div class="post-created">
                     {{post.created}}
                 </div>
-                <div class="post-likes">
-                    Likes: {{post.likes.count}}
-                </div>
+
+
+                {% if user.is_authenticated %}
+                {% liked  liked_by=request.user post=post as liked %}
+                    {% if liked %}
+                        <div class="post-likes">
+                            <i class="fas fa-heart like-button" style="color: red;"></i> <span class="likes-counter">{{post.likes.count}}</span>
+                        </div>
+                    {% else %}
+                        <div class="post-likes">
+                            <i class="fa-regular fa-heart like-button"></i> <span class="likes-counter">{{post.likes.count}}</span>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="post-likes">
+                        <i class="fa-regular fa-heart like-button"></i> <span class="likes-counter">{{post.likes.count}}</span>
+                    </div>
+                {% endif %}
+
+
                 {% if post.user == request.user%}
                     <div class="edit">Edit Post</div>
                 {% endif %}
+
+
+                {{ post.liked }}
+
+                
               
             </div>
         {% endfor %}

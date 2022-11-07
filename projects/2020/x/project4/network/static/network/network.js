@@ -16,7 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = `profile/${e.target.innerHTML}`
         }
     )
-});
+
+    document.querySelectorAll('.like-button').forEach((n) =>
+        n.onclick = like
+    );
+})
 
 function createNewPost(){
     inputField = document.querySelector('#newpost-textarea')
@@ -124,5 +128,35 @@ function edit(){
         })
         return false;
     }
+}
 
+function like(){
+    const post_id = this.parentElement.parentElement.querySelector('.post-id').innerHTML
+    const this_element = this
+    fetch(`/liked/${post_id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+        },
+        credentials: 'same-origin'
+      })
+    .then(response => response.json())
+    .then(function (data) {
+        if (data.liked){
+            // change innterHTML to red heart and add 1 to likes count
+            var counter = parseInt(this_element.parentElement.querySelector('.likes-counter').innerHTML)
+            this_element.parentElement.innerHTML = `<i class="fas fa-heart like-button" style="color: red;"></i> <span class="likes-counter">${counter + 1}</span>`
+        }
+        else {
+            // change innterHTML to empty heart and subtract 1 from likes count
+            var counter = parseInt(this_element.parentElement.querySelector('.likes-counter').innerHTML)
+            this_element.parentElement.innerHTML = `<i class="fa-regular fa-heart like-button"></i> <span class="likes-counter">${counter - 1}</span>`
+        }
+    })
+    .then(function () {
+        document.querySelectorAll('.like-button').forEach(function (n){
+            n.onclick = like
+        })
+    })
 }

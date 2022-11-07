@@ -1,4 +1,5 @@
 from audioop import reverse
+from urllib import request
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -13,15 +14,7 @@ class Post(models.Model):
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
 
     def __str__(self):
-        return f"User: {self.user}, Created: {self.created}, Content: {self.content}, Likes: {self.likes}"
-
-    # def myserializer(self):
-    #     return {
-    #         'user': self.user.username,
-    #         'created': self.created.strftime('%b %-d %Y, %-I:%M %p'),
-    #         'content': self.content,
-    #         'likes': self.likes
-    #     }
+        return f"User: {self.user}, Created: {self.created}, Content: {self.content}, Likes: {self.likes.count()}"
 
 class Follower(models.Model):
     user = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)

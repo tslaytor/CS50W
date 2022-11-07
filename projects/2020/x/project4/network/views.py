@@ -32,8 +32,13 @@ class PostListAllView(ListView):
     def get_context_data(self, **kwargs):
         context = super(PostListAllView, self).get_context_data(**kwargs)
         context.update({
-            'home': True
+            'home': True,
+            'liked': False
         })
+        if self.request.user.is_authenticated:
+            self.liked = False
+            context['liked'] = Post.objects.filter(likes=self.request.user).exists()
+            
         return context
 
 def ProfileView(request, profile):
@@ -56,13 +61,15 @@ def ProfileView(request, profile):
             'followers': Follower.objects.filter(user=User.objects.get(username=profile)).count(),
             'following': Follower.objects.filter(follower=User.objects.get(username=profile)).count(),
             'user_is_following': Follower.objects.filter(user=profile, follower=User.objects.get(username=request.user)).exists(),
-            'posts': posts
+            'posts': posts,
+            'liked': Post.objects.filter(likes=request.user).exists()
         }
         
     else:
         context ={
             'profile': profile,
-            'posts': posts
+            'posts': posts,
+            'liked': Post.objects.filter(likes=request.user).exists()
         }
     return render(request, 'network/index.html', context)
 
@@ -76,7 +83,8 @@ class FollowingPage(ListView):
     def get_context_data(self, **kwargs):
         context = super(FollowingPage, self).get_context_data(**kwargs)
         context.update({
-            'following_page': True
+            'following_page': True,
+            'liked': Post.objects.filter(likes=request.user).exists()
             
         })
         return context
@@ -188,3 +196,15 @@ def follow_view(request):
         "total_followers": Follower.objects.filter(user=profile).count(),
         "set_button_to_unfollow": Follower.objects.filter(user=profile, follower=request.user).exists()
     })
+
+@login_required
+def liked(request, post_id):
+    post = Post.objects.get(id=post_id) 
+    if post.likes.contains(request.user):
+        post.likes.remove(request.user)
+        liked = False
+    else:
+        post.likes.add(request.user)
+        liked = True
+    return JsonResponse({'liked': liked})
+    
