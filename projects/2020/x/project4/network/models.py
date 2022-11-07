@@ -10,7 +10,7 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='poster')
     created = models.DateTimeField(auto_now_add=True)
     content = models.TextField()
-    likes = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, related_name='likes', blank=True)
 
     def __str__(self):
         return f"User: {self.user}, Created: {self.created}, Content: {self.content}, Likes: {self.likes}"
@@ -29,3 +29,4 @@ class Follower(models.Model):
 
     def is_valid_follower(self):
         return self.user.username != self.follower.username
+

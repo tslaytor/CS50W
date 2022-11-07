@@ -44,7 +44,7 @@
                     {{post.created}}
                 </div>
                 <div class="post-likes">
-                    Likes: {{post.likes}}
+                    Likes: {{post.likes.count}}
                 </div>
                 {% if post.user == request.user%}
                     <div class="edit">Edit Post</div>
