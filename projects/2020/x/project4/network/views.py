@@ -17,6 +17,8 @@ from django.views.generic import ListView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 from .models import User, Post, Follower
 
@@ -38,7 +40,6 @@ class PostListAllView(ListView):
         if self.request.user.is_authenticated:
             self.liked = False
             context['liked'] = Post.objects.filter(likes=self.request.user).exists()
-            
         return context
 
 def ProfileView(request, profile):
@@ -68,13 +69,13 @@ def ProfileView(request, profile):
     else:
         context ={
             'profile': profile,
-            'posts': posts,
-            'liked': Post.objects.filter(likes=request.user).exists()
+            'posts': posts
+            # 'liked': Post.objects.filter(likes=request.user).exists()
         }
     return render(request, 'network/index.html', context)
 
-
-class FollowingPage(ListView):
+class FollowingPage(LoginRequiredMixin, ListView):
+    login_url = '../login'
     paginate_by = NUM_POSTS_PER_PAGE
     context_object_name = "posts"
     ordering = ['-created']
@@ -84,8 +85,7 @@ class FollowingPage(ListView):
         context = super(FollowingPage, self).get_context_data(**kwargs)
         context.update({
             'following_page': True,
-            'liked': Post.objects.filter(likes=request.user).exists()
-            
+            'liked': Post.objects.filter(likes=self.request.user).exists()
         })
         return context
 
@@ -93,7 +93,6 @@ class FollowingPage(ListView):
         following = Follower.objects.filter(follower=self.request.user)
         profiles = User.objects.filter(user__in=following)
         return Post.objects.filter(user__in=profiles).order_by('-created')
-
 
 def login_view(request):
     if request.method == "POST":
@@ -114,11 +113,9 @@ def login_view(request):
     else:
         return render(request, "network/login.html")
 
-
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
-
 
 def register(request):
     if request.method == "POST":
@@ -146,15 +143,26 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
-@login_required
+# this view creates new posts and edits exisiting posts
 def create_post(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
-    # get the content of the post and create an instance of the post model
     content = json.loads(request.body)
-    # if we are editing an existing post
-    if content['post_id']:
-        # get the post
+    
+    # Creating a new post 
+    if not content['post_id']:
+        post = Post(
+            user = request.user,
+            content = content['content']
+        )
+        post.save()
+        return JsonResponse({"message": "Post saved successfully."}, status=201)
+       
+    # Editing an existing post    
+    else:
+         # get the post
         post = Post.objects.get(id=content['post_id'])
         # check if the post belongs to user
         if post.user != request.user:
@@ -163,42 +171,34 @@ def create_post(request):
         post.content = content['content']
         post.save()
         return JsonResponse({"message": "Post updated successfully."}, status=201)
-        
-    else:
-        post = Post(
-            user = request.user,
-            content = content['content']
-        )
-        post.save()
-        return JsonResponse({"message": "Post saved successfully."}, status=201)
 
-@login_required
+
 def follow_view(request):
-    c = RequestContext(request)
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
     # get the content of body and check if user is following profile already
     data = json.loads(request.body)
-
     profile = User.objects.get(username=data['profile'])
     following = Follower.objects.filter(user=User.objects.get(username=profile), follower=request.user).exists()
 
-
-    if following:
-        # unfollow
-        Follower.objects.filter(user=profile, follower=request.user).delete()
-    else:
-        # follow
+    if not following:
+         # follow
         f = Follower(user=profile, follower=request.user)
         f.save()
+    else:
+        # unfollow
+        Follower.objects.filter(user=profile, follower=request.user).delete()
     # return JsonResponse({"total_followers": 5})
     return JsonResponse({
         "total_followers": Follower.objects.filter(user=profile).count(),
         "set_button_to_unfollow": Follower.objects.filter(user=profile, follower=request.user).exists()
     })
 
-@login_required
 def liked(request, post_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
     post = Post.objects.get(id=post_id) 
     if post.likes.contains(request.user):
         post.likes.remove(request.user)

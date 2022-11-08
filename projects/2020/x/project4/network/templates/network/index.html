@@ -16,6 +16,7 @@
         </div>
         <h1>{{profile}}'s Posts</h1>
     {% endif %}
+
     {% if home %}
         <form class="new-post">
             {% csrf_token %}
@@ -45,23 +46,18 @@
                     {{post.created}}
                 </div>
 
-
-                {% if user.is_authenticated %}
-                {% liked  liked_by=request.user post=post as liked %}
-                    {% if liked %}
-                        <div class="post-likes">
-                            <i class="fas fa-heart like-button" style="color: red;"></i> <span class="likes-counter">{{post.likes.count}}</span>
-                        </div>
+                <div class="post-likes">
+                    {% if user.is_authenticated %}
+                        {% liked  liked_by=request.user post=post as liked %}
+                            {% if liked %}
+                                    <i class="fas fa-heart like-button" style="color: red;"></i> <span class="likes-counter">{{post.likes.count}}</span>
+                            {% else %}
+                                    <i class="fa-regular fa-heart like-button"></i> <span class="likes-counter">{{post.likes.count}}</span>
+                            {% endif %}
                     {% else %}
-                        <div class="post-likes">
-                            <i class="fa-regular fa-heart like-button"></i> <span class="likes-counter">{{post.likes.count}}</span>
-                        </div>
-                    {% endif %}
-                {% else %}
-                    <div class="post-likes">
                         <i class="fa-regular fa-heart like-button"></i> <span class="likes-counter">{{post.likes.count}}</span>
-                    </div>
-                {% endif %}
+                    {% endif %}
+                </div>
 
 
                 {% if post.user == request.user%}

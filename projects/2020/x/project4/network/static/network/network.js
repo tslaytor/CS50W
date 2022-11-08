@@ -1,35 +1,39 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+    // listener for creating new post
     const ele_exists = document.getElementsByClassName('new-post').length > 0
     if (ele_exists){
         document.querySelector('.new-post').onsubmit = createNewPost;
     }
-
+    // listener for editing posts
     const edit_button = document.getElementsByClassName('edit')
     if (edit_button.length > 0) {
         
         Array.from(edit_button).forEach(item => item.onclick = edit)
     }
-    
+    // listener for profile pages
     document.querySelectorAll('.post-username').forEach((n) => 
         n.onclick = function(e) { 
             window.location.href = `profile/${e.target.innerHTML}`
         }
     )
-
+    // listener for likes
     document.querySelectorAll('.like-button').forEach((n) =>
         n.onclick = like
     );
 })
 
+// create post function - called when new post form is submitted
 function createNewPost(){
     inputField = document.querySelector('#newpost-textarea')
     content = {
         'content': inputField.value,
+        // post_id false to show this is new post, not editing an existing post
         'post_id': false
     };
+    // reset the inputField to blank after submitting
     inputField.value = '';
-
+    // post data to the "createpost" function in views.py
     fetch('createpost', {
         method: 'POST',
         headers: {
@@ -39,30 +43,25 @@ function createNewPost(){
         credentials: 'same-origin',
         body: JSON.stringify(content)
       })
-    .then(function () {
-        window.location.href = ''
+    .then(response => response.json())
+    .then(function (data) {
+        console.log(data)
+        if (data.not_logged_in){
+            console.log('got here')
+            window.location.href = '/login'
+        }
+        else {
+            //refresh the page
+            console.log(data)
+            window.location.href = ''
+        }
+        
     })
     return false;
 }
 
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
+// function to follow/unfollow another user
 function follow(profile){
-    // data = {'profile': profile}
     fetch('../follow', {
         method: 'POST',
         headers: {
@@ -72,11 +71,16 @@ function follow(profile){
         credentials: 'same-origin',
         body: JSON.stringify({'profile': profile})
     })
-    .then(data => data.json())
-    
-    .then(function(response) {
-        document.querySelector('#followers').innerHTML = response.total_followers
-        document.querySelector('.follow-button').innerHTML = response.set_button_to_unfollow ? "Unfollow" : "Follow";
+    .then(response => response.json())
+    .then(function(data) {
+        if (data.not_logged_in){
+            window.location.href = '/login'
+        }
+        else {
+            document.querySelector('#followers').innerHTML = data.total_followers
+            document.querySelector('.follow-button').innerHTML = data.set_button_to_unfollow ? "Unfollow" : "Follow";
+        }
+        
     })
 }
 
@@ -108,6 +112,7 @@ function edit(){
         const post_id = this.parentElement.querySelector('.post-id').innerHTML
         console.log(post_id)
         updated_post_content = this.parentElement.querySelector('.post-content').value;
+        // post data to the "createpost" function in views.py
         fetch('/createpost', {
             method: 'POST',
             headers: {
@@ -143,7 +148,10 @@ function like(){
       })
     .then(response => response.json())
     .then(function (data) {
-        if (data.liked){
+        if (data.not_logged_in){
+            window.location.href = '/login'
+        }
+        else if (data.liked){
             // change innterHTML to red heart and add 1 to likes count
             var counter = parseInt(this_element.parentElement.querySelector('.likes-counter').innerHTML)
             this_element.parentElement.innerHTML = `<i class="fas fa-heart like-button" style="color: red;"></i> <span class="likes-counter">${counter + 1}</span>`

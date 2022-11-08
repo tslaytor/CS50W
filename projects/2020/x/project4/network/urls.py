@@ -1,5 +1,6 @@
 
 from django.urls import path
+from django.contrib.auth.decorators import login_required
 
 from . import views
 
@@ -15,6 +16,4 @@ urlpatterns = [
     path("createpost", views.create_post, name="post"),
     path("follow", views.follow_view, name="follow_view"),
     path("liked/<int:post_id>", views.liked, name="liked")
-    # path('listposts/<str:username>', views.list_posts, name="list"),
-    # path('get_followers/<str:username>', views.get_followers, name="get_profile")
 ]
