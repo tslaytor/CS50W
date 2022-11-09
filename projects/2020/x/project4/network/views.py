@@ -70,7 +70,6 @@ def ProfileView(request, profile):
         context ={
             'profile': profile,
             'posts': posts
-            # 'liked': Post.objects.filter(likes=request.user).exists()
         }
     return render(request, 'network/index.html', context)
 
@@ -194,7 +193,7 @@ def follow_view(request):
     return JsonResponse({
         "total_followers": Follower.objects.filter(user=profile).count(),
         "set_button_to_unfollow": Follower.objects.filter(user=profile, follower=request.user).exists()
-    })
+    }, status=201)
 
 def liked(request, post_id):
     if not request.user.is_authenticated:
@@ -206,5 +205,5 @@ def liked(request, post_id):
     else:
         post.likes.add(request.user)
         liked = True
-    return JsonResponse({'liked': liked})
+    return JsonResponse({'liked': liked}, status=201)
     
