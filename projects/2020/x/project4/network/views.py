@@ -84,7 +84,7 @@ class FollowingPage(LoginRequiredMixin, ListView):
         context = super(FollowingPage, self).get_context_data(**kwargs)
         context.update({
             'following_page': True,
-            'liked': Post.objects.filter(likes=self.request.user).exists()
+            'liked': Post.objects.filter(likes=self.request.user).exists()  # what the heck is this?
         })
         return context
 
@@ -145,7 +145,7 @@ def register(request):
 # this view creates new posts and edits exisiting posts
 def create_post(request):
     if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
+        return JsonResponse({'not_logged_in': True}, status=201)
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
     content = json.loads(request.body)
@@ -157,7 +157,7 @@ def create_post(request):
             content = content['content']
         )
         post.save()
-        return JsonResponse({"message": "Post saved successfully."}, status=201)
+        return JsonResponse({"message": "Post saved successfully."}, status=205)
        
     # Editing an existing post    
     else:
@@ -174,9 +174,9 @@ def create_post(request):
 
 def follow_view(request):
     if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
-    if request.method != "POST":
-        return JsonResponse({"error": "POST request required."}, status=400)
+        return JsonResponse({'not_logged_in': True}, status=201)
+    if request.method != "PUT":
+        return JsonResponse({"error": "PUT request required."}, status=400)
     # get the content of body and check if user is following profile already
     data = json.loads(request.body)
     profile = User.objects.get(username=data['profile'])
@@ -197,7 +197,8 @@ def follow_view(request):
 
 def liked(request, post_id):
     if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
+        return JsonResponse({'not_logged_in': True}, status=201)
+    
     post = Post.objects.get(id=post_id) 
     if post.likes.contains(request.user):
         post.likes.remove(request.user)

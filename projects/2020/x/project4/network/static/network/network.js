@@ -47,7 +47,6 @@ function createNewPost(){
     .then(function (data) {
         console.log(data)
         if (data.not_logged_in){
-            console.log('got here')
             window.location.href = '/login'
         }
         else {
@@ -63,7 +62,7 @@ function createNewPost(){
 // function to follow/unfollow another user
 function follow(profile){
     fetch('../follow', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': csrftoken
