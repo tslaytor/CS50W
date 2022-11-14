@@ -22,7 +22,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import User, Post, Follower
 
-NUM_POSTS_PER_PAGE = 2
+NUM_POSTS_PER_PAGE = 10
 
 class PostListAllView(ListView):
     paginate_by = NUM_POSTS_PER_PAGE

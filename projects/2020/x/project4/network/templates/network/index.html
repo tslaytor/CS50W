@@ -20,13 +20,14 @@
     {% if home %}
         <form class="new-post">
             {% csrf_token %}
-            <div>
+            <div class="inner-form">
                 <label for="newpost-textarea">New Post</label>
-                <input type='text' class="form-control new-post-input" id="newpost-textarea" autocomplete="off">
+                <!-- <input type='text' class="form-control new-post-input" id="newpost-textarea" autocomplete="off"> -->
+                <textarea class="form-control new-post-input" id="newpost-textarea"></textarea>
                 <input id='submit-new-post' class="btn btn-primary" type='submit' value='Post'>
             </div>
         </form>
-        <h1>All Posts</h1>
+        <h2 class="page-heading">All Posts</h2>
     {% endif %}
 
     {% if following_page %}

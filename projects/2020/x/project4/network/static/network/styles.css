@@ -1,9 +1,22 @@
+.body {
+  padding: 1rem; }
+
 #posts {
   padding: 1rem; }
 
 .new-post-input {
   border: rgba(0, 0, 0, 0.233) 1px solid;
   padding: 1rem; }
+
+.inner-form {
+  display: flex;
+  flex-direction: column; }
+
+#submit-new-post {
+  margin-top: 1rem; }
+
+.page-heading {
+  margin-top: 2rem; }
 
 .post {
   border: #3b3b3b 1px solid;

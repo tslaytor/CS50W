@@ -3,6 +3,10 @@ $standard-padding: 1rem;
 $standard-margin : 0.5rem;
 $red: rgb(198, 73, 73);
 
+.body {
+    padding: 1rem;
+}
+
 #posts {
     padding: 1rem;
 }
@@ -12,6 +16,18 @@ $red: rgb(198, 73, 73);
     padding: $standard-padding;
 }
 
+.inner-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#submit-new-post {
+    margin-top: 1rem;
+}
+
+.page-heading {
+    margin-top: 2rem;
+}
 .post {
     border: rgb(59, 59, 59) 1px solid;
     padding: $standard-padding;
