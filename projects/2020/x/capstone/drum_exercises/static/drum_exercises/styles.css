@@ -1,0 +1,75 @@
+* {
+  box-sizing: border-box; }
+
+.container {
+  width: 20%;
+  min-width: min-content;
+  height: 6.58%;
+  margin: 10rem auto;
+  display: flex; }
+
+.beat {
+  position: relative;
+  display: flex;
+  flex-grow: 1; }
+
+.sub-beat {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: relative; }
+
+.stave-line {
+  height: 0rem;
+  width: 100%;
+  top: 5rem;
+  border-top: 2px black solid; }
+
+.note {
+  display: inline-block;
+  display: flex;
+  align-items: flex-end;
+  flex-grow: 1;
+  width: 14px;
+  max-width: 14px;
+  overflow: visible;
+  position: relative; }
+
+.head {
+  display: inline-block;
+  height: 20%;
+  width: 115%;
+  border-radius: 100%;
+  background-color: black;
+  transform-origin: center;
+  transform: rotateZ(-45deg) translate(-15px, 0);
+  position: absolute; }
+
+.stem {
+  width: 4px;
+  height: 60px;
+  background-color: black;
+  position: relative; }
+
+.top-beam {
+  width: 89%;
+  border-top: 8px black solid;
+  position: absolute;
+  left: 2%; }
+
+.middle-beam {
+  width: 89%;
+  border-top: 8px black solid;
+  position: absolute;
+  top: 15px;
+  left: 2%; }
+
+.bottom-beam {
+  width: 75%;
+  border-top: 8px black solid;
+  position: absolute;
+  top: 30px;
+  left: 7%; }
+
+/*# sourceMappingURL=styles.css.map */
