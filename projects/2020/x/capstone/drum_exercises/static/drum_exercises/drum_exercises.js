@@ -1,4 +1,4 @@
-let bar_value_array = [[[2,2],[2,2]],[[2,2],[4]]];
+let bar_value_array = [ [[8],[0]] , [[2,2],[4]] ];
 
 document.addEventListener("DOMContentLoaded", function(){
     let beats_template_as_array = Array.from(document.querySelectorAll('.beat'));
@@ -19,10 +19,15 @@ document.addEventListener("DOMContentLoaded", function(){
         });
         notes_of_this_beat = [].concat(...notes_of_this_beat)
 
-        
+
         let cursor = 0;
         beat_value_array.forEach(function(subbeat_array){
-            subbeat_array.forEach(function(note_value){
+            subbeat_array.forEach(function(note_value, index){
+                if (index === 0) {
+                    if(note_value > 7){
+                        console.log('there should be no top beam')
+                    }
+                }
                 for (var i = 0; i < note_value; i++){
                     if (i > 0){
                         var ele = notes_of_this_beat[cursor].children;
