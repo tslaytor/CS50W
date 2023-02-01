@@ -3,13 +3,20 @@
 //     [[2,2],[4]]
 // ];
 let bar_value_array = [
-    [[{value: 3, rest: false}],[{value: 5, rest: false}]], 
+    [[{value: 4, rest: false}],[{value: 4, rest: true}]], 
     [[{value: 2, rest: false},{value: 2, rest: false}],[{value: 4, rest: false}]]
 ];
 document.addEventListener("DOMContentLoaded", function(){
 
     // GET EVERY TEMPLATE BEAT IN THE DOM
     let template_beats = Array.from(document.querySelectorAll('.beat'));
+    let template_heads = Array.from(document.querySelectorAll('.head'));
+    let template_rests = Array.from(document.querySelectorAll('img'));
+    console.log('note heads')
+    console.log(template_heads)
+
+    let template_notes = Array.from(document.querySelectorAll('.note'));
+    template_notes.forEach(ele => ele.innerHTML += `<img class='eighthRest' src='../../static/drum_exercises/images/EigthNoteRest.png'>`);
 
     // FOR EACH BEAT IN THE VALUE ARRAY, USE THE INDEX OF THE LOOP TO INDENTIFY WHICH TEMPLATE BEATS IT REFERS TO
     bar_value_array.forEach(function(beat_value_array, index){
@@ -29,14 +36,33 @@ document.addEventListener("DOMContentLoaded", function(){
         // MERGE TEMPLATE NOTES INTO ONE ARRAY
         template_notes_of_this_beat = [].concat(...template_notes_of_this_beat)
 
+        let template_rests_of_this_beat = template_notes_of_this_beat.reduce((acc, noteElement) => {
+            const imgElements = [...noteElement.querySelectorAll('img')];
+            return [...acc, ...imgElements];
+        }, []);
+
+        console.log('template_rests_of_this_beat')
+        console.log(template_rests_of_this_beat)
+
         // SET A CURSOR TO KEEP TRACK OF WHICH NOTE IN THE TEMPLATE WE ARE EDITING
         let cursor = 0;
         // ITERATE OVER EACH SUBBEAT VALUE ARRAY AND EACH NOTE VAULE WITHIN
-        beat_value_array.forEach(function(subbeat_array){
-            subbeat_array.forEach(function(note_obj){
+        beat_value_array.forEach(function(subbeat_value_array){
+            subbeat_value_array.forEach(function(note_obj){
+                // FIRST, LETS GET THE RESTS IN THIS SUB
                 // WE CREATE A LOOP THE LENGTH OF THE CURRENT NOTE VALUE, AND USE THE VALUE OF THE CURSOR TO INDEX INTO THE TEMPLATE NOTES OF THIS BEAT TO SELECT WHICH NOTE WE WANT TO CHAGE
                 // IF IT IS THE FIRST NOTE (I.E. THE VALUE OF i IS 0) WE LEAVE IT VISABLE, OTHERWISE, WE HIDE IT WITH DISPLAY = NONE
                 for (var i = 0; i < note_obj['value']; i++){
+                    if (note_obj['rest'] === true){
+                        var ele = template_notes_of_this_beat[cursor].children;
+                        Array.from(ele).forEach(el => el.style.display = 'none');
+                        template_notes_of_this_beat[cursor].querySelector('.eighthRest').style.display = 'block';
+                        console.log('ele')
+                        console.log(ele)
+                        console.log('template_rests_of_this_beat[cursor]');
+                        console.log(template_rests_of_this_beat[cursor]);
+                        // template_rests_of_this_beat[cursor].style.display = 'block';
+                    }
                     if (i > 0){
                         var ele = template_notes_of_this_beat[cursor].children;
                         Array.from(ele).forEach(el => el.style.display = 'none');

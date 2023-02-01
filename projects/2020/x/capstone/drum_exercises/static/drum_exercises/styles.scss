@@ -50,7 +50,14 @@
     background-color: black;
     transform-origin: center;
     transform: rotateZ(-45deg) translate(-15px, 0);
-    position: absolute;    
+    position: absolute;
+}
+
+.eighthRest {
+    // position: absolute;
+    width: 100%;
+    transform: translate(-10px, 35px);
+    display: none;
 }
 
 .stem {

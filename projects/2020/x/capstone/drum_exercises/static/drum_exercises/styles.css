@@ -46,6 +46,11 @@
   transform: rotateZ(-45deg) translate(-15px, 0);
   position: absolute; }
 
+.eighthRest {
+  width: 100%;
+  transform: translate(-10px, 35px);
+  display: none; }
+
 .stem {
   width: 4px;
   height: 60px;
