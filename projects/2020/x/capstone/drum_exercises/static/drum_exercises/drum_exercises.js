@@ -1,6 +1,6 @@
 
 let bar_value_array = [
-    [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
+    [[{value: 4, rest: true}],[{value: 2, rest: false}, {value: 2, rest: false}]], 
     [[{value: 2, rest: false},{value: 2, rest: false}],[{value: 4, rest: false}]],
     [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
     [[{value: 2, rest: false},{value: 2, rest: false}],[{value: 4, rest: false}]]
@@ -119,9 +119,15 @@ function getTopBeamForThisBeat(templateBeats, index){
 }
 
 function topBeamEditor(indexs_of_non_rest_note_values, beam_to_be_edited){
-    console.dir(beam_to_be_edited);
     var first_and_last = [indexs_of_non_rest_note_values[0], indexs_of_non_rest_note_values[indexs_of_non_rest_note_values.length - 1]];
-    console.log(first_and_last)
-    beam_to_be_edited.style.transform = `translateX(${first_and_last[0] * 14}px)`
-    beam_to_be_edited.style.borderTop = '8px solid pink'
+    beam_to_be_edited.style.width = `${(first_and_last[1] - first_and_last[0]) * 14}px`
+    beam_to_be_edited.style.transform = `translateX(${first_and_last[0] * 14}px)`;
+    if (first_and_last[0] === first_and_last[1]){
+        beam_to_be_edited.style.width = '18px';
+        beam_to_be_edited.style.transformOrigin = `${first_and_last[0] * 14}px`;
+        beam_to_be_edited.style.transform = `rotateZ(45deg) translateX(${first_and_last[0] * 14}px) skew(45deg, 0deg)`
+        beam_to_be_edited.style.borderRadius = '2px';
+    }
+
+    
 }
