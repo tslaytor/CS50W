@@ -1,7 +1,7 @@
 
 let bar_value_array = [
-    [[{value: 4, rest: true}],[{value: 2, rest: false}, {value: 2, rest: false}]], 
-    [[{value: 2, rest: false},{value: 2, rest: false}],[{value: 4, rest: false}]],
+    [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
+    [[{value: 2, rest: false},{value: 4, rest: false}],[{value: 2, rest: false}]],
     [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
     [[{value: 2, rest: false},{value: 2, rest: false}],[{value: 4, rest: false}]]
 ];
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     // FOR EACH BEAT IN THE VALUE ARRAY
     bar_value_array.forEach(function(beat_value_array, index){
-        var beam_to_be_edited = getTopBeamForThisBeat(template_beats, index);
+        
         // GET THE TEMPLATE NOTES
         var template_notes_of_this_beat = getTemplateNotesOfBeat(template_beats, index);
         var note_obj_of_this_beat = [];
@@ -55,10 +55,23 @@ document.addEventListener("DOMContentLoaded", function(){
                 note_obj_of_this_beat.push(note_obj);
             });
         })
+        console.log('note_obj_of_this_beat');
+        console.log(note_obj_of_this_beat);
+        // I CAN CHECK HOW MANY MIDDLE BEAMS ON THIS BEAT WITH THE NOTE OBJ OF THIS BEAT ARRAY
+        // IF THERE ARE AT LEAST 2 PLAYED NOTES WITH A VALUE OF 16TH (2) OR LESS 
+        // AND THAT HAS ANY REST IN BETWEEN THEM, OR A PLAYED NOTE WITH A VALUE OF 8TH (4) OR GREATER
+        var x = middleBeamEditor(note_obj_of_this_beat);
+        console.log('how many beams?');
+        console.log(x);
+        
         console.log('indexs_of_non_rest_note_values');
         console.log(indexs_of_non_rest_note_values);
 
-        topBeamEditor(indexs_of_non_rest_note_values, beam_to_be_edited);
+        var top_beam_to_be_edited = getBeamForThisBeat(template_beats, index, 'top-beam');
+        topBeamEditor(indexs_of_non_rest_note_values, top_beam_to_be_edited);
+
+        var middle_beam_to_be_edited = getBeamForThisBeat(template_beats, index, 'middle-beam');
+        // middleBeamEditor()
 
         // to calculate where the top beam starts and ends, find the first and last note of the beat
         // var indexs_of_non_rest_note_values = [];
@@ -110,24 +123,67 @@ function getTemplateNotesOfBeat(templateBeats, index){
 
 }
 
-function getTopBeamForThisBeat(templateBeats, index){
+function getBeamForThisBeat(templateBeats, index, beamName){
     // GET THE TEMPLATE SUBBEAT ELEMENTS FOR THE IDENTIFIED TEMPLATE BEAT
-    var topBeam = Array.from(templateBeats[index].children).filter(function (child) {
-        return child.classList.contains('top-beam');
+    var beam = Array.from(templateBeats[index].children).filter(function (child) {
+        return child.classList.contains(beamName);
     })
-    return topBeam[0];
+    return beam[0];
 }
 
 function topBeamEditor(indexs_of_non_rest_note_values, beam_to_be_edited){
     var first_and_last = [indexs_of_non_rest_note_values[0], indexs_of_non_rest_note_values[indexs_of_non_rest_note_values.length - 1]];
+    // EDIT THE LENGTH OF THE BEAM
     beam_to_be_edited.style.width = `${(first_and_last[1] - first_and_last[0]) * 14}px`
+    // EDIT WHERE THE BEAM STARTS
     beam_to_be_edited.style.transform = `translateX(${first_and_last[0] * 14}px)`;
+    // THIS PART HANDLES FLAGS (I.E. WHEN THE BEAM DOESNT CONNECT TO ANOTHER NOTE)
     if (first_and_last[0] === first_and_last[1]){
         beam_to_be_edited.style.width = '18px';
         beam_to_be_edited.style.transformOrigin = `${first_and_last[0] * 14}px`;
         beam_to_be_edited.style.transform = `rotateZ(45deg) translateX(${first_and_last[0] * 14}px) skew(45deg, 0deg)`
         beam_to_be_edited.style.borderRadius = '2px';
     }
+}
 
+function middleBeamEditor(note_objs){
+    var sixteenth_or_less_positions = [];
+    var eighth_note_and_higher_or_rests_positions = [];
+    var num_of_beams = 1;
+    note_objs.forEach(function(note_obj, index){
+        if (note_obj['value'] <= 2 && !note_obj['rest']){
+            sixteenth_or_less_positions.push(index);
+        }
+        else if (note_obj['value'] >= 4 || note_obj['rest']){
+            eighth_note_and_higher_or_rests_positions.push(index);
+        }
+    })
+    console.log('sixteenth_or_less_positions');
+    console.log(sixteenth_or_less_positions);
+    console.log('eighth_note_and_higher_or_rests_positions');
+    console.log(eighth_note_and_higher_or_rests_positions);
+    if (sixteenth_or_less_positions.length === 0){
+        num_of_beams = 0;
+        return num_of_beams;
+    }
+    else {
+        eighth_note_and_higher_or_rests_positions.forEach(note_position => {
+            // if the first sixteenth is before the any 8th note AND the last sixteenth is after the same 8th note
+            console.log('sixteenth_or_less_positions[0]');
+            console.log(sixteenth_or_less_positions[0])
+            console.log('is less than')
+            console.log('note_position');
+            console.log(note_position);
+            console.log('which is also less than')
+            console.log('sixteenth_or_less_positions[sixteenth_or_less_positions.length - 1]')
+            console.log(sixteenth_or_less_positions[sixteenth_or_less_positions.length - 1])
+
+            if (sixteenth_or_less_positions[0] < note_position && note_position < sixteenth_or_less_positions[sixteenth_or_less_positions.length - 1]){
+                console.log('THIS SHOULD BE RETURNING 2!!!!!!!!!!!!!!')
+                num_of_beams = 2;
+            }
+        })
+        return num_of_beams;
+    }
     
 }
