@@ -5,7 +5,8 @@ let bar_value_array = [
     [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
     [[{value: 2, rest: false},{value: 2, rest: false}],[{value: 4, rest: false}]],
     [[{value: 2, rest: false}, {value: 2, rest: false}],[{value: 2, rest: false}, {value: 2, rest: false}]],
-    [[{value: 2, rest: false}, {value: 2, rest: false}],[{value: 4, rest: true}]]
+    [[{value: 2, rest: false}, {value: 2, rest: false}],[{value: 4, rest: true}]],
+    [[{value: 4, rest: true}],[{value: 2, rest: false}, {value: 2, rest: false}]]
     
 ];
 document.addEventListener("DOMContentLoaded", function(){
@@ -161,7 +162,7 @@ function middleBeamEditor(indexs_of_non_rest_note_values, beamToBeEdited){
         console.log('${(non_rests[non_rests.length - 1] - non_rests[0]) * 14}px');
         console.log(non_rests[non_rests.length - 1], non_rests[0])
         beamToBeEdited.style.width = `${(non_rests[non_rests.length - 1]['cursor'] - non_rests[0]['cursor']) * 14}px`
-
+        beamToBeEdited.style.transform = `translateX(${non_rests[0]['cursor'] * 14}px)`;
         return num_of_beams;
     }
     
