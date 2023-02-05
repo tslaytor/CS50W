@@ -3,7 +3,10 @@ let bar_value_array = [
     [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
     [[{value: 2, rest: false},{value: 4, rest: false}],[{value: 2, rest: false}]],
     [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
-    [[{value: 2, rest: false},{value: 2, rest: false}],[{value: 4, rest: false}]]
+    [[{value: 2, rest: false},{value: 2, rest: false}],[{value: 4, rest: false}]],
+    [[{value: 2, rest: false}, {value: 2, rest: false}],[{value: 2, rest: false}, {value: 2, rest: false}]],
+    [[{value: 2, rest: false}, {value: 2, rest: false}],[{value: 4, rest: true}]]
+    
 ];
 document.addEventListener("DOMContentLoaded", function(){
      // *************** CHANGES SOON TO HOW WE MAKE TEMPLATES? ********************************
@@ -42,8 +45,8 @@ document.addEventListener("DOMContentLoaded", function(){
                         
                     }
                     // OTHERWISE, SAVE THE POSITION OF THE NOTE FOR BEAM EDITING
-                    else if (i === 0){
-                        indexs_of_non_rest_note_values.push(cursor)
+                    if (i === 0){
+                        indexs_of_non_rest_note_values.push({'cursor': cursor, 'value': note_obj['value'], 'rest': note_obj['rest']});
                     }
 
                     if (i > 0){
@@ -55,51 +58,23 @@ document.addEventListener("DOMContentLoaded", function(){
                 note_obj_of_this_beat.push(note_obj);
             });
         })
-        console.log('note_obj_of_this_beat');
-        console.log(note_obj_of_this_beat);
-        // I CAN CHECK HOW MANY MIDDLE BEAMS ON THIS BEAT WITH THE NOTE OBJ OF THIS BEAT ARRAY
-        // IF THERE ARE AT LEAST 2 PLAYED NOTES WITH A VALUE OF 16TH (2) OR LESS 
-        // AND THAT HAS ANY REST IN BETWEEN THEM, OR A PLAYED NOTE WITH A VALUE OF 8TH (4) OR GREATER
-        var x = middleBeamEditor(note_obj_of_this_beat);
-        console.log('how many beams?');
-        console.log(x);
-        
-        console.log('indexs_of_non_rest_note_values');
-        console.log(indexs_of_non_rest_note_values);
+        // console.log('note_obj_of_this_beat');
+        // console.log(note_obj_of_this_beat);
+
+
 
         var top_beam_to_be_edited = getBeamForThisBeat(template_beats, index, 'top-beam');
         topBeamEditor(indexs_of_non_rest_note_values, top_beam_to_be_edited);
 
         var middle_beam_to_be_edited = getBeamForThisBeat(template_beats, index, 'middle-beam');
-        // middleBeamEditor()
 
-        // to calculate where the top beam starts and ends, find the first and last note of the beat
-        // var indexs_of_non_rest_note_values = [];
-        // note_obj_of_this_beat.forEach(note_obj, i => {
-        //     if (!note_obj['rest']){
-        //         indexs_of_non_rest_note_values.push(i)
-        //     }
-        // })
+                // I CAN CHECK HOW MANY MIDDLE BEAMS ON THIS BEAT WITH THE NOTE OBJ OF THIS BEAT ARRAY
+        // IF THERE ARE AT LEAST 2 PLAYED NOTES WITH A VALUE OF 16TH (2) OR LESS 
+        // AND THAT HAS ANY REST IN BETWEEN THEM, OR A PLAYED NOTE WITH A VALUE OF 8TH (4) OR GREATER
+        var x = middleBeamEditor(indexs_of_non_rest_note_values, middle_beam_to_be_edited);
+        console.log('how many beams?');
+        console.log(x);
 
-
-        // here we can determine: 
-        // 1. whether the top beam is visible 
-        // 2. which notes belong to this beat
-
-        // and only here, once we have looped through both subbeat arrays, can we have all of the notes of the beat in one array
-        // (the subbeat array thing will become useful when we get into 2nd and 3rd beam controls... maybe just 3rd beam controls actually)
-        // so lets make a top beam handling function
-                    // it needs to know:
-                    // 1. if there should be a top beam at all (calc. if the first note value is bigger than 7)
-                    // 2. where the top beam should start (calc. first note that is not a rest)
-                    // 3. where the top beam should end (calc. the last note of the beat that isn't a rest - can use lastIndexOf )
-                    // as a function... it will need all this information passed in in one go
-                //     if (index === 0 && note_value > 7) {
-                
-                //         console.log('there should be no top beam')
-                        
-                    
-                // }
     })
 })
 
@@ -132,7 +107,8 @@ function getBeamForThisBeat(templateBeats, index, beamName){
 }
 
 function topBeamEditor(indexs_of_non_rest_note_values, beam_to_be_edited){
-    var first_and_last = [indexs_of_non_rest_note_values[0], indexs_of_non_rest_note_values[indexs_of_non_rest_note_values.length - 1]];
+    let non_rests = indexs_of_non_rest_note_values.filter(obj => !obj['rest'])
+    var first_and_last = [non_rests[0]['cursor'], non_rests[non_rests.length - 1]['cursor']];
     // EDIT THE LENGTH OF THE BEAM
     beam_to_be_edited.style.width = `${(first_and_last[1] - first_and_last[0]) * 14}px`
     // EDIT WHERE THE BEAM STARTS
@@ -146,43 +122,46 @@ function topBeamEditor(indexs_of_non_rest_note_values, beam_to_be_edited){
     }
 }
 
-function middleBeamEditor(note_objs){
-    var sixteenth_or_less_positions = [];
-    var eighth_note_and_higher_or_rests_positions = [];
+// I THINK I NEED TO PASS THE BEAM TO BE EDITED
+function middleBeamEditor(indexs_of_non_rest_note_values, beamToBeEdited){
+    let non_rests = indexs_of_non_rest_note_values.filter(obj => !obj['rest'] && obj['value'] <= 2)
+    console.log('non_rests', non_rests)
+    var array16thPositions = [];
+    var array8thAndRestPositions = [];
     var num_of_beams = 1;
-    note_objs.forEach(function(note_obj, index){
+    indexs_of_non_rest_note_values.forEach(function(note_obj, index){
         if (note_obj['value'] <= 2 && !note_obj['rest']){
-            sixteenth_or_less_positions.push(index);
+            array16thPositions.push(note_obj['cursor']);
         }
+        // ******************************** I'M' CHECKING FOR REST VALUES HERE... BUT THE VARIABLE IS ..
+        // CALLED "InDExEs oF Non-ResT nOtE vAlUeS" ******************************************************
         else if (note_obj['value'] >= 4 || note_obj['rest']){
-            eighth_note_and_higher_or_rests_positions.push(index);
+            array8thAndRestPositions.push(note_obj['cursor']);
         }
     })
-    console.log('sixteenth_or_less_positions');
-    console.log(sixteenth_or_less_positions);
-    console.log('eighth_note_and_higher_or_rests_positions');
-    console.log(eighth_note_and_higher_or_rests_positions);
-    if (sixteenth_or_less_positions.length === 0){
+    let length = array16thPositions.length;
+    if (length === 0){
         num_of_beams = 0;
+        // in this case, I need to hide the beam
+        beamToBeEdited.style.display = 'none';
         return num_of_beams;
     }
     else {
-        eighth_note_and_higher_or_rests_positions.forEach(note_position => {
-            // if the first sixteenth is before the any 8th note AND the last sixteenth is after the same 8th note
-            console.log('sixteenth_or_less_positions[0]');
-            console.log(sixteenth_or_less_positions[0])
-            console.log('is less than')
-            console.log('note_position');
-            console.log(note_position);
-            console.log('which is also less than')
-            console.log('sixteenth_or_less_positions[sixteenth_or_less_positions.length - 1]')
-            console.log(sixteenth_or_less_positions[sixteenth_or_less_positions.length - 1])
-
-            if (sixteenth_or_less_positions[0] < note_position && note_position < sixteenth_or_less_positions[sixteenth_or_less_positions.length - 1]){
-                console.log('THIS SHOULD BE RETURNING 2!!!!!!!!!!!!!!')
+        for(var i = 0; i < array8thAndRestPositions.length; i++){
+            if (array16thPositions[0] < array8thAndRestPositions[i] && array8thAndRestPositions[i] < array16thPositions[length - 1]){
+                // in this case I need to make a new beam 
+                // and then break
                 num_of_beams = 2;
             }
-        })
+        }
+        // here, I need to move the existing beam to the right position
+        // I need the index of 16th note of less values
+        console.log('beamToBeEdited: ')
+        console.log(beamToBeEdited)
+        console.log('${(non_rests[non_rests.length - 1] - non_rests[0]) * 14}px');
+        console.log(non_rests[non_rests.length - 1], non_rests[0])
+        beamToBeEdited.style.width = `${(non_rests[non_rests.length - 1]['cursor'] - non_rests[0]['cursor']) * 14}px`
+
         return num_of_beams;
     }
     
