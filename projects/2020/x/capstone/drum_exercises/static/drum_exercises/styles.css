@@ -31,19 +31,19 @@
   display: flex;
   align-items: flex-end;
   flex-grow: 1;
-  width: 14px;
-  max-width: 14px;
+  width: 12px;
+  max-width: 12px;
   overflow: visible;
   position: relative; }
 
 .head {
   display: inline-block;
-  height: 20%;
+  height: 18%;
   width: 115%;
   border-radius: 100%;
   background-color: black;
   transform-origin: center;
-  transform: rotateZ(-45deg) translate(-15px, 0);
+  transform: rotateZ(-45deg) translate(-12px, -2PX);
   position: absolute; }
 
 .eighthRest {
@@ -67,7 +67,7 @@
   width: 89%;
   border-top: 8px black solid;
   position: absolute;
-  top: 15px;
+  top: 13px;
   left: 2%; }
 
 .bottom-beam {

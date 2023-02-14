@@ -1,3 +1,5 @@
+$noteWidth: 12px;
+
 * {
     box-sizing: border-box;
 }
@@ -36,20 +38,20 @@
     display: flex;
     align-items: flex-end;
     flex-grow: 1;
-    width: 14px;
-    max-width: 14px;
+    width: $noteWidth;
+    max-width: $noteWidth;
     overflow: visible;
     position: relative;
 }
 
 .head {
     display: inline-block;
-    height: 20%;
+    height: 18%;
     width: 115%;
     border-radius: 100%;
     background-color: black;
     transform-origin: center;
-    transform: rotateZ(-45deg) translate(-15px, 0);
+    transform: rotateZ(-45deg) translate(-$noteWidth, -2PX);
     position: absolute;
 }
 
@@ -72,14 +74,14 @@
     border-top: 8px black solid;
     position: absolute;
     left: 2%;
-    // transform: translateX(14px * 2);
+    // transform: translateX($noteWidthItem * 2);
 }
 
 .middle-beam {
     width: 89%;
     border-top: 8px black solid;
     position: absolute;
-    top: 15px;
+    top: $noteWidth + 1;
     left: 2%;
 }
 

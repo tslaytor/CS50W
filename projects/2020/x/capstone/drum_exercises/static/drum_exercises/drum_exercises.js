@@ -1,3 +1,4 @@
+const NOTEWIDTH = 12;
 
 let bar_value_array = [
     [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
@@ -107,18 +108,19 @@ function getBeamForThisBeat(templateBeats, index, beamName){
     return beam[0];
 }
 
+
 function topBeamEditor(indexs_of_non_rest_note_values, beam_to_be_edited){
     let non_rests = indexs_of_non_rest_note_values.filter(obj => !obj['rest'])
     var first_and_last = [non_rests[0]['cursor'], non_rests[non_rests.length - 1]['cursor']];
     // EDIT THE LENGTH OF THE BEAM
-    beam_to_be_edited.style.width = `${(first_and_last[1] - first_and_last[0]) * 14}px`
+    beam_to_be_edited.style.width = `${(first_and_last[1] - first_and_last[0]) * NOTEWIDTH}px`
     // EDIT WHERE THE BEAM STARTS
-    beam_to_be_edited.style.transform = `translateX(${first_and_last[0] * 14}px)`;
+    beam_to_be_edited.style.transform = `translateX(${first_and_last[0] * NOTEWIDTH}px)`;
     // THIS PART HANDLES FLAGS (I.E. WHEN THE BEAM DOESNT CONNECT TO ANOTHER NOTE)
     if (first_and_last[0] === first_and_last[1]){
         beam_to_be_edited.style.width = '18px';
-        beam_to_be_edited.style.transformOrigin = `${first_and_last[0] * 14}px`;
-        beam_to_be_edited.style.transform = `rotateZ(45deg) translateX(${first_and_last[0] * 14}px) skew(45deg, 0deg)`
+        beam_to_be_edited.style.transformOrigin = `${first_and_last[0] * NOTEWIDTH}px`;
+        beam_to_be_edited.style.transform = `rotateZ(45deg) translateX(${first_and_last[0] * NOTEWIDTH}px) skew(45deg, 0deg)`
         beam_to_be_edited.style.borderRadius = '2px';
     }
 }
@@ -159,10 +161,10 @@ function middleBeamEditor(indexs_of_non_rest_note_values, beamToBeEdited){
         // I need the index of 16th note of less values
         console.log('beamToBeEdited: ')
         console.log(beamToBeEdited)
-        console.log('${(non_rests[non_rests.length - 1] - non_rests[0]) * 14}px');
+        console.log('${(non_rests[non_rests.length - 1] - non_rests[0]) * NOTEWIDTH}px');
         console.log(non_rests[non_rests.length - 1], non_rests[0])
-        beamToBeEdited.style.width = `${(non_rests[non_rests.length - 1]['cursor'] - non_rests[0]['cursor']) * 14}px`
-        beamToBeEdited.style.transform = `translateX(${non_rests[0]['cursor'] * 14}px)`;
+        beamToBeEdited.style.width = `${(non_rests[non_rests.length - 1]['cursor'] - non_rests[0]['cursor']) * NOTEWIDTH}px`
+        beamToBeEdited.style.transform = `translateX(${non_rests[0]['cursor'] * NOTEWIDTH}px)`;
         return num_of_beams;
     }
     
