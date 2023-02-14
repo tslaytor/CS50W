@@ -10,6 +10,32 @@ let bar_value_array = [
     [[{value: 4, rest: true}],[{value: 2, rest: false}, {value: 2, rest: false}]]
     
 ];
+
+let bars = [
+    {
+        "tempo": 120,
+        "timeSignature": [4, 4],
+        // I now know how many beats and subbeats in this bar
+        "barValueArray": [
+            [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
+            [[{value: 2, rest: false},{value: 4, rest: false}],[{value: 2, rest: false}]],
+            [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
+            [[{value: 2, rest: false},{value: 2, rest: false}],[{value: 4, rest: false}]]
+        ]
+    // },
+    // {
+    //     "tempo": 120,
+    //     "timeSignature": [4, 4],
+    //     // I now know how many beats and subbeats in this bar
+    //     "barValueArray": [
+    //         [[{value: 2, rest: false}, {value: 2, rest: false}],[{value: 2, rest: false}, {value: 2, rest: false}]],
+    //         [[{value: 2, rest: false}, {value: 2, rest: false}],[{value: 4, rest: true}]],
+    //         [[{value: 4, rest: true}],[{value: 2, rest: false}, {value: 2, rest: false}]]
+    //     ]
+    }
+]
+
+
 document.addEventListener("DOMContentLoaded", function(){
      // *************** CHANGES SOON TO HOW WE MAKE TEMPLATES? ********************************
     // GET EVERY TEMPLATE NOTE IN THE DOM AND ADD THE REST ELEMENT NEXT TO IT 
@@ -21,63 +47,68 @@ document.addEventListener("DOMContentLoaded", function(){
     let template_beats = Array.from(document.querySelectorAll('.beat'));
 
     // FOR EACH BEAT IN THE VALUE ARRAY
-    bar_value_array.forEach(function(beat_value_array, index){
+    bars.forEach( bar => {
+        bar["barValueArray"].forEach(function(beat_value_array, index){
         
-        // GET THE TEMPLATE NOTES
-        var template_notes_of_this_beat = getTemplateNotesOfBeat(template_beats, index);
-        var note_obj_of_this_beat = [];
-        var indexs_of_non_rest_note_values = [];
-
-        // SET A CURSOR TO KEEP TRACK OF WHICH NOTE IN THE TEMPLATE WE ARE EDITING
-        let cursor = 0;
-        // ITERATE OVER EACH SUBBEAT VALUE ARRAY AND EACH NOTE VAULE WITHIN
-        beat_value_array.forEach(function(subbeat_value_array){
-            subbeat_value_array.forEach(function(note_obj){
-                 
-                // WE USE THE VALUE OF THE CURSOR TO INDEX INTO THE TEMPLATE NOTES AND SELECT WHICH NOTE WE WANT TO EDIT
-                // IF IT IS THE FIRST NOTE TEMPLATE NOTE OF THE LOOP WE LEAVE IT VISABLE, OTHERWISE, WE HIDE IT WITH DISPLAY = NONE
-                // CREATE A LOOP THE LENGTH OF THE CURRENT NOTE VALUE,
-                for (var i = 0; i < note_obj['value']; i++){
-                    // IF NOTE IS A REST, HIDE ALL ELEMENTS IN THE NOTE AND DISPLAY THE REST
-                    if (note_obj['rest'] === true){
-                        var thisTemplateNote = template_notes_of_this_beat[cursor];
-                        var ele = thisTemplateNote.children;
-                        Array.from(ele).forEach(el => el.style.display = 'none');
-                        thisTemplateNote.querySelector('.eighthRest').style.display = 'block';
-                        
+            // GET THE TEMPLATE NOTES
+            var template_notes_of_this_beat = getTemplateNotesOfBeat(template_beats, index);
+            var note_obj_of_this_beat = [];
+            var indexs_of_non_rest_note_values = [];
+    
+            // SET A CURSOR TO KEEP TRACK OF WHICH NOTE IN THE TEMPLATE WE ARE EDITING
+            let cursor = 0;
+            // ITERATE OVER EACH SUBBEAT VALUE ARRAY AND EACH NOTE VAULE WITHIN
+            beat_value_array.forEach(function(subbeat_value_array){
+                subbeat_value_array.forEach(function(note_obj){
+                     
+                    // WE USE THE VALUE OF THE CURSOR TO INDEX INTO THE TEMPLATE NOTES AND SELECT WHICH NOTE WE WANT TO EDIT
+                    // IF IT IS THE FIRST NOTE TEMPLATE NOTE OF THE LOOP WE LEAVE IT VISABLE, OTHERWISE, WE HIDE IT WITH DISPLAY = NONE
+                    // CREATE A LOOP THE LENGTH OF THE CURRENT NOTE VALUE,
+                    for (var i = 0; i < note_obj['value']; i++){
+                        // IF NOTE IS A REST, HIDE ALL ELEMENTS IN THE NOTE AND DISPLAY THE REST
+                        if (note_obj['rest'] === true){
+                            var thisTemplateNote = template_notes_of_this_beat[cursor];
+                            var ele = thisTemplateNote.children;
+                            Array.from(ele).forEach(el => el.style.display = 'none');
+                            thisTemplateNote.querySelector('.eighthRest').style.display = 'block';
+                            
+                        }
+                        // OTHERWISE, SAVE THE POSITION OF THE NOTE FOR BEAM EDITING
+                        if (i === 0){
+                            indexs_of_non_rest_note_values.push({'cursor': cursor, 'value': note_obj['value'], 'rest': note_obj['rest']});
+                        }
+    
+                        if (i > 0){
+                            var ele = template_notes_of_this_beat[cursor].children;
+                            Array.from(ele).forEach(el => el.style.display = 'none');
+                        }
+                        cursor++;
                     }
-                    // OTHERWISE, SAVE THE POSITION OF THE NOTE FOR BEAM EDITING
-                    if (i === 0){
-                        indexs_of_non_rest_note_values.push({'cursor': cursor, 'value': note_obj['value'], 'rest': note_obj['rest']});
-                    }
-
-                    if (i > 0){
-                        var ele = template_notes_of_this_beat[cursor].children;
-                        Array.from(ele).forEach(el => el.style.display = 'none');
-                    }
-                    cursor++;
-                }
-                note_obj_of_this_beat.push(note_obj);
-            });
+                    note_obj_of_this_beat.push(note_obj);
+                });
+            })
+            // console.log('note_obj_of_this_beat');
+            // console.log(note_obj_of_this_beat);
+    
+    
+    
+            var top_beam_to_be_edited = getBeamForThisBeat(template_beats, index, 'top-beam');
+            topBeamEditor(indexs_of_non_rest_note_values, top_beam_to_be_edited);
+    
+            var middle_beam_to_be_edited = getBeamForThisBeat(template_beats, index, 'middle-beam');
+    
+                    // I CAN CHECK HOW MANY MIDDLE BEAMS ON THIS BEAT WITH THE NOTE OBJ OF THIS BEAT ARRAY
+            // IF THERE ARE AT LEAST 2 PLAYED NOTES WITH A VALUE OF 16TH (2) OR LESS 
+            // AND THAT HAS ANY REST IN BETWEEN THEM, OR A PLAYED NOTE WITH A VALUE OF 8TH (4) OR GREATER
+            var x = middleBeamEditor(indexs_of_non_rest_note_values, middle_beam_to_be_edited);
+            console.log('how many beams?');
+            console.log(x);
+    
         })
-        // console.log('note_obj_of_this_beat');
-        // console.log(note_obj_of_this_beat);
+    }
 
-
-
-        var top_beam_to_be_edited = getBeamForThisBeat(template_beats, index, 'top-beam');
-        topBeamEditor(indexs_of_non_rest_note_values, top_beam_to_be_edited);
-
-        var middle_beam_to_be_edited = getBeamForThisBeat(template_beats, index, 'middle-beam');
-
-                // I CAN CHECK HOW MANY MIDDLE BEAMS ON THIS BEAT WITH THE NOTE OBJ OF THIS BEAT ARRAY
-        // IF THERE ARE AT LEAST 2 PLAYED NOTES WITH A VALUE OF 16TH (2) OR LESS 
-        // AND THAT HAS ANY REST IN BETWEEN THEM, OR A PLAYED NOTE WITH A VALUE OF 8TH (4) OR GREATER
-        var x = middleBeamEditor(indexs_of_non_rest_note_values, middle_beam_to_be_edited);
-        console.log('how many beams?');
-        console.log(x);
-
-    })
+    )
+    
 })
 
 
