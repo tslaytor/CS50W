@@ -20,7 +20,7 @@ let bars = [
             [ // beat
                 { // sub-beat
                     subdivision: 4,
-                    notes: [{ value: 4, rest: true }] // notes
+                    notes: [{ value: 4, rest: false }] // notes
                 },
                 { // sub-beat
                     subdivision: 4,
@@ -34,13 +34,13 @@ let bars = [
                 },
                 { // sub-beat
                     subdivision: 4,
-                    notes: [{value: 2, rest: false}] // notes
+                    notes: [{ value: 2, rest: false }] // notes
                 },
             ], 
             [ // beat
                 { // sub-beat
                     subdivision: 4,
-                    notes: [{ value: 4, rest: true }] // notes
+                    notes: [{ value: 4, rest: false }] // notes
                 },
                 { // sub-beat
                     subdivision: 4,
@@ -151,49 +151,46 @@ document.addEventListener("DOMContentLoaded", function(){
     newContainer.className = 'container';
     document.querySelector('body').appendChild(newContainer);
 
-    // for each bars as bar
-    bars.forEach( bar => {
-        // make a bar element append to container
+    bars.forEach( bar => { // bars
         var newBar = document.createElement('div');
         newBar.className = 'bar';
-        // append to container
         newContainer.appendChild(newBar);
 
-        // foreach bar as beat
-        bar['barValueArray'].forEach( beat => {
-            // make a beat element
+        bar['barValueArray'].forEach( beat => { // beat
             var newBeat = document.createElement('div');
             newBeat.className = 'beat';
-            // append to the bar
             newBar.appendChild(newBeat);
 
             let leftOvers = 0;
+            let cursor = 0;
+            let indexs_of_non_rest_note_values = [];
+            let topBeam = null;
 
-            // for each beat as subbeat
-            beat.forEach( subbeat => {
-                // make a subbeat-element *** AND subbeat['subdivision'] EMPTY NOTE ELEMENTS
+            beat.forEach( subbeat => { // sub-beat
                 var newSubBeat = document.createElement('div');
                 newSubBeat.className = 'sub-beat';
                 newBeat.appendChild(newSubBeat);
-                
-                let subDivision = subbeat['subdivision'];
 
-                console.log('subDivision');
-                console.log(subDivision)
-                console.log(subbeat['notes']);
-
-                subbeat['notes'].forEach( note => {
+                subbeat['notes'].forEach( note => { // note
+                    // add any empty notes from previous sub-beat
                     for (var i = 0; i < leftOvers; i++){
-                        // make empty note
                         var newNote = document.createElement('div');
                         newNote.className = 'note';
                         newSubBeat.appendChild(newNote);
                     }
                     
-                    let value = note['value'];
+                    // if any note in the beat's value is less than 8, we need 1 top beam
+                    if (note['value'] < 8) {
+                        // makeTopBeam() makes only one top beam per beat, even with multiple calls
+                        topBeam = makeTopBeam(newBeat);
+                    }
 
-                    for ( var i = 0; i < value && i < subDivision; i++ ){
-                        // make a note
+                    // if the value is less than 4, we need 1 middle beam
+
+                    // 
+
+                    
+                    for ( var i = 0; i < note['value'] && i < subbeat['subdivision']; i++ ){
                         var newNote = document.createElement('div');
                         newNote.className = 'note';
                         newSubBeat.appendChild(newNote);
@@ -205,43 +202,35 @@ document.addEventListener("DOMContentLoaded", function(){
                             newStem.className = 'stem';
                             newNote.appendChild(newHead);
                             newNote.appendChild(newStem);
-                        }
-                        // if i == 0 then draw a head and stem in the note you just made
-                    }
+
+                            if ( !note['rest']) {
+                                indexs_of_non_rest_note_values.push({'cursor': cursor, 'value': note['value'], 'rest': note['rest']});
+                            };  
+                        };
+                        cursor++;
+                    };
                     leftOvers = note['value'] - i;
-                })
+                });
+            });
+            if (topBeam) {
+                topBeamEditor(indexs_of_non_rest_note_values, topBeam);
+            };
+        });    
+    });    
+});
 
-                
-                
-                // for ( i = 0; i < subbeat['subdivision']; i++ ) {
-                //     var newNote = document.createElement('div');
-                //     newNote.className = 'note';
-                //     newSubBeat.appendChild(newNote);
-                // }
-
-                // append to the bar
-                
-
-                            // cursor = 0
-                            // for each subbeat['notes'] as note
-                                // for i = 0; i < note['value']; i++
-                                    // if i = 0 and !note['rest'] make a note head and stem at cursor and cursor++
-
-                                    // else just cursor ++
-            })
-                            
-        })
-       
-    })
-     ;
-
-       
-
-           
-
-    
-})
-
+function makeTopBeam(newBeat){
+    // if if doesn't already have a top beam, make it
+    let topBeam = newBeat.querySelector('.top-beam');
+    console.log(topBeam)
+    if ( !topBeam ) {
+        console.log('there is no top-beam')
+        topBeam = document.createElement('div');
+        topBeam.className = 'top-beam';
+        newBeat.appendChild(topBeam);
+    }
+    return topBeam;
+};
 
 function getTemplateNotesOfBeat(templateBeats, index){
     // GET THE TEMPLATE SUBBEAT ELEMENTS FOR THE IDENTIFIED TEMPLATE BEAT
@@ -290,7 +279,6 @@ function topBeamEditor(indexs_of_non_rest_note_values, beam_to_be_edited){
 // I THINK I NEED TO PASS THE BEAM TO BE EDITED
 function middleBeamEditor(indexs_of_non_rest_note_values, beamToBeEdited){
     let non_rests = indexs_of_non_rest_note_values.filter(obj => !obj['rest'] && obj['value'] <= 2)
-    console.log('non_rests', non_rests)
     var array16thPositions = [];
     var array8thAndRestPositions = [];
     var num_of_beams = 1;
@@ -298,8 +286,6 @@ function middleBeamEditor(indexs_of_non_rest_note_values, beamToBeEdited){
         if (note_obj['value'] <= 2 && !note_obj['rest']){
             array16thPositions.push(note_obj['cursor']);
         }
-        // ******************************** I'M' CHECKING FOR REST VALUES HERE... BUT THE VARIABLE IS ..
-        // CALLED "InDExEs oF Non-ResT nOtE vAlUeS" ******************************************************
         else if (note_obj['value'] >= 4 || note_obj['rest']){
             array8thAndRestPositions.push(note_obj['cursor']);
         }
@@ -314,20 +300,11 @@ function middleBeamEditor(indexs_of_non_rest_note_values, beamToBeEdited){
     else {
         for(var i = 0; i < array8thAndRestPositions.length; i++){
             if (array16thPositions[0] < array8thAndRestPositions[i] && array8thAndRestPositions[i] < array16thPositions[length - 1]){
-                // in this case I need to make a new beam 
-                // and then break
                 num_of_beams = 2;
             }
         }
-        // here, I need to move the existing beam to the right position
-        // I need the index of 16th note of less values
-        console.log('beamToBeEdited: ')
-        console.log(beamToBeEdited)
-        console.log('${(non_rests[non_rests.length - 1] - non_rests[0]) * NOTEWIDTH}px');
-        console.log(non_rests[non_rests.length - 1], non_rests[0])
         beamToBeEdited.style.width = `${(non_rests[non_rests.length - 1]['cursor'] - non_rests[0]['cursor']) * NOTEWIDTH}px`
         beamToBeEdited.style.transform = `translateX(${non_rests[0]['cursor'] * NOTEWIDTH}px)`;
         return num_of_beams;
-    }
-    
+    }    
 }
