@@ -12,15 +12,54 @@ let bar_value_array = [
 ];
 
 let bars = [
-    {
-        "tempo": 120,
-        "timeSignature": [4, 4],
+    { // bar
+        tempo: 120,
+        timeSignature: [4, 4],
         // I now know how many beats and subbeats in this bar
-        "barValueArray": [
-            [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
-            [[{value: 2, rest: false},{value: 4, rest: false}],[{value: 2, rest: false}]],
-            [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
-            [[{value: 2, rest: false},{value: 2, rest: false}],[{value: 4, rest: false}]]
+        barValueArray: [
+            [ // beat
+                { // sub-beat
+                    subdivision: 4,
+                    notes: [{ value: 4, rest: true }] // notes
+                },
+                { // sub-beat
+                    subdivision: 4,
+                    notes: [{ value: 4, rest: false }] // notes
+                },
+            ], 
+            [ // beat
+                { // sub-beat
+                    subdivision: 4,
+                    notes: [{ value: 2, rest: false }, { value: 4, rest: false }] // notes
+                },
+                { // sub-beat
+                    subdivision: 4,
+                    notes: [{value: 2, rest: false}] // notes
+                },
+            ], 
+            [ // beat
+                { // sub-beat
+                    subdivision: 4,
+                    notes: [{ value: 4, rest: true }] // notes
+                },
+                { // sub-beat
+                    subdivision: 4,
+                    notes: [{ value: 4, rest: false }] // notes
+                },
+            ], 
+            [ // beat
+                { // sub-beat
+                    subdivision: 4,
+                    notes: [{ value: 2, rest: false }, { value: 4, rest: false }] // notes
+                },
+                { // sub-beat
+                    subdivision: 4,
+                    notes: [{value: 4, rest: false}] // notes
+                },
+            ]
+            // [[{value: 2, rest: false},{value: 4, rest: false}],[{value: 2, rest: false}]],
+            // [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
+            // [[{value: 2, rest: false},{value: 2, rest: false}],[{value: 4, rest: false}]]
         ]
     // },
     // {
@@ -46,68 +85,160 @@ document.addEventListener("DOMContentLoaded", function(){
     // GET EVERY TEMPLATE BEAT IN THE DOM
     let template_beats = Array.from(document.querySelectorAll('.beat'));
 
-    // FOR EACH BEAT IN THE VALUE ARRAY
-    bars.forEach( bar => {
-        bar["barValueArray"].forEach(function(beat_value_array, index){
+    // // FOR EACH BEAT IN THE VALUE ARRAY
+    // bars.forEach( bar => {
+    //     bar["barValueArray"].forEach(function(beat_value_array, index){
         
-            // GET THE TEMPLATE NOTES
-            var template_notes_of_this_beat = getTemplateNotesOfBeat(template_beats, index);
-            var note_obj_of_this_beat = [];
-            var indexs_of_non_rest_note_values = [];
+    //         // GET THE TEMPLATE NOTES
+    //         var template_notes_of_this_beat = getTemplateNotesOfBeat(template_beats, index);
+    //         var note_obj_of_this_beat = [];
+    //         var indexs_of_non_rest_note_values = [];
     
-            // SET A CURSOR TO KEEP TRACK OF WHICH NOTE IN THE TEMPLATE WE ARE EDITING
-            let cursor = 0;
-            // ITERATE OVER EACH SUBBEAT VALUE ARRAY AND EACH NOTE VAULE WITHIN
-            beat_value_array.forEach(function(subbeat_value_array){
-                subbeat_value_array.forEach(function(note_obj){
+    //         // SET A CURSOR TO KEEP TRACK OF WHICH NOTE IN THE TEMPLATE WE ARE EDITING
+    //         let cursor = 0;
+    //         // ITERATE OVER EACH SUBBEAT VALUE ARRAY AND EACH NOTE VAULE WITHIN
+    //         beat_value_array.forEach(function(subbeat_value_array){
+    //             subbeat_value_array['notes'].forEach(function(note_obj){
                      
-                    // WE USE THE VALUE OF THE CURSOR TO INDEX INTO THE TEMPLATE NOTES AND SELECT WHICH NOTE WE WANT TO EDIT
-                    // IF IT IS THE FIRST NOTE TEMPLATE NOTE OF THE LOOP WE LEAVE IT VISABLE, OTHERWISE, WE HIDE IT WITH DISPLAY = NONE
-                    // CREATE A LOOP THE LENGTH OF THE CURRENT NOTE VALUE,
-                    for (var i = 0; i < note_obj['value']; i++){
-                        // IF NOTE IS A REST, HIDE ALL ELEMENTS IN THE NOTE AND DISPLAY THE REST
-                        if (note_obj['rest'] === true){
-                            var thisTemplateNote = template_notes_of_this_beat[cursor];
-                            var ele = thisTemplateNote.children;
-                            Array.from(ele).forEach(el => el.style.display = 'none');
-                            thisTemplateNote.querySelector('.eighthRest').style.display = 'block';
+    //                 // WE USE THE VALUE OF THE CURSOR TO INDEX INTO THE TEMPLATE NOTES AND SELECT WHICH NOTE WE WANT TO EDIT
+    //                 // IF IT IS THE FIRST NOTE TEMPLATE NOTE OF THE LOOP WE LEAVE IT VISABLE, OTHERWISE, WE HIDE IT WITH DISPLAY = NONE
+    //                 // CREATE A LOOP THE LENGTH OF THE CURRENT NOTE VALUE,
+    //                 for (var i = 0; i < note_obj['value']; i++){
+    //                     // IF NOTE IS A REST, HIDE ALL ELEMENTS IN THE NOTE AND DISPLAY THE REST
+    //                     if (note_obj['rest'] === true){
+    //                         var thisTemplateNote = template_notes_of_this_beat[cursor];
+    //                         var ele = thisTemplateNote.children;
+    //                         Array.from(ele).forEach(el => el.style.display = 'none');
+    //                         thisTemplateNote.querySelector('.eighthRest').style.display = 'block';
                             
-                        }
-                        // OTHERWISE, SAVE THE POSITION OF THE NOTE FOR BEAM EDITING
-                        if (i === 0){
-                            indexs_of_non_rest_note_values.push({'cursor': cursor, 'value': note_obj['value'], 'rest': note_obj['rest']});
-                        }
+    //                     }
+    //                     // OTHERWISE, SAVE THE POSITION OF THE NOTE FOR BEAM EDITING
+    //                     if (i === 0){
+    //                         indexs_of_non_rest_note_values.push({'cursor': cursor, 'value': note_obj['value'], 'rest': note_obj['rest']});
+    //                     }
     
-                        if (i > 0){
-                            var ele = template_notes_of_this_beat[cursor].children;
-                            Array.from(ele).forEach(el => el.style.display = 'none');
-                        }
-                        cursor++;
-                    }
-                    note_obj_of_this_beat.push(note_obj);
-                });
-            })
-            // console.log('note_obj_of_this_beat');
-            // console.log(note_obj_of_this_beat);
+    //                     if (i > 0){
+    //                         var ele = template_notes_of_this_beat[cursor].children;
+    //                         Array.from(ele).forEach(el => el.style.display = 'none');
+    //                     }
+    //                     cursor++;
+    //                 }
+    //                 note_obj_of_this_beat.push(note_obj);
+    //             });
+    //         })
+    //         // console.log('note_obj_of_this_beat');
+    //         // console.log(note_obj_of_this_beat);
     
     
     
-            var top_beam_to_be_edited = getBeamForThisBeat(template_beats, index, 'top-beam');
-            topBeamEditor(indexs_of_non_rest_note_values, top_beam_to_be_edited);
+    //         var top_beam_to_be_edited = getBeamForThisBeat(template_beats, index, 'top-beam');
+    //         topBeamEditor(indexs_of_non_rest_note_values, top_beam_to_be_edited);
     
-            var middle_beam_to_be_edited = getBeamForThisBeat(template_beats, index, 'middle-beam');
+    //         var middle_beam_to_be_edited = getBeamForThisBeat(template_beats, index, 'middle-beam');
     
-                    // I CAN CHECK HOW MANY MIDDLE BEAMS ON THIS BEAT WITH THE NOTE OBJ OF THIS BEAT ARRAY
-            // IF THERE ARE AT LEAST 2 PLAYED NOTES WITH A VALUE OF 16TH (2) OR LESS 
-            // AND THAT HAS ANY REST IN BETWEEN THEM, OR A PLAYED NOTE WITH A VALUE OF 8TH (4) OR GREATER
-            var x = middleBeamEditor(indexs_of_non_rest_note_values, middle_beam_to_be_edited);
-            console.log('how many beams?');
-            console.log(x);
+    //                 // I CAN CHECK HOW MANY MIDDLE BEAMS ON THIS BEAT WITH THE NOTE OBJ OF THIS BEAT ARRAY
+    //         // IF THERE ARE AT LEAST 2 PLAYED NOTES WITH A VALUE OF 16TH (2) OR LESS 
+    //         // AND THAT HAS ANY REST IN BETWEEN THEM, OR A PLAYED NOTE WITH A VALUE OF 8TH (4) OR GREATER
+    //         var x = middleBeamEditor(indexs_of_non_rest_note_values, middle_beam_to_be_edited);
+    //         console.log('how many beams?');
+    //         console.log(x);
     
-        })
-    }
+    //     })
+    // })
 
-    )
+    // make a div inside container
+    var newContainer = document.createElement('div');
+    newContainer.className = 'container';
+    document.querySelector('body').appendChild(newContainer);
+
+    // for each bars as bar
+    bars.forEach( bar => {
+        // make a bar element append to container
+        var newBar = document.createElement('div');
+        newBar.className = 'bar';
+        // append to container
+        newContainer.appendChild(newBar);
+
+        // foreach bar as beat
+        bar['barValueArray'].forEach( beat => {
+            // make a beat element
+            var newBeat = document.createElement('div');
+            newBeat.className = 'beat';
+            // append to the bar
+            newBar.appendChild(newBeat);
+
+            let leftOvers = 0;
+
+            // for each beat as subbeat
+            beat.forEach( subbeat => {
+                // make a subbeat-element *** AND subbeat['subdivision'] EMPTY NOTE ELEMENTS
+                var newSubBeat = document.createElement('div');
+                newSubBeat.className = 'sub-beat';
+                newBeat.appendChild(newSubBeat);
+                
+                let subDivision = subbeat['subdivision'];
+
+                console.log('subDivision');
+                console.log(subDivision)
+                console.log(subbeat['notes']);
+
+                subbeat['notes'].forEach( note => {
+                    for (var i = 0; i < leftOvers; i++){
+                        // make empty note
+                        var newNote = document.createElement('div');
+                        newNote.className = 'note';
+                        newSubBeat.appendChild(newNote);
+                    }
+                    
+                    let value = note['value'];
+
+                    for ( var i = 0; i < value && i < subDivision; i++ ){
+                        // make a note
+                        var newNote = document.createElement('div');
+                        newNote.className = 'note';
+                        newSubBeat.appendChild(newNote);
+
+                        if (i == 0) {
+                            var newHead = document.createElement('div');
+                            newHead.className = 'head';
+                            var newStem = document.createElement('div');
+                            newStem.className = 'stem';
+                            newNote.appendChild(newHead);
+                            newNote.appendChild(newStem);
+                        }
+                        // if i == 0 then draw a head and stem in the note you just made
+                    }
+                    leftOvers = note['value'] - i;
+                })
+
+                
+                
+                // for ( i = 0; i < subbeat['subdivision']; i++ ) {
+                //     var newNote = document.createElement('div');
+                //     newNote.className = 'note';
+                //     newSubBeat.appendChild(newNote);
+                // }
+
+                // append to the bar
+                
+
+                            // cursor = 0
+                            // for each subbeat['notes'] as note
+                                // for i = 0; i < note['value']; i++
+                                    // if i = 0 and !note['rest'] make a note head and stem at cursor and cursor++
+
+                                    // else just cursor ++
+            })
+                            
+        })
+       
+    })
+     ;
+
+       
+
+           
+
     
 })
 

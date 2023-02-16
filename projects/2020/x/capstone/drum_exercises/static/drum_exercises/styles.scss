@@ -12,6 +12,11 @@ $noteWidth: 12px;
     display: flex;
 }
 
+.bar {
+    min-width: $noteWidth * 32;
+    border: red solid 2px;
+    display: flex;
+}
 .beat {
     position: relative;
     display: flex;

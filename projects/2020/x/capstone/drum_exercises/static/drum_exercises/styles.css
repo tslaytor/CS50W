@@ -8,6 +8,11 @@
   margin: 10rem auto;
   display: flex; }
 
+.bar {
+  min-width: 384px;
+  border: red solid 2px;
+  display: flex; }
+
 .beat {
   position: relative;
   display: flex;
