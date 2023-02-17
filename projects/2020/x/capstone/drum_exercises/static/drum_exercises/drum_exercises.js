@@ -172,6 +172,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     // add any empty notes from previous sub-beat
                     for (var i = 0; i < leftOvers; i++){
                         makeElement('note', newSubBeat);
+                        cursor++;
                     }
                     
                     // if any note in the beat's value is less than 8, we need 1 top beam
@@ -267,8 +268,12 @@ function getBeamForThisBeat(templateBeats, index, beamName){
 
 
 function topBeamEditor(indexs_of_non_rest_note_values, beam_to_be_edited){
+    console.log('indexs_of_non_rest_note_values');
+    console.log(indexs_of_non_rest_note_values);
     let non_rests = indexs_of_non_rest_note_values.filter(obj => !obj['rest'])
     var first_and_last = [non_rests[0]['cursor'], non_rests[non_rests.length - 1]['cursor']];
+    console.log('first_and_last');
+    console.log(first_and_last);
     // EDIT THE LENGTH OF THE BEAM
     beam_to_be_edited.style.width = `${(first_and_last[1] - first_and_last[0]) * NOTEWIDTH}px`
     // EDIT WHERE THE BEAM STARTS
