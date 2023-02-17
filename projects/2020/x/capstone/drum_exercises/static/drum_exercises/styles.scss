@@ -21,6 +21,7 @@ $noteWidth: 12px;
     position: relative;
     display: flex;
     flex-grow: 1;
+    border: 2px solid rgb(7, 158, 33);
 }
 
 .sub-beat {
@@ -29,6 +30,7 @@ $noteWidth: 12px;
     justify-content: space-around;
     align-items: center;
     position: relative;
+    border: 2px solid rgb(167, 24, 48);
 }
 
 .stave-line {

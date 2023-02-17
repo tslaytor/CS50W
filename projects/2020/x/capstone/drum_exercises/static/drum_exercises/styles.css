@@ -16,14 +16,16 @@
 .beat {
   position: relative;
   display: flex;
-  flex-grow: 1; }
+  flex-grow: 1;
+  border: 2px solid #079e21; }
 
 .sub-beat {
   flex-grow: 1;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  position: relative; }
+  position: relative;
+  border: 2px solid #a71830; }
 
 .stave-line {
   height: 0rem;

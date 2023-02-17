@@ -16,7 +16,7 @@ let bars = [
         tempo: 120,
         timeSignature: [4, 4],
         // I now know how many beats and subbeats in this bar
-        barValueArray: [
+        beats: [
             [ // beat
                 { // sub-beat
                     subdivision: 4,
@@ -54,7 +54,7 @@ let bars = [
                 },
                 { // sub-beat
                     subdivision: 4,
-                    notes: [{value: 4, rest: false}] // notes
+                    notes: [{value: 2, rest: false}] // notes
                 },
             ]
             // [[{value: 2, rest: false},{value: 4, rest: false}],[{value: 2, rest: false}]],
@@ -104,14 +104,15 @@ document.addEventListener("DOMContentLoaded", function(){
     //                 // IF IT IS THE FIRST NOTE TEMPLATE NOTE OF THE LOOP WE LEAVE IT VISABLE, OTHERWISE, WE HIDE IT WITH DISPLAY = NONE
     //                 // CREATE A LOOP THE LENGTH OF THE CURRENT NOTE VALUE,
     //                 for (var i = 0; i < note_obj['value']; i++){
+
     //                     // IF NOTE IS A REST, HIDE ALL ELEMENTS IN THE NOTE AND DISPLAY THE REST
     //                     if (note_obj['rest'] === true){
     //                         var thisTemplateNote = template_notes_of_this_beat[cursor];
     //                         var ele = thisTemplateNote.children;
     //                         Array.from(ele).forEach(el => el.style.display = 'none');
     //                         thisTemplateNote.querySelector('.eighthRest').style.display = 'block';
-                            
     //                     }
+
     //                     // OTHERWISE, SAVE THE POSITION OF THE NOTE FOR BEAM EDITING
     //                     if (i === 0){
     //                         indexs_of_non_rest_note_values.push({'cursor': cursor, 'value': note_obj['value'], 'rest': note_obj['rest']});
@@ -147,19 +148,13 @@ document.addEventListener("DOMContentLoaded", function(){
     // })
 
     // make a div inside container
-    var newContainer = document.createElement('div');
-    newContainer.className = 'container';
-    document.querySelector('body').appendChild(newContainer);
+    let newContainer = makeElement('container', document.querySelector('body'))
 
     bars.forEach( bar => { // bars
-        var newBar = document.createElement('div');
-        newBar.className = 'bar';
-        newContainer.appendChild(newBar);
+        let newBar = makeElement('bar', newContainer)
 
-        bar['barValueArray'].forEach( beat => { // beat
-            var newBeat = document.createElement('div');
-            newBeat.className = 'beat';
-            newBar.appendChild(newBeat);
+        bar['beats'].forEach( beat => { // beat
+            let newBeat = makeElement('beat', newBar)
 
             let leftOvers = 0;
             let cursor = 0;
@@ -167,16 +162,16 @@ document.addEventListener("DOMContentLoaded", function(){
             let topBeam = null;
 
             beat.forEach( subbeat => { // sub-beat
-                var newSubBeat = document.createElement('div');
-                newSubBeat.className = 'sub-beat';
-                newBeat.appendChild(newSubBeat);
+
+                let subdiv = subbeat['subdivision']; // its 4
+
+
+                let newSubBeat = makeElement('sub-beat', newBeat)
 
                 subbeat['notes'].forEach( note => { // note
                     // add any empty notes from previous sub-beat
                     for (var i = 0; i < leftOvers; i++){
-                        var newNote = document.createElement('div');
-                        newNote.className = 'note';
-                        newSubBeat.appendChild(newNote);
+                        makeElement('note', newSubBeat);
                     }
                     
                     // if any note in the beat's value is less than 8, we need 1 top beam
@@ -185,12 +180,12 @@ document.addEventListener("DOMContentLoaded", function(){
                         topBeam = makeTopBeam(newBeat);
                     }
 
-                    // if the value is less than 4, we need 1 middle beam
+                    // if the value is less than 4, we need at least 1 middle beam
 
                     // 
-
                     
-                    for ( var i = 0; i < note['value'] && i < subbeat['subdivision']; i++ ){
+                    
+                    for ( var i = 0; i < note['value'] && i < subdiv; i++ ){
                         var newNote = document.createElement('div');
                         newNote.className = 'note';
                         newSubBeat.appendChild(newNote);
@@ -209,25 +204,36 @@ document.addEventListener("DOMContentLoaded", function(){
                         };
                         cursor++;
                     };
+
+                    subdiv = subdiv - i;
                     leftOvers = note['value'] - i;
                 });
+                
             });
             if (topBeam) {
                 topBeamEditor(indexs_of_non_rest_note_values, topBeam);
             };
+
+            middleBeamEditor(indexs_of_non_rest_note_values, newBeat);
+
         });    
     });    
 });
 
-function makeTopBeam(newBeat){
-    // if if doesn't already have a top beam, make it
-    let topBeam = newBeat.querySelector('.top-beam');
-    console.log(topBeam)
+// makes a div element with class name and appended to the parent
+function makeElement(nameOfClass, parentElement) {
+    var newElement = document.createElement('div');
+    newElement.className = nameOfClass;
+    parentElement.appendChild(newElement);
+
+    return newElement;
+}
+
+// makes only 1 top beam per beat
+function makeTopBeam(thisBeat){
+    let topBeam = thisBeat.querySelector('.top-beam');
     if ( !topBeam ) {
-        console.log('there is no top-beam')
-        topBeam = document.createElement('div');
-        topBeam.className = 'top-beam';
-        newBeat.appendChild(topBeam);
+        makeElement('top-beam', thisBeat)
     }
     return topBeam;
 };
@@ -277,7 +283,40 @@ function topBeamEditor(indexs_of_non_rest_note_values, beam_to_be_edited){
 }
 
 // I THINK I NEED TO PASS THE BEAM TO BE EDITED
-function middleBeamEditor(indexs_of_non_rest_note_values, beamToBeEdited){
+// function middleBeamEditor(indexs_of_non_rest_note_values, beamToBeEdited){
+//     let non_rests = indexs_of_non_rest_note_values.filter(obj => !obj['rest'] && obj['value'] <= 2)
+//     var array16thPositions = [];
+//     var array8thAndRestPositions = [];
+//     var num_of_beams = 1;
+//     indexs_of_non_rest_note_values.forEach(function(note_obj, index){
+//         if (note_obj['value'] <= 2 && !note_obj['rest']){
+//             array16thPositions.push(note_obj['cursor']);
+//         }
+//         else if (note_obj['value'] >= 4 || note_obj['rest']){
+//             array8thAndRestPositions.push(note_obj['cursor']);
+//         }
+//     })
+//     let length = array16thPositions.length;
+//     if (length === 0){
+//         num_of_beams = 0;
+//         // in this case, I need to hide the beam
+//         beamToBeEdited.style.display = 'none';
+//         return num_of_beams;
+//     }
+//     else {
+//         for(var i = 0; i < array8thAndRestPositions.length; i++){
+//             if (array16thPositions[0] < array8thAndRestPositions[i] && array8thAndRestPositions[i] < array16thPositions[length - 1]){
+//                 num_of_beams = 2;
+//             }
+//         }
+//         beamToBeEdited.style.width = `${(non_rests[non_rests.length - 1]['cursor'] - non_rests[0]['cursor']) * NOTEWIDTH}px`
+//         beamToBeEdited.style.transform = `translateX(${non_rests[0]['cursor'] * NOTEWIDTH}px)`;
+//         return num_of_beams;
+//     }    
+// }
+
+
+function middleBeamEditor(indexs_of_non_rest_note_values, parentBeat){
     let non_rests = indexs_of_non_rest_note_values.filter(obj => !obj['rest'] && obj['value'] <= 2)
     var array16thPositions = [];
     var array8thAndRestPositions = [];
@@ -290,21 +329,23 @@ function middleBeamEditor(indexs_of_non_rest_note_values, beamToBeEdited){
             array8thAndRestPositions.push(note_obj['cursor']);
         }
     })
-    let length = array16thPositions.length;
-    if (length === 0){
-        num_of_beams = 0;
-        // in this case, I need to hide the beam
-        beamToBeEdited.style.display = 'none';
-        return num_of_beams;
+
+    if (array16thPositions.length === 0){
+        // in this case, no beams
+        return 0;
     }
     else {
         for(var i = 0; i < array8thAndRestPositions.length; i++){
             if (array16thPositions[0] < array8thAndRestPositions[i] && array8thAndRestPositions[i] < array16thPositions[length - 1]){
-                num_of_beams = 2;
+                // num_of_beams = 2;
+                // no... make 2 beams and append them to the parent
+                return 2;
             }
         }
+        // make one beam and postition it with the below code
+        let beamToBeEdited = makeElement('middle-beam', parentBeat);
         beamToBeEdited.style.width = `${(non_rests[non_rests.length - 1]['cursor'] - non_rests[0]['cursor']) * NOTEWIDTH}px`
         beamToBeEdited.style.transform = `translateX(${non_rests[0]['cursor'] * NOTEWIDTH}px)`;
-        return num_of_beams;
+        return 1;
     }    
 }
