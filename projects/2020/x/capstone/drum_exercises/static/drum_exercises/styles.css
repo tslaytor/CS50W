@@ -54,7 +54,7 @@
 .eighthRest {
   width: 100%;
   transform: translate(-10px, 35px);
-  display: none; }
+  background-image: url("images/EighthNoteRest.png"); }
 
 .stem {
   width: 4px;

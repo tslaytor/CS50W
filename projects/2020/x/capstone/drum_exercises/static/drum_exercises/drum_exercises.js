@@ -1,16 +1,5 @@
 const NOTEWIDTH = 12;
 
-let bar_value_array = [
-    [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
-    [[{value: 2, rest: false},{value: 4, rest: false}],[{value: 2, rest: false}]],
-    [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
-    [[{value: 2, rest: false},{value: 2, rest: false}],[{value: 4, rest: false}]],
-    [[{value: 2, rest: false}, {value: 2, rest: false}],[{value: 2, rest: false}, {value: 2, rest: false}]],
-    [[{value: 2, rest: false}, {value: 2, rest: false}],[{value: 4, rest: true}]],
-    [[{value: 4, rest: true}],[{value: 2, rest: false}, {value: 2, rest: false}]]
-    
-];
-
 let bars = [
     { // bar
         tempo: 120,
@@ -18,72 +7,51 @@ let bars = [
         // I now know how many beats and subbeats in this bar
         beats: [
             [ // beat
-                { // sub-beat
+                { // sub-beat 1
                     subdivision: 4,
-                    notes: [{ value: 4, rest: false }] // notes
+                    notes: [{ value: 4, rest: true}] // notes
                 },
-                { // sub-beat
+                { // sub-beat 2
                     subdivision: 4,
-                    notes: [{ value: 4, rest: false }] // notes
+                    notes: [{ value: 2, rest: false}, {value: 2, rest: false }] // notes
                 },
             ], 
             [ // beat
-                { // sub-beat
+                { // sub-beat 1
                     subdivision: 4,
                     notes: [{ value: 2, rest: false }, { value: 4, rest: false }] // notes
                 },
-                { // sub-beat
+                { // sub-beat 2
                     subdivision: 4,
                     notes: [{ value: 2, rest: false }] // notes
                 },
             ], 
             [ // beat
-                { // sub-beat
+                { // sub-beat 1
                     subdivision: 4,
-                    notes: [{ value: 4, rest: false }] // notes
+                    notes: [{ value: 2, rest: false}, {value: 2, rest: false }] // notes
                 },
-                { // sub-beat
+                { // sub-beat 2
                     subdivision: 4,
                     notes: [{ value: 4, rest: false }] // notes
                 },
             ], 
             [ // beat
-                { // sub-beat
+                { // sub-beat 1
                     subdivision: 4,
-                    notes: [{ value: 2, rest: false }, { value: 4, rest: false }] // notes
+                    notes: [{ value: 4, rest: false } ] // notes
                 },
-                { // sub-beat
+                { // sub-beat 2
                     subdivision: 4,
-                    notes: [{value: 2, rest: false}] // notes
+                    notes: [ {value: 2, rest: false}, {value: 2, rest: false} ] // notes
                 },
             ]
-            // [[{value: 2, rest: false},{value: 4, rest: false}],[{value: 2, rest: false}]],
-            // [[{value: 4, rest: true}],[{value: 4, rest: false}]], 
-            // [[{value: 2, rest: false},{value: 2, rest: false}],[{value: 4, rest: false}]]
         ]
-    // },
-    // {
-    //     "tempo": 120,
-    //     "timeSignature": [4, 4],
-    //     // I now know how many beats and subbeats in this bar
-    //     "barValueArray": [
-    //         [[{value: 2, rest: false}, {value: 2, rest: false}],[{value: 2, rest: false}, {value: 2, rest: false}]],
-    //         [[{value: 2, rest: false}, {value: 2, rest: false}],[{value: 4, rest: true}]],
-    //         [[{value: 4, rest: true}],[{value: 2, rest: false}, {value: 2, rest: false}]]
-    //     ]
     }
 ]
 
 
 document.addEventListener("DOMContentLoaded", function(){
-     // *************** CHANGES SOON TO HOW WE MAKE TEMPLATES? ********************************
-    // GET EVERY TEMPLATE NOTE IN THE DOM AND ADD THE REST ELEMENT NEXT TO IT 
-    let template_notes = Array.from(document.querySelectorAll('.note'));
-    template_notes.forEach(ele => ele.innerHTML += `<img class='eighthRest' src='../../static/drum_exercises/images/EigthNoteRest.png'>`);
-    // ***************************************************************************************
-
-    // GET EVERY TEMPLATE BEAT IN THE DOM
-    let template_beats = Array.from(document.querySelectorAll('.beat'));
 
     // // FOR EACH BEAT IN THE VALUE ARRAY
     // bars.forEach( bar => {
@@ -150,10 +118,10 @@ document.addEventListener("DOMContentLoaded", function(){
     // make a div inside container
     let newContainer = makeElement('container', document.querySelector('body'))
 
-    bars.forEach( bar => { // bars
+    bars.forEach( bar => {
         let newBar = makeElement('bar', newContainer)
 
-        bar['beats'].forEach( beat => { // beat
+        bar['beats'].forEach( beat => {
             let newBeat = makeElement('beat', newBar)
 
             let leftOvers = 0;
@@ -161,43 +129,48 @@ document.addEventListener("DOMContentLoaded", function(){
             let indexs_of_non_rest_note_values = [];
             let topBeam = null;
 
-            beat.forEach( subbeat => { // sub-beat
+            beat.forEach( subbeat => {
 
-                let subdiv = subbeat['subdivision']; // its 4
+                let subdiv = subbeat['subdivision'];
 
 
                 let newSubBeat = makeElement('sub-beat', newBeat)
 
-                subbeat['notes'].forEach( note => { // note
+                subbeat['notes'].forEach( note => {
                     // add any empty notes from previous sub-beat
                     for (var i = 0; i < leftOvers; i++){
                         makeElement('note', newSubBeat);
                         cursor++;
                     }
                     
-                    // if any note in the beat's value is less than 8, we need 1 top beam
-                    if (note['value'] < 8) {
-                        // makeTopBeam() makes only one top beam per beat, even with multiple calls
-                        topBeam = makeTopBeam(newBeat);
-                    }
-
-                    // if the value is less than 4, we need at least 1 middle beam
-
-                    // 
-                    
-                    
                     for ( var i = 0; i < note['value'] && i < subdiv; i++ ){
                         var newNote = document.createElement('div');
                         newNote.className = 'note';
                         newSubBeat.appendChild(newNote);
 
-                        if (i == 0) {
-                            var newHead = document.createElement('div');
-                            newHead.className = 'head';
-                            var newStem = document.createElement('div');
-                            newStem.className = 'stem';
-                            newNote.appendChild(newHead);
-                            newNote.appendChild(newStem);
+                        if (i === 0) {
+
+                            // IF NOTE IS A REST, HIDE ALL ELEMENTS IN THE NOTE AND DISPLAY THE REST
+                            if (note['rest']){
+                                // var thisTemplateNote = template_notes_of_this_beat[cursor];
+                                // var ele = thisTemplateNote.children;
+                                // Array.from(ele).forEach(el => el.style.display = 'none');
+
+                                // make a dive with class of .eigthRest in the newNote div
+                                makeElement('eighthRest', newNote);
+                                // thisTemplateNote.querySelector('.eighthRest').style.display = 'block';
+                            }
+                            else {
+                                var newHead = document.createElement('div');
+                                newHead.className = 'head';
+                                var newStem = document.createElement('div');
+                                newStem.className = 'stem';
+                                newNote.appendChild(newHead);
+                                newNote.appendChild(newStem);
+                            }
+
+
+                     
 
                             if ( !note['rest']) {
                                 indexs_of_non_rest_note_values.push({'cursor': cursor, 'value': note['value'], 'rest': note['rest']});
@@ -211,9 +184,9 @@ document.addEventListener("DOMContentLoaded", function(){
                 });
                 
             });
-            if (topBeam) {
-                topBeamEditor(indexs_of_non_rest_note_values, topBeam);
-            };
+            // if (topBeam) {
+                topBeamEditor(indexs_of_non_rest_note_values, newBeat);
+            // };
 
             middleBeamEditor(indexs_of_non_rest_note_values, newBeat);
 
@@ -267,23 +240,42 @@ function getBeamForThisBeat(templateBeats, index, beamName){
 }
 
 
-function topBeamEditor(indexs_of_non_rest_note_values, beam_to_be_edited){
+function topBeamEditor(indexs_of_non_rest_note_values, parentBeat){
     console.log('indexs_of_non_rest_note_values');
     console.log(indexs_of_non_rest_note_values);
+
+    // ****************************************************************
+
+    // if (note['value'] < 8) {
+    //     // makeTopBeam() makes only one top beam per beat, even with multiple calls
+    //     topBeam = makeTopBeam(newBeat);
+    // }
+
+    // ****************************************************************
+    
     let non_rests = indexs_of_non_rest_note_values.filter(obj => !obj['rest'])
     var first_and_last = [non_rests[0]['cursor'], non_rests[non_rests.length - 1]['cursor']];
+
+    let topBeam = null;
+    non_rests.forEach(note => {
+        if (note['value'] < 8) {
+            topBeam = makeTopBeam(parentBeat);
+        }
+    })
     console.log('first_and_last');
     console.log(first_and_last);
     // EDIT THE LENGTH OF THE BEAM
-    beam_to_be_edited.style.width = `${(first_and_last[1] - first_and_last[0]) * NOTEWIDTH}px`
-    // EDIT WHERE THE BEAM STARTS
-    beam_to_be_edited.style.transform = `translateX(${first_and_last[0] * NOTEWIDTH}px)`;
-    // THIS PART HANDLES FLAGS (I.E. WHEN THE BEAM DOESNT CONNECT TO ANOTHER NOTE)
-    if (first_and_last[0] === first_and_last[1]){
-        beam_to_be_edited.style.width = '18px';
-        beam_to_be_edited.style.transformOrigin = `${first_and_last[0] * NOTEWIDTH}px`;
-        beam_to_be_edited.style.transform = `rotateZ(45deg) translateX(${first_and_last[0] * NOTEWIDTH}px) skew(45deg, 0deg)`
-        beam_to_be_edited.style.borderRadius = '2px';
+    if (topBeam){
+        topBeam.style.width = `${(first_and_last[1] - first_and_last[0]) * NOTEWIDTH}px`
+        // EDIT WHERE THE BEAM STARTS
+        topBeam.style.transform = `translateX(${first_and_last[0] * NOTEWIDTH}px)`;
+        // THIS PART HANDLES FLAGS (I.E. WHEN THE BEAM DOESNT CONNECT TO ANOTHER NOTE)
+        if (first_and_last[0] === first_and_last[1]){
+            topBeam.style.width = '18px';
+            topBeam.style.transformOrigin = `${first_and_last[0] * NOTEWIDTH}px`;
+            topBeam.style.transform = `rotateZ(45deg) translateX(${first_and_last[0] * NOTEWIDTH}px) skew(45deg, 0deg)`
+            topBeam.style.borderRadius = '2px';
+        }
     }
 }
 
