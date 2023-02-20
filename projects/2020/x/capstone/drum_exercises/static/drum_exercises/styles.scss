@@ -14,7 +14,7 @@ $noteWidth: 12px;
 
 .bar {
     min-width: $noteWidth * 32;
-    border: red solid 2px;
+    // border: red solid 2px;
     display: flex;
 }
 .beat {
@@ -67,7 +67,7 @@ $noteWidth: 12px;
     width: 100%;
     transform: translate(-10px, 35px);
     // display: none;
-    background-image: url('images/EighthNoteRest.png');
+    content: url('images/EighthNoteRest.png');
 }
 
 .stem {

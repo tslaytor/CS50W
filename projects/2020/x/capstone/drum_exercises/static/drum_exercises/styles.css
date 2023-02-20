@@ -10,7 +10,6 @@
 
 .bar {
   min-width: 384px;
-  border: red solid 2px;
   display: flex; }
 
 .beat {
@@ -54,7 +53,7 @@
 .eighthRest {
   width: 100%;
   transform: translate(-10px, 35px);
-  background-image: url("images/EighthNoteRest.png"); }
+  content: url("images/EighthNoteRest.png"); }
 
 .stem {
   width: 4px;

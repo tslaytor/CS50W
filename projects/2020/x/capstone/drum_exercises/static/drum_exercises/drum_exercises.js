@@ -116,13 +116,13 @@ document.addEventListener("DOMContentLoaded", function(){
     // })
 
     // make a div inside container
-    let newContainer = makeElement('container', document.querySelector('body'))
+    let newContainer = makeElement('container', document.querySelector('body'), 'div')
 
     bars.forEach( bar => {
-        let newBar = makeElement('bar', newContainer)
+        let newBar = makeElement('bar', newContainer, 'div')
 
         bar['beats'].forEach( beat => {
-            let newBeat = makeElement('beat', newBar)
+            let newBeat = makeElement('beat', newBar, 'div')
 
             let leftOvers = 0;
             let cursor = 0;
@@ -134,12 +134,12 @@ document.addEventListener("DOMContentLoaded", function(){
                 let subdiv = subbeat['subdivision'];
 
 
-                let newSubBeat = makeElement('sub-beat', newBeat)
+                let newSubBeat = makeElement('sub-beat', newBeat, 'div')
 
                 subbeat['notes'].forEach( note => {
                     // add any empty notes from previous sub-beat
                     for (var i = 0; i < leftOvers; i++){
-                        makeElement('note', newSubBeat);
+                        makeElement('note', newSubBeat, 'div');
                         cursor++;
                     }
                     
@@ -155,9 +155,11 @@ document.addEventListener("DOMContentLoaded", function(){
                                 // var thisTemplateNote = template_notes_of_this_beat[cursor];
                                 // var ele = thisTemplateNote.children;
                                 // Array.from(ele).forEach(el => el.style.display = 'none');
+                                // template_notes.forEach(ele => ele.innerHTML += `<img class='eighthRest' src='../../static/drum_exercises/images/EigthNoteRest.png'>`);
 
+                                // makeElement
                                 // make a dive with class of .eigthRest in the newNote div
-                                makeElement('eighthRest', newNote);
+                                makeElement('eighthRest', newNote, 'img');
                                 // thisTemplateNote.querySelector('.eighthRest').style.display = 'block';
                             }
                             else {
@@ -195,8 +197,8 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 
 // makes a div element with class name and appended to the parent
-function makeElement(nameOfClass, parentElement) {
-    var newElement = document.createElement('div');
+function makeElement(nameOfClass, parentElement, type) {
+    var newElement = document.createElement(type);
     newElement.className = nameOfClass;
     parentElement.appendChild(newElement);
 
@@ -207,37 +209,37 @@ function makeElement(nameOfClass, parentElement) {
 function makeTopBeam(thisBeat){
     let topBeam = thisBeat.querySelector('.top-beam');
     if ( !topBeam ) {
-        makeElement('top-beam', thisBeat)
+        makeElement('top-beam', thisBeat, 'div')
     }
     return topBeam;
 };
 
-function getTemplateNotesOfBeat(templateBeats, index){
-    // GET THE TEMPLATE SUBBEAT ELEMENTS FOR THE IDENTIFIED TEMPLATE BEAT
-        var templateSubbeats = Array.from(templateBeats[index].children).filter(function (child) {
-        return child.classList.contains('sub-beat');
-    })
+// function getTemplateNotesOfBeat(templateBeats, index){
+//     // GET THE TEMPLATE SUBBEAT ELEMENTS FOR THE IDENTIFIED TEMPLATE BEAT
+//         var templateSubbeats = Array.from(templateBeats[index].children).filter(function (child) {
+//         return child.classList.contains('sub-beat');
+//     })
 
-    // CREATE EMPTY ARRAY FOR SAVING TEMPLATE NOTES
-    var templateNotesOfThisBeat = [];
+//     // CREATE EMPTY ARRAY FOR SAVING TEMPLATE NOTES
+//     var templateNotesOfThisBeat = [];
 
-    // LOOP THROUGH THE 2 TEMPLATE SUBBEATS, AND GET ITS TEMPLATE NOTES
-    templateSubbeats.forEach(child =>{
-        var templateNotes = Array.from(child.children).filter(child => {return child.classList.contains('note')});
-        templateNotesOfThisBeat.push(templateNotes);
-    });
-    // MERGE TEMPLATE NOTES OF THE 2 SUBBEATS INTO ONE ARRAY
-    return [].concat(...templateNotesOfThisBeat)
+//     // LOOP THROUGH THE 2 TEMPLATE SUBBEATS, AND GET ITS TEMPLATE NOTES
+//     templateSubbeats.forEach(child =>{
+//         var templateNotes = Array.from(child.children).filter(child => {return child.classList.contains('note')});
+//         templateNotesOfThisBeat.push(templateNotes);
+//     });
+//     // MERGE TEMPLATE NOTES OF THE 2 SUBBEATS INTO ONE ARRAY
+//     return [].concat(...templateNotesOfThisBeat)
 
-}
+// }
 
-function getBeamForThisBeat(templateBeats, index, beamName){
-    // GET THE TEMPLATE SUBBEAT ELEMENTS FOR THE IDENTIFIED TEMPLATE BEAT
-    var beam = Array.from(templateBeats[index].children).filter(function (child) {
-        return child.classList.contains(beamName);
-    })
-    return beam[0];
-}
+// function getBeamForThisBeat(templateBeats, index, beamName){
+//     // GET THE TEMPLATE SUBBEAT ELEMENTS FOR THE IDENTIFIED TEMPLATE BEAT
+//     var beam = Array.from(templateBeats[index].children).filter(function (child) {
+//         return child.classList.contains(beamName);
+//     })
+//     return beam[0];
+// }
 
 
 function topBeamEditor(indexs_of_non_rest_note_values, parentBeat){
