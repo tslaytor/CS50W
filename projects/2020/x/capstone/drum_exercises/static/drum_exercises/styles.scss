@@ -10,12 +10,25 @@ $noteWidth: 12px;
     height: 6.58%;
     margin: 10rem auto;
     display: flex;
+    // position: relative;
 }
 
 .bar {
     min-width: $noteWidth * 32;
     // border: red solid 2px;
     display: flex;
+    position: relative;
+    // transform: translateX(-100px);
+}
+.bar-line {
+    min-width: $noteWidth * 32;
+    border-left: black solid 2px;
+    display: flex;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+    transform: translateX(-13px) translateY(24px);;
 }
 .beat {
     position: relative;

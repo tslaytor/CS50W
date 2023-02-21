@@ -8,14 +8,14 @@ let bars = [
         beats: [ 
             [  
                 { subdivision: 4, notes: [ { value: 4, rest: true } ] },
-                { subdivision: 4, notes: [ { value: 2, rest: false }, {value: 2, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: false } ] },
             ], 
             [ 
                 { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 4, rest: false } ] },
                 { subdivision: 4, notes: [ { value: 2, rest: false } ] },
             ], 
             [ 
-                { subdivision: 4, notes: [ { value: 2, rest: false}, {value: 2, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: false } ] },
                 { subdivision: 4, notes: [ { value: 4, rest: false } ] },
             ], 
             [ 
@@ -38,8 +38,8 @@ let bars = [
                 { subdivision: 4, notes: [ { value: 2, rest: false } ] },
             ], 
             [ 
-                { subdivision: 4, notes: [ { value: 2, rest: false}, {value: 2, rest: false } ] },
-                { subdivision: 4, notes: [ { value: 4, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 4, rest: true } ] },
             ], 
             [ 
                 { subdivision: 4, notes: [ { value: 4, rest: false } ] },
@@ -56,6 +56,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
     bars.forEach( bar => {
         let newBar = makeElement('bar', newContainer, 'div')
+
+        let barLines = makeElement('bar-line', newBar, 'div')
 
         bar['beats'].forEach( beat => {
             let newBeat = makeElement('beat', newBar, 'div')
