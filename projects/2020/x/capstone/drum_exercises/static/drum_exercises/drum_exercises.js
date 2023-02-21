@@ -7,8 +7,8 @@ let bars = [
         // I now know how many beats and subbeats in this bar
         beats: [ 
             [  
-                { subdivision: 4, notes: [ { value: 4, rest: true } ] },
-                { subdivision: 4, notes: [ { value: 2, rest: true }, { value: 2, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: true } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: true }, { value: 2, rest: true } ] },
             ], 
             [ 
                 { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 4, rest: false } ] },
@@ -148,6 +148,7 @@ function topBeamEditor(indexs_of_notes, parentBeat){
         // THIS PART HANDLES FLAGS (I.E. WHEN THE BEAM DOESNT CONNECT TO ANOTHER NOTE)
         if (first_and_last[0] === first_and_last[1]){
             topBeam.style.width = '18px';
+            topBeam.style.borderTop = '5px black solid';
             topBeam.style.transformOrigin = `${first_and_last[0] * NOTEWIDTH}px`;
             topBeam.style.transform = `rotateZ(45deg) translateX(${first_and_last[0] * NOTEWIDTH}px) skew(45deg, 0deg)`
             topBeam.style.borderRadius = '2px';
@@ -205,9 +206,20 @@ function middleBeamEditor(indexs_of_notes, parentBeat){
         return 2;
     }
     else {
-        let middleBeam = makeElement('middle-beam', parentBeat);
-        middleBeam.style.width = `${(nonRest16thsOrLess[nonRest16thsOrLess.length - 1]['cursor'] - nonRest16thsOrLess[0]['cursor']) * NOTEWIDTH}px`
-        middleBeam.style.transform = `translateX(${nonRest16thsOrLess[0]['cursor'] * NOTEWIDTH}px)`;
+        let middleBeam = makeElement('middle-beam', parentBeat, 'div');
+        if ( array16thPositions.length === 1){
+            // OK, not nonRest16ths then... in the top beam function this is called first and last
+            middleBeam.style.width = '18px';
+            middleBeam.style.borderTop = '5px black solid';
+            middleBeam.style.transformOrigin = `${nonRest16thsOrLess[0]['cursor'] * NOTEWIDTH}px`;
+            middleBeam.style.transform = `rotateZ(45deg) translateX(${nonRest16thsOrLess[0]['cursor'] * NOTEWIDTH}px) skew(45deg, 0deg)`
+            middleBeam.style.borderRadius = '2px';
+        }
+        else {
+            middleBeam.style.width = `${(nonRest16thsOrLess[nonRest16thsOrLess.length - 1]['cursor'] - nonRest16thsOrLess[0]['cursor']) * NOTEWIDTH}px`
+            middleBeam.style.transform = `translateX(${nonRest16thsOrLess[0]['cursor'] * NOTEWIDTH}px)`;
+        }
+        
         return 1;
     }    
 }
