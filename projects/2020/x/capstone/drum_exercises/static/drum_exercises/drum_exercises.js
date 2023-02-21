@@ -8,7 +8,7 @@ let bars = [
         beats: [ 
             [  
                 { subdivision: 4, notes: [ { value: 4, rest: true } ] },
-                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: true }, { value: 2, rest: false } ] },
             ], 
             [ 
                 { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 4, rest: false } ] },
@@ -30,7 +30,7 @@ let bars = [
         // I now know how many beats and subbeats in this bar
         beats: [ 
             [  
-                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: true }, { value: 2, rest: false } ] },
                 { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: false } ] },
             ], 
             [ 
@@ -42,8 +42,8 @@ let bars = [
                 { subdivision: 4, notes: [ { value: 4, rest: true } ] },
             ], 
             [ 
-                { subdivision: 4, notes: [ { value: 4, rest: false } ] },
-                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: true } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: true }, { value: 2, rest: false } ] },
             ]
         ]
     }
@@ -85,7 +85,14 @@ document.addEventListener("DOMContentLoaded", function(){
 
                         if (i === 0) {
                             if (note['rest']){
-                                makeElement('eighthRest', newNote, 'img');
+                                
+                                if (note['value'] <= 2 ) {
+                                    makeElement('sixteenthRest', newNote, 'img');
+                                }
+                                else if (note['value'] <= 4) {
+                                    makeElement('eighthRest', newNote, 'img');
+                                }
+                                
                             }
                             else {
                                 let newHead = document.createElement('div');
@@ -118,15 +125,6 @@ function makeElement(nameOfClass, parentElement, type) {
 
     return newElement;
 }
-
-// makes only 1 top beam per beat
-// function makeTopBeam(thisBeat){
-//     let topBeam = thisBeat.querySelector('.top-beam');
-//     if ( !topBeam ) {
-//         makeElement('top-beam', thisBeat, 'div')
-//     }
-//     return topBeam;
-// };
 
 function topBeamEditor(indexs_of_notes, parentBeat){
     
@@ -194,7 +192,15 @@ function middleBeamEditor(indexs_of_notes, parentBeat){
         firstBeam.style.transform = `translateX(${nonRest16thsOrLess[0]['cursor'] * NOTEWIDTH}px)`;
         
         secondBeam.style.width = `${secondGroup * NOTEWIDTH}px`;
-        secondBeam.style.transform = `translateX(${nonRest16thsOrLess[nonRest16thsOrLess.length - 1]['cursor'] * NOTEWIDTH - NOTEWIDTH}px)`;
+        // only do this if the secondGroup > 1
+        if ( secondGroup === 1 ) {
+            secondBeam.style.transform = `translateX(${nonRest16thsOrLess[nonRest16thsOrLess.length - 1]['cursor'] * NOTEWIDTH - NOTEWIDTH}px)`;
+        }
+        else {
+            // translate to the first note of the last group
+            secondBeam.style.transform = `translateX(${nonRest16thsOrLess[nonRest16thsOrLess.length - 1]['cursor'] * NOTEWIDTH - secondGroup * NOTEWIDTH}px)`;
+        }
+        
 
         return 2;
     }

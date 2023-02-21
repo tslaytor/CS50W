@@ -15,7 +15,7 @@
 
 .bar-line {
   min-width: 384px;
-  border-left: black solid 2px;
+  outline: black solid 2px;
   display: flex;
   position: absolute;
   height: 100%;
@@ -63,7 +63,12 @@
 .eighthRest {
   width: 100%;
   transform: translate(-10px, 35px);
-  content: url("images/EighthNoteRest.png"); }
+  content: url("images/eighthRest.png"); }
+
+.sixteenthRest {
+  width: 100%;
+  transform: translate(-10px, 35px);
+  content: url("images/sixteenthRest.png"); }
 
 .stem {
   width: 4px;

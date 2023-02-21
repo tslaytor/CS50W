@@ -22,7 +22,7 @@ $noteWidth: 12px;
 }
 .bar-line {
     min-width: $noteWidth * 32;
-    border-left: black solid 2px;
+    outline: black solid 2px;
     display: flex;
     position: absolute;
     height: 100%;
@@ -80,9 +80,15 @@ $noteWidth: 12px;
     width: 100%;
     transform: translate(-10px, 35px);
     // display: none;
-    content: url('images/EighthNoteRest.png');
+    content: url('images/eighthRest.png');
 }
 
+.sixteenthRest {
+    width: 100%;
+    transform: translate(-10px, 35px);
+    // display: none;
+    content: url('images/sixteenthRest.png');
+}
 .stem {
     width: 4px;
     height: 60px;
