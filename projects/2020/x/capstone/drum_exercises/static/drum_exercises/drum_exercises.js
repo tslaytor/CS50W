@@ -5,46 +5,45 @@ let bars = [
         tempo: 120,
         timeSignature: [4, 4],
         // I now know how many beats and subbeats in this bar
-        beats: [
-            [ // beat
-                { // sub-beat 1
-                    subdivision: 4,
-                    notes: [{ value: 4, rest: true}] // notes
-                },
-                { // sub-beat 2
-                    subdivision: 4,
-                    notes: [{ value: 2, rest: false}, {value: 2, rest: false }] // notes
-                },
+        beats: [ 
+            [  
+                { subdivision: 4, notes: [ { value: 4, rest: true } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: false }, {value: 2, rest: false } ] },
             ], 
-            [ // beat
-                { // sub-beat 1
-                    subdivision: 4,
-                    notes: [{ value: 2, rest: false }, { value: 4, rest: false }] // notes
-                },
-                { // sub-beat 2
-                    subdivision: 4,
-                    notes: [{ value: 2, rest: false }] // notes
-                },
+            [ 
+                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 4, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: false } ] },
             ], 
-            [ // beat
-                { // sub-beat 1
-                    subdivision: 4,
-                    notes: [{ value: 2, rest: false}, {value: 2, rest: false }] // notes
-                },
-                { // sub-beat 2
-                    subdivision: 4,
-                    notes: [{ value: 4, rest: false }] // notes
-                },
+            [ 
+                { subdivision: 4, notes: [ { value: 2, rest: false}, {value: 2, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 4, rest: false } ] },
             ], 
-            [ // beat
-                { // sub-beat 1
-                    subdivision: 4,
-                    notes: [{ value: 4, rest: false } ] // notes
-                },
-                { // sub-beat 2
-                    subdivision: 4,
-                    notes: [ {value: 2, rest: false}, {value: 2, rest: false} ] // notes
-                },
+            [ 
+                { subdivision: 4, notes: [ { value: 4, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: false } ] },
+            ]
+        ]
+    },
+    { // bar
+        tempo: 120,
+        timeSignature: [4, 4],
+        // I now know how many beats and subbeats in this bar
+        beats: [ 
+            [  
+                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: false } ] },
+            ], 
+            [ 
+                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 4, rest: true } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: false } ] },
+            ], 
+            [ 
+                { subdivision: 4, notes: [ { value: 2, rest: false}, {value: 2, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 4, rest: false } ] },
+            ], 
+            [ 
+                { subdivision: 4, notes: [ { value: 4, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: false } ] },
             ]
         ]
     }
@@ -63,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
             let leftOvers = 0;
             let cursor = 0;
-            let indexs_of_non_rest_note_values = [];
+            let indexs_of_notes = [];
 
             beat.forEach( subbeat => {
 
@@ -93,8 +92,8 @@ document.addEventListener("DOMContentLoaded", function(){
                                 newStem.className = 'stem';
                                 newNote.appendChild(newHead);
                                 newNote.appendChild(newStem);
-                                indexs_of_non_rest_note_values.push({'cursor': cursor, 'value': note['value'], 'rest': note['rest']});
                             }
+                            indexs_of_notes.push({ 'cursor': cursor, 'value': note['value'], 'rest': note['rest'] });
                         }
                         cursor++;
                     };
@@ -103,8 +102,8 @@ document.addEventListener("DOMContentLoaded", function(){
                 });
                 
             });
-            topBeamEditor(indexs_of_non_rest_note_values, newBeat);
-            middleBeamEditor(indexs_of_non_rest_note_values, newBeat);
+            topBeamEditor(indexs_of_notes, newBeat);
+            middleBeamEditor(indexs_of_notes, newBeat);
         });    
     });    
 });
@@ -119,22 +118,26 @@ function makeElement(nameOfClass, parentElement, type) {
 }
 
 // makes only 1 top beam per beat
-function makeTopBeam(thisBeat){
-    let topBeam = thisBeat.querySelector('.top-beam');
-    if ( !topBeam ) {
-        makeElement('top-beam', thisBeat, 'div')
-    }
-    return topBeam;
-};
+// function makeTopBeam(thisBeat){
+//     let topBeam = thisBeat.querySelector('.top-beam');
+//     if ( !topBeam ) {
+//         makeElement('top-beam', thisBeat, 'div')
+//     }
+//     return topBeam;
+// };
 
-function topBeamEditor(indexs_of_non_rest_note_values, parentBeat){
+function topBeamEditor(indexs_of_notes, parentBeat){
     
-    let non_rests = indexs_of_non_rest_note_values.filter(obj => !obj['rest'])
+    let non_rests = indexs_of_notes.filter(obj => !obj['rest'])
     let first_and_last = [non_rests[0]['cursor'], non_rests[non_rests.length - 1]['cursor']];
 
     for (let i = 0; i < non_rests.length; i++) {
         if (non_rests[i]['value'] < 8) {
-            var topBeam = makeTopBeam(parentBeat);
+            var topBeam = parentBeat.querySelector('.top-beam');
+            if ( !topBeam ) {
+                topBeam = makeElement('top-beam', parentBeat, 'div');
+                break;
+            }
         }
     }
     // EDIT THE LENGTH OF THE BEAM
@@ -152,36 +155,51 @@ function topBeamEditor(indexs_of_non_rest_note_values, parentBeat){
     }
 }
 
-function middleBeamEditor(indexs_of_non_rest_note_values, parentBeat){
-    let non_rests = indexs_of_non_rest_note_values.filter(obj => !obj['rest'] && obj['value'] <= 2)
+function middleBeamEditor(indexs_of_notes, parentBeat){
+    let nonRest16thsOrLess = indexs_of_notes.filter(obj => !obj['rest'] && obj['value'] <= 2)
+
     let array16thPositions = [];
     let array8thAndRestPositions = [];
-    let num_of_beams = 1;
-    indexs_of_non_rest_note_values.forEach(function(note_obj, index){
+
+    let count = 0;
+    let firstGroup = 0;
+    let secondGroup = 0;
+
+    indexs_of_notes.forEach(function(note_obj, index){
         if (note_obj['value'] <= 2 && !note_obj['rest']){
+            // so...here... im just making an array of indices
             array16thPositions.push(note_obj['cursor']);
+            count++;
         }
         else if (note_obj['value'] >= 4 || note_obj['rest']){
+            // and here too... why am I filtering these data?
             array8thAndRestPositions.push(note_obj['cursor']);
+            firstGroup = count;
+            count = 0;
         }
     })
+    secondGroup = count;
 
     if (array16thPositions.length === 0){
-        // in this case, no beams
+        // in this case, no beams - im filtering to make this check... can I do it another way? Do I want to?
         return 0;
     }
+    else if (firstGroup > 0 && secondGroup > 0){
+        let firstBeam = makeElement('middle-beam', parentBeat, 'div');
+        let secondBeam = makeElement('middle-beam', parentBeat, 'div');
+
+        firstBeam.style.width = `${firstGroup * NOTEWIDTH}px`;
+        firstBeam.style.transform = `translateX(${nonRest16thsOrLess[0]['cursor'] * NOTEWIDTH}px)`;
+        
+        secondBeam.style.width = `${secondGroup * NOTEWIDTH}px`;
+        secondBeam.style.transform = `translateX(${nonRest16thsOrLess[nonRest16thsOrLess.length - 1]['cursor'] * NOTEWIDTH - NOTEWIDTH}px)`;
+
+        return 2;
+    }
     else {
-        for ( let i = 0; i < array8thAndRestPositions.length; i++ ){
-            if (array16thPositions[0] < array8thAndRestPositions[i] && array8thAndRestPositions[i] < array16thPositions[length - 1]){
-                // num_of_beams = 2;
-                // no... make 2 beams and append them to the parent
-                return 2;
-            }
-        }
-        // make one beam and postition it with the below code
-        let beamToBeEdited = makeElement('middle-beam', parentBeat);
-        beamToBeEdited.style.width = `${(non_rests[non_rests.length - 1]['cursor'] - non_rests[0]['cursor']) * NOTEWIDTH}px`
-        beamToBeEdited.style.transform = `translateX(${non_rests[0]['cursor'] * NOTEWIDTH}px)`;
+        let middleBeam = makeElement('middle-beam', parentBeat);
+        middleBeam.style.width = `${(nonRest16thsOrLess[nonRest16thsOrLess.length - 1]['cursor'] - nonRest16thsOrLess[0]['cursor']) * NOTEWIDTH}px`
+        middleBeam.style.transform = `translateX(${nonRest16thsOrLess[0]['cursor'] * NOTEWIDTH}px)`;
         return 1;
     }    
 }
