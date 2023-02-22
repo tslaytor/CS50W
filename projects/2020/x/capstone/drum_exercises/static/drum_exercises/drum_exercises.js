@@ -267,7 +267,7 @@ function bottomBeamEditor(indexesOfNotes, parentBeat){
         firstBeam.style.transform = `translateX(${nonRest32nds[0]['cursor'] * NOTEWIDTH}px)`;
         
         secondBeam.style.width = `${secondGroup * NOTEWIDTH}px`;
-        if ( nonRests === 1 ) {
+        if ( nonRests.length === 1 ) {
             secondBeam.style.transform = `translateX(${nonRest32nds[nonRest32nds.length - 1]['cursor'] * NOTEWIDTH - NOTEWIDTH}px)`;
         }
         else {
@@ -279,7 +279,7 @@ function bottomBeamEditor(indexesOfNotes, parentBeat){
     else {
         let bottomBeam = makeElement('bottom-beam', parentBeat, 'div');
 
-        console.dir('nonrest = ' + nonRests)
+        console.dir('nonrest.length = ' + nonRests.length)
         if ( nonRests.length === 1){
             bottomBeam.style.width = '18px';
             bottomBeam.style.borderTop = '5px black solid';
@@ -288,7 +288,7 @@ function bottomBeamEditor(indexesOfNotes, parentBeat){
             bottomBeam.style.borderRadius = '2px';
         }
         // I want to know
-        if ( nonRest32nds[nonRest32nds.length - 1]['cursor'] === nonRest32nds[0]['cursor'] ){
+        else if ( nonRest32nds[nonRest32nds.length - 1]['cursor'] === nonRest32nds[0]['cursor'] ){
             bottomBeam.style.width = `${ 0.5 * NOTEWIDTH }px`
             bottomBeam.style.transform = `translateX(${ NOTEWIDTH }px)`;
         }
