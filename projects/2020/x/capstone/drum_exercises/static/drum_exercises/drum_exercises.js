@@ -43,7 +43,7 @@ let bars = [
             ], 
             [ 
                 { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: true } ] },
-                { subdivision: 4, notes: [ { value: 2, rest: true }, { value: 2, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 2, rest: true }, { value: 1, rest: true }, { value: 1, rest: false } ] },
             ]
         ]
     }
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function(){
             let indexesOfNotes = [];
             
 
-            beat.forEach( subbeat => {
+            beat.forEach( (subbeat, index) => {
                 let indexesForBottomBeam = [];
                 let cursorForBottomBeam = 0;
                 let subdiv = subbeat['subdivision'];
@@ -114,8 +114,8 @@ document.addEventListener("DOMContentLoaded", function(){
                     subdiv = subdiv - i;
                     leftOvers = note['value'] - i;
                 });
-                bottomBeamEditor(indexesForBottomBeam, newSubBeat);
-                // i want to clreat the index of notes for the bottom beam editor
+                bottomBeamEditor(indexesForBottomBeam, newSubBeat, index);
+                // i need to know if i'm in the first half or second half
             });
 
             topBeamEditor(indexesOfNotes, newBeat);
@@ -229,15 +229,21 @@ function middleBeamEditor(indexesOfNotes, parentBeat){
     }    
 }
 
-function bottomBeamEditor(indexesOfNotes, parentBeat){
+function bottomBeamEditor(indexesOfNotes, parentBeat, index){
+
+    console.log('this in subbeat: ' + index);
+
     let nonRests = indexesOfNotes.filter( obj => !obj[ 'rest' ] );
     let nonRest32nds = nonRests.filter( obj => obj[ 'value' ] <= 1 );
+
+    console.log('nonrest.length = ' + nonRests.length)
 
     let array32ndPositions = [];
     let array8thAndRestPositions = [];
 
     let count = 0;
     let firstGroup = 0;
+    
     let secondGroup = 0;
 
     indexesOfNotes.forEach(function(noteObj){
@@ -279,7 +285,9 @@ function bottomBeamEditor(indexesOfNotes, parentBeat){
     else {
         let bottomBeam = makeElement('bottom-beam', parentBeat, 'div');
 
-        console.dir('nonrest.length = ' + nonRests.length)
+        // console.dir('nonrest.length = ' + nonRests.length)
+        // here... i don't really wat to check the length of nonrests, because it only checks one half of the beat at a time *** 
+        // I need to know if its the only non-rest note in the whole beat
         if ( nonRests.length === 1){
             bottomBeam.style.width = '18px';
             bottomBeam.style.borderTop = '5px black solid';
