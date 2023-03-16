@@ -22,7 +22,7 @@ $noteWidth: 12px;
 }
 .bar-line {
     min-width: $noteWidth * 32;
-    outline: black solid 2px;
+    border-left: black solid 2px;
     display: flex;
     position: absolute;
     height: 100%;
@@ -113,9 +113,9 @@ $noteWidth: 12px;
 }
 
 .bottom-beam {
-    width: 75%;
+    width: 40%;
     border-top: 8px black solid;
     position: absolute;
     top: 30px;
-    left: 7%;
+    left: 2%;
 }

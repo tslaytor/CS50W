@@ -1,5 +1,7 @@
 const NOTEWIDTH = 12;
 
+// REMINDER - YOU WANT SUBBEATS SO YOU CAN DIVIED ONE BY 3 AND ONE BY 4 IN THE SAME BEAT.
+
 let bars = [
     { // bar
         tempo: 120,
@@ -7,7 +9,7 @@ let bars = [
         // I now know how many beats and subbeats in this bar
         beats: [ 
             [  
-                { subdivision: 4, notes: [ { value: 1, rest: true }, { value: 1, rest: false }, { value: 2, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 1, rest: false }, { value: 1, rest: false }, { value: 2, rest: false } ] },
                 { subdivision: 4, notes: [ { value: 1, rest: false }, { value: 1, rest: false }, { value: 2, rest: false } ] }
             ], 
             [ 
@@ -20,7 +22,7 @@ let bars = [
             ], 
             [ 
                 { subdivision: 4, notes: [ { value: 4, rest: false } ] },
-                { subdivision: 4, notes: [ { value: 2, rest: false }, { value: 2, rest: false } ] },
+                { subdivision: 4, notes: [ { value: 1, rest: false }, { value: 1, rest: false }, { value: 2, rest: false } ] },
             ]
         ]
     },
@@ -51,51 +53,49 @@ let bars = [
 
 document.addEventListener("DOMContentLoaded", function(){
 
-    // make a div inside container
+    // make new container in the body
     let newContainer = makeElement('container', document.querySelector('body'), 'div')
 
+    // read each bar in our bars array
     bars.forEach( bar => {
+        // make a new bar element and a barline element (don't need to do anything else with barline)
         let newBar = makeElement('bar', newContainer, 'div')
+        makeElement('bar-line', newBar, 'div')
 
-        let barLines = makeElement('bar-line', newBar, 'div')
-
+        // for each beat array in our bar['beats'] array
         bar['beats'].forEach( beat => {
+            // make a beat element
             let newBeat = makeElement('beat', newBar, 'div')
 
+            // make and initialize variables for subbeat overspill notes
             let leftOvers = 0;
             let cursor = 0;
             let indexesOfNotes = [];
             
-
-            beat.forEach( (subbeat, index) => {
-                let indexesForBottomBeam = [];
-                let cursorForBottomBeam = 0;
+            // subbeat is a object holding the subdivision value and a notes array
+            beat.forEach( (subbeat) => {
+                // let indexesForBottomBeam = [];
+                // let cursorForBottomBeam = 0;
                 let subdiv = subbeat['subdivision'];
                 let newSubBeat = makeElement('sub-beat', newBeat, 'div')
 
+                // for each note object
                 subbeat['notes'].forEach( note => {
-                    // add any empty notes from previous sub-beat
+                    // add empty notes to this subbeat from previous sub-beat, if any
                     for ( var i = 0; i < leftOvers; i++ ){
                         makeElement('note', newSubBeat, 'div');
                         cursor++;
-                        cursorForBottomBeam++;
+                        // cursorForBottomBeam++;
                     }
                     
                     for ( var i = 0; i < note['value'] && i < subdiv; i++ ){
-                        let newNote = document.createElement('div');
-                        newNote.className = 'note';
-                        newSubBeat.appendChild(newNote);
+                        
+                        let newNote = makeElement('note', newSubBeat, 'div');
 
                         if (i === 0) {
                             if (note['rest']){
-                                
-                                if (note['value'] <= 2 ) {
-                                    makeElement('sixteenthRest', newNote, 'img');
-                                }
-                                else if (note['value'] <= 4) {
-                                    makeElement('eighthRest', newNote, 'img');
-                                }
-                                
+                                note['value'] <= 2 ? makeElement('sixteenthRest', newNote, 'img')
+                                : note['value'] <= 4 ? makeElement('eighthRest', newNote, 'img') : '';
                             }
                             else {
                                 let newHead = document.createElement('div');
@@ -106,20 +106,21 @@ document.addEventListener("DOMContentLoaded", function(){
                                 newNote.appendChild(newStem);
                             }
                             indexesOfNotes.push({ 'cursor': cursor, 'value': note['value'], 'rest': note['rest'] });
-                            indexesForBottomBeam.push({ 'cursor': cursorForBottomBeam, 'value': note['value'], 'rest': note['rest'] });
+                            // indexesForBottomBeam.push({ 'cursor': cursorForBottomBeam, 'value': note['value'], 'rest': note['rest'] });
                         }
                         cursor++;
-                        cursorForBottomBeam++;
+                        // cursorForBottomBeam++;
                     };
                     subdiv = subdiv - i;
                     leftOvers = note['value'] - i;
                 });
-                bottomBeamEditor(indexesForBottomBeam, newSubBeat, index);
-                // i need to know if i'm in the first half or second half
+                
             });
 
             topBeamEditor(indexesOfNotes, newBeat);
             middleBeamEditor(indexesOfNotes, newBeat);
+            bottomBeamEditor(indexesOfNotes, newBeat);
+            
             
         });    
     });    
@@ -229,9 +230,7 @@ function middleBeamEditor(indexesOfNotes, parentBeat){
     }    
 }
 
-function bottomBeamEditor(indexesOfNotes, parentBeat, index){
-
-    console.log('this in subbeat: ' + index);
+function bottomBeamEditor(indexesOfNotes, parentBeat){
 
     let nonRests = indexesOfNotes.filter( obj => !obj[ 'rest' ] );
     let nonRest32nds = nonRests.filter( obj => obj[ 'value' ] <= 1 );
@@ -242,9 +241,9 @@ function bottomBeamEditor(indexesOfNotes, parentBeat, index){
     let array8thAndRestPositions = [];
 
     let count = 0;
-    let firstGroup = 0;
-    
-    let secondGroup = 0;
+    let groupsOf32nds = [];
+    // let firstGroup = 0;
+    // let secondGroup = 0;
 
     indexesOfNotes.forEach(function(noteObj){
         if (noteObj['value'] <= 1 && !noteObj['rest']){
@@ -252,36 +251,41 @@ function bottomBeamEditor(indexesOfNotes, parentBeat, index){
             array32ndPositions.push(noteObj['cursor']);
             count++;
         }
-        else if (noteObj['value'] >= 4 || noteObj['rest']){
+        else if (noteObj['value'] >= 2 || noteObj['rest']){
             // and here too... why am I filtering these data?
             array8thAndRestPositions.push(noteObj['cursor']);
-            firstGroup = count;
+            groupsOf32nds.push(count);
+            // firstGroup = count;
+            console.log('groups of 32nds are ' + groupsOf32nds)
             count = 0;
         }
     })
-    secondGroup = count;
-
+    // secondGroup = count;
+    // console.log('firstGroup: ' + firstGroup + ' secondGroup: ' + secondGroup)
     if (array32ndPositions.length === 0){
         // in this case, no beams - im filtering to make this check... can I do it another way? Do I want to?
         return 0;
     }
-    else if (firstGroup > 0 && secondGroup > 0){
+    // else if (firstGroup > 0 && secondGroup > 0){
+        else if (groupsOf32nds[0] > 0 && groupsOf32nds[1] > 0){
+        console.log('yo im here - i passed the test!!!!!')
         let firstBeam = makeElement('bottom-beam', parentBeat, 'div');
         let secondBeam = makeElement('bottom-beam', parentBeat, 'div');
 
-        firstBeam.style.width = `${firstGroup * NOTEWIDTH}px`;
+        firstBeam.style.width = `${groupsOf32nds[0] * NOTEWIDTH}px`;
         firstBeam.style.transform = `translateX(${nonRest32nds[0]['cursor'] * NOTEWIDTH}px)`;
         
-        secondBeam.style.width = `${secondGroup * NOTEWIDTH}px`;
+        secondBeam.style.width = `${groupsOf32nds[1] * NOTEWIDTH}px`;
         if ( nonRests.length === 1 ) {
             secondBeam.style.transform = `translateX(${nonRest32nds[nonRest32nds.length - 1]['cursor'] * NOTEWIDTH - NOTEWIDTH}px)`;
         }
         else {
             // translate to the first note of the last group
-            secondBeam.style.transform = `translateX(${nonRest32nds[nonRest32nds.length - 1]['cursor'] * NOTEWIDTH - secondGroup * NOTEWIDTH}px)`;
+            secondBeam.style.transform = `translateX(${nonRest32nds[nonRest32nds.length - 1]['cursor'] * NOTEWIDTH - groupsOf32nds[1] * NOTEWIDTH}px)`;
         }
         return 2;
     }
+    // *** I THINK THERE COULD BE 3 BEAMS THAT NEED TO BE MADE ****
     else {
         let bottomBeam = makeElement('bottom-beam', parentBeat, 'div');
 

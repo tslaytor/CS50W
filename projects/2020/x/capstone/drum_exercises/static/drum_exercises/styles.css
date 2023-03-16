@@ -15,7 +15,7 @@
 
 .bar-line {
   min-width: 384px;
-  outline: black solid 2px;
+  border-left: black solid 2px;
   display: flex;
   position: absolute;
   height: 100%;
@@ -90,10 +90,10 @@
   left: 2%; }
 
 .bottom-beam {
-  width: 75%;
+  width: 40%;
   border-top: 8px black solid;
   position: absolute;
   top: 30px;
-  left: 7%; }
+  left: 2%; }
 
 /*# sourceMappingURL=styles.css.map */
